@@ -230,6 +230,14 @@ namespace FileCabinetApp
             {
                 records = fileCabinetService.FindByLastName(textToSearch);
             }
+            else if (string.Equals(propertyName, nameof(FileCabinetRecord.DateOfBirth), StringComparison.InvariantCultureIgnoreCase))
+            {
+                DateTime dateOfBirth;
+                if (DateTime.TryParse(textToSearch, out dateOfBirth))
+                {
+                    records = fileCabinetService.FindByDateOfBirth(dateOfBirth);
+                }
+            }
 
             for (int i = 0; i < records.Length; i++)
             {

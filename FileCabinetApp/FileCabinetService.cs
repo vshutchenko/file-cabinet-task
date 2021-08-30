@@ -91,6 +91,21 @@ namespace FileCabinetApp
             return records.ToArray();
         }
 
+        public FileCabinetRecord[] FindByDateOfBirth(DateTime dateOfBirth)
+        {
+            List<FileCabinetRecord> records = new List<FileCabinetRecord>();
+
+            for (int i = 0; i < this.list.Count; i++)
+            {
+                if (this.list[i].DateOfBirth == dateOfBirth)
+                {
+                    records.Add(this.list[i]);
+                }
+            }
+
+            return records.ToArray();
+        }
+
         private static void ValidateRecordParams(string firstName, string lastName, DateTime dateOfBirth, char gender, short experience, decimal salary)
         {
             if (string.IsNullOrWhiteSpace(firstName))
