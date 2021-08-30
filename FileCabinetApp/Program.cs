@@ -19,6 +19,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("help", PrintHelp),
             new Tuple<string, Action<string>>("edit", Edit),
             new Tuple<string, Action<string>>("create", Create),
+            new Tuple<string, Action<string>>("find", Find),
             new Tuple<string, Action<string>>("list", List),
             new Tuple<string, Action<string>>("stat", Stat),
             new Tuple<string, Action<string>>("exit", Exit),
@@ -29,6 +30,7 @@ namespace FileCabinetApp
             new string[] { "help", "prints the help screen", "The 'help' command prints the help screen." },
             new string[] { "edit", "edits the record with specified id", "The 'edit' command edits the record with specified id." },
             new string[] { "create", "creates a new record", "The 'create' command creates a new record." },
+            new string[] { "find", "finds records, recieves name of property and text to search", "The 'find' command finds records, recieves name of property and text to search." },
             new string[] { "list", "prints the list of records", "The 'list' command prints the list of records." },
             new string[] { "stat", "prints number of records stored in the service", "The 'stat' command prints number of records stored in the service." },
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
@@ -210,6 +212,31 @@ namespace FileCabinetApp
                 }
             }
             while (isValidInput != true);
+        }
+
+        private static void Find(string parameters)
+        {
+            string[] paramArray = parameters.Split(' ');
+            string propertyName = paramArray[0];
+            string textToSearch = paramArray[1][1..^1];
+            FileCabinetRecord[] records;
+            string record;
+
+            if (string.Equals(propertyName, nameof(FileCabinetRecord.FirstName), StringComparison.InvariantCultureIgnoreCase))
+            {
+                records = fileCabinetService.FindByFirstName(textToSearch);
+                for (int i = 0; i < records.Length; i++)
+                {
+                    record = $"#{i + 1}, " +
+                    $"{records[i].FirstName}, " +
+                    $"{records[i].LastName}, " +
+                    $"{records[i].DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture)}, " +
+                    $"{records[i].Gender}, " +
+                    $"{records[i].Experience}, " +
+                    $"{records[i].Salary}$";
+                    Console.WriteLine(record);
+                }
+            }
         }
 
         private static void ReadAndParseParams(out string firstName, out string lastName, out DateTime dateOfBirth, out char gender, out short experience, out decimal salary)

@@ -61,6 +61,21 @@ namespace FileCabinetApp
             }
         }
 
+        public FileCabinetRecord[] FindByFirstName(string firstName)
+        {
+            List<FileCabinetRecord> records = new List<FileCabinetRecord>();
+
+            for (int i = 0; i < this.list.Count; i++)
+            {
+                if (string.Equals(this.list[i].FirstName, firstName, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    records.Add(this.list[i]);
+                }
+            }
+
+            return records.ToArray();
+        }
+
         private static void ValidateRecordParams(string firstName, string lastName, DateTime dateOfBirth, char gender, short experience, decimal salary)
         {
             if (string.IsNullOrWhiteSpace(firstName))
