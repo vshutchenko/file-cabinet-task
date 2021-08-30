@@ -219,23 +219,28 @@ namespace FileCabinetApp
             string[] paramArray = parameters.Split(' ');
             string propertyName = paramArray[0];
             string textToSearch = paramArray[1][1..^1];
-            FileCabinetRecord[] records;
+            FileCabinetRecord[] records = Array.Empty<FileCabinetRecord>();
             string record;
 
             if (string.Equals(propertyName, nameof(FileCabinetRecord.FirstName), StringComparison.InvariantCultureIgnoreCase))
             {
                 records = fileCabinetService.FindByFirstName(textToSearch);
-                for (int i = 0; i < records.Length; i++)
-                {
-                    record = $"#{i + 1}, " +
-                    $"{records[i].FirstName}, " +
-                    $"{records[i].LastName}, " +
-                    $"{records[i].DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture)}, " +
-                    $"{records[i].Gender}, " +
-                    $"{records[i].Experience}, " +
-                    $"{records[i].Salary}$";
-                    Console.WriteLine(record);
-                }
+            }
+            else if (string.Equals(propertyName, nameof(FileCabinetRecord.LastName), StringComparison.InvariantCultureIgnoreCase))
+            {
+                records = fileCabinetService.FindByLastName(textToSearch);
+            }
+
+            for (int i = 0; i < records.Length; i++)
+            {
+                record = $"#{i + 1}, " +
+                $"{records[i].FirstName}, " +
+                $"{records[i].LastName}, " +
+                $"{records[i].DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture)}, " +
+                $"{records[i].Gender}, " +
+                $"{records[i].Experience}, " +
+                $"{records[i].Salary}$";
+                Console.WriteLine(record);
             }
         }
 
