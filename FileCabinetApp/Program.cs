@@ -17,6 +17,7 @@ namespace FileCabinetApp
         private static Tuple<string, Action<string>>[] commands = new Tuple<string, Action<string>>[]
         {
             new Tuple<string, Action<string>>("help", PrintHelp),
+            new Tuple<string, Action<string>>("edit", Edit),
             new Tuple<string, Action<string>>("create", Create),
             new Tuple<string, Action<string>>("list", List),
             new Tuple<string, Action<string>>("stat", Stat),
@@ -26,6 +27,7 @@ namespace FileCabinetApp
         private static string[][] helpMessages = new string[][]
         {
             new string[] { "help", "prints the help screen", "The 'help' command prints the help screen." },
+            new string[] { "edit", "edits the record with specified id", "The 'edit' command edits the record with specified id." },
             new string[] { "create", "creates a new record", "The 'create' command creates a new record." },
             new string[] { "list", "prints the list of records", "The 'list' command prints the list of records." },
             new string[] { "stat", "prints number of records stored in the service", "The 'stat' command prints number of records stored in the service." },
@@ -124,28 +126,18 @@ namespace FileCabinetApp
             do
             {
                 isValidInput = true;
-                Console.Write("First name: ");
-                firstName = Console.ReadLine();
-                Console.Write("Last name: ");
-                lastName = Console.ReadLine();
-                Console.Write("Date of birth: ");
-                isValidInput = DateTime.TryParse(Console.ReadLine(), out dateOfBirth);
-                Console.Write("Gender: ");
-                gender = char.Parse(Console.ReadLine());
-                Console.Write("Experience: ");
-                experience = short.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
-                Console.Write("Salary: ");
-                salary = decimal.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
 
                 try
                 {
+                    ReadAndParseParams(out firstName, out lastName, out dateOfBirth, out gender, out experience, out salary);
                     fileCabinetService.CreateRecord(firstName, lastName, dateOfBirth, gender, experience, salary);
                     Console.WriteLine($"Record #{fileCabinetService.GetStat()} is created.");
                 }
                 catch (Exception ex) when (
                     ex is ArgumentException
                     || ex is ArgumentNullException
-                    || ex is ArgumentOutOfRangeException)
+                    || ex is ArgumentOutOfRangeException
+                    || ex is FormatException)
                 {
                     Console.WriteLine("Invalid input.");
                     isValidInput = false;
@@ -169,6 +161,71 @@ namespace FileCabinetApp
                     $"{arrayOfRecords[i].Salary}$";
                 Console.WriteLine(record);
             }
+        }
+
+        private static void Edit(string parameters)
+        {
+            int id;
+            bool isParametersValid;
+            isParametersValid = int.TryParse(parameters, out id);
+
+            if (!isParametersValid)
+            {
+                Console.WriteLine("Wrong parameters");
+                return;
+            }
+
+            if ((id < 1) || (id > fileCabinetService.GetStat()))
+            {
+                Console.WriteLine($"#{id} record is not found.");
+                return;
+            }
+
+            string firstName;
+            string lastName;
+            DateTime dateOfBirth;
+            char gender;
+            short experience;
+            decimal salary;
+            bool isValidInput;
+
+            do
+            {
+                isValidInput = true;
+
+                try
+                {
+                    ReadAndParseParams(out firstName, out lastName, out dateOfBirth, out gender, out experience, out salary);
+                    fileCabinetService.EditRecord(id, firstName, lastName, dateOfBirth, gender, experience, salary);
+                    Console.WriteLine($"Record #{id} is updated.");
+                }
+                catch (Exception ex) when (
+                    ex is ArgumentException
+                    || ex is ArgumentNullException
+                    || ex is ArgumentOutOfRangeException
+                    || ex is FormatException)
+                {
+                    Console.WriteLine("Invalid input.");
+                    isValidInput = false;
+                }
+            }
+            while (isValidInput != true);
+        }
+
+        private static void ReadAndParseParams(out string firstName, out string lastName, out DateTime dateOfBirth, out char gender, out short experience, out decimal salary)
+        {
+            Console.Write("First name: ");
+            firstName = Console.ReadLine();
+            Console.Write("Last name: ");
+            lastName = Console.ReadLine();
+            Console.Write("Date of birth: ");
+            dateOfBirth = DateTime.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
+            Console.Write("Gender: ");
+            gender = char.Parse(Console.ReadLine());
+            Console.Write("Experience: ");
+            experience = short.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
+            Console.Write("Salary: ");
+            salary = decimal.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
         }
     }
 }
