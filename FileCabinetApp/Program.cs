@@ -119,23 +119,39 @@ namespace FileCabinetApp
             char gender;
             short experience;
             decimal salary;
+            bool isValidInput;
 
-            Console.Write("First name: ");
-            firstName = Console.ReadLine();
-            Console.Write("Last name: ");
-            lastName = Console.ReadLine();
-            Console.Write("Date of birth: ");
-            dateOfBirth = DateTime.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
-            Console.Write("Gender: ");
-            gender = char.Parse(Console.ReadLine());
-            Console.Write("Experience: ");
-            experience = short.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
-            Console.Write("Salary: ");
-            salary = decimal.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
+            do
+            {
+                isValidInput = true;
+                Console.Write("First name: ");
+                firstName = Console.ReadLine();
+                Console.Write("Last name: ");
+                lastName = Console.ReadLine();
+                Console.Write("Date of birth: ");
+                isValidInput = DateTime.TryParse(Console.ReadLine(), out dateOfBirth);
+                Console.Write("Gender: ");
+                gender = char.Parse(Console.ReadLine());
+                Console.Write("Experience: ");
+                experience = short.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
+                Console.Write("Salary: ");
+                salary = decimal.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
 
-            fileCabinetService.CreateRecord(firstName, lastName, dateOfBirth, gender, experience, salary);
-
-            Console.WriteLine($"Record #{fileCabinetService.GetStat()} is created.");
+                try
+                {
+                    fileCabinetService.CreateRecord(firstName, lastName, dateOfBirth, gender, experience, salary);
+                    Console.WriteLine($"Record #{fileCabinetService.GetStat()} is created.");
+                }
+                catch (Exception ex) when (
+                    ex is ArgumentException
+                    || ex is ArgumentNullException
+                    || ex is ArgumentOutOfRangeException)
+                {
+                    Console.WriteLine("Invalid input.");
+                    isValidInput = false;
+                }
+            }
+            while (isValidInput != true);
         }
 
         private static void List(string parameters)
