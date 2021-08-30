@@ -115,19 +115,25 @@ namespace FileCabinetApp
         {
             string firstName;
             string lastName;
-            string dateOfBirthString;
             DateTime dateOfBirth;
-            bool isParseSuccess = false;
+            char gender;
+            short experience;
+            decimal salary;
 
             Console.Write("First name: ");
             firstName = Console.ReadLine();
             Console.Write("Last name: ");
             lastName = Console.ReadLine();
             Console.Write("Date of birth: ");
-            dateOfBirthString = Console.ReadLine();
-            isParseSuccess = DateTime.TryParse(dateOfBirthString, out dateOfBirth);
+            dateOfBirth = DateTime.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
+            Console.Write("Gender: ");
+            gender = char.Parse(Console.ReadLine());
+            Console.Write("Experience: ");
+            experience = short.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
+            Console.Write("Salary: ");
+            salary = decimal.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
 
-            fileCabinetService.CreateRecord(firstName, lastName, dateOfBirth);
+            fileCabinetService.CreateRecord(firstName, lastName, dateOfBirth, gender, experience, salary);
 
             Console.WriteLine($"Record #{fileCabinetService.GetStat()} is created.");
         }
@@ -138,7 +144,13 @@ namespace FileCabinetApp
             FileCabinetRecord[] arrayOfRecords = fileCabinetService.GetRecords();
             for (int i = 0; i < fileCabinetService.GetStat(); i++)
             {
-                record = $"#{i + 1}, {arrayOfRecords[i].FirstName}, {arrayOfRecords[i].LastName}, {arrayOfRecords[i].DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture)}";
+                record = $"#{i + 1}, " +
+                    $"{arrayOfRecords[i].FirstName}, " +
+                    $"{arrayOfRecords[i].LastName}, " +
+                    $"{arrayOfRecords[i].DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture)}, " +
+                    $"{arrayOfRecords[i].Gender}, " +
+                    $"{arrayOfRecords[i].Experience}, " +
+                    $"{arrayOfRecords[i].Salary}$";
                 Console.WriteLine(record);
             }
         }
