@@ -117,12 +117,6 @@ namespace FileCabinetApp
 
         private static void Create(string parameters)
         {
-            string firstName;
-            string lastName;
-            DateTime dateOfBirth;
-            char gender;
-            short experience;
-            decimal salary;
             bool isValidInput;
 
             do
@@ -131,7 +125,7 @@ namespace FileCabinetApp
 
                 try
                 {
-                    ReadAndParseParams(out firstName, out lastName, out dateOfBirth, out gender, out experience, out salary);
+                    ReadAndParseParams(out string firstName, out string lastName, out DateTime dateOfBirth, out char gender, out short experience, out decimal salary);
                     fileCabinetService.CreateRecord(firstName, lastName, dateOfBirth, gender, experience, salary);
                     Console.WriteLine($"Record #{fileCabinetService.GetStat()} is created.");
                 }
@@ -139,7 +133,8 @@ namespace FileCabinetApp
                     ex is ArgumentException
                     || ex is ArgumentNullException
                     || ex is ArgumentOutOfRangeException
-                    || ex is FormatException)
+                    || ex is FormatException
+                    || ex is OverflowException)
                 {
                     Console.WriteLine("Invalid input.");
                     isValidInput = false;
@@ -167,13 +162,11 @@ namespace FileCabinetApp
 
         private static void Edit(string parameters)
         {
-            int id;
-            bool isParametersValid;
-            isParametersValid = int.TryParse(parameters, out id);
+            bool isValidInput = int.TryParse(parameters, out int id);
 
-            if (!isParametersValid)
+            if (!isValidInput)
             {
-                Console.WriteLine("Wrong parameters");
+                Console.WriteLine("The entered parameter is not a number.");
                 return;
             }
 
@@ -183,21 +176,13 @@ namespace FileCabinetApp
                 return;
             }
 
-            string firstName;
-            string lastName;
-            DateTime dateOfBirth;
-            char gender;
-            short experience;
-            decimal salary;
-            bool isValidInput;
-
             do
             {
                 isValidInput = true;
 
                 try
                 {
-                    ReadAndParseParams(out firstName, out lastName, out dateOfBirth, out gender, out experience, out salary);
+                    ReadAndParseParams(out string firstName, out string lastName, out DateTime dateOfBirth, out char gender, out short experience, out decimal salary);
                     fileCabinetService.EditRecord(id, firstName, lastName, dateOfBirth, gender, experience, salary);
                     Console.WriteLine($"Record #{id} is updated.");
                 }
@@ -223,18 +208,11 @@ namespace FileCabinetApp
                 return;
             }
 
-            string[] paramArray = parameters.Split(' ');
-
-            if (paramArray.Length != 2)
-            {
-                Console.WriteLine("Wrong number of parameters.");
-                return;
-            }
-
+            string[] paramArray = parameters.Split(' ', 2);
             string propertyName = paramArray[0];
             string textToSearch = paramArray[1];
 
-            if ((textToSearch[0] != '"') || (textToSearch[^1] != '"') || (textToSearch.Length < 2))
+            if ((textToSearch.Length < 2) || (textToSearch[0] != '"') || (textToSearch[^1] != '"'))
             {
                 Console.WriteLine("Wrong parameters.");
                 return;
@@ -255,8 +233,7 @@ namespace FileCabinetApp
             }
             else if (string.Equals(propertyName, nameof(FileCabinetRecord.DateOfBirth), StringComparison.InvariantCultureIgnoreCase))
             {
-                DateTime dateOfBirth;
-                if (DateTime.TryParse(textToSearch, out dateOfBirth))
+                if (DateTime.TryParse(textToSearch, out DateTime dateOfBirth))
                 {
                     records = fileCabinetService.FindByDateOfBirth(dateOfBirth);
                 }

@@ -28,6 +28,7 @@ namespace FileCabinetApp
             };
 
             this.list.Add(record);
+
             AddInDictionary(this.firstNameDictionary, firstName, new List<FileCabinetRecord>() { record });
             AddInDictionary(this.lastNameDictionary, lastName, new List<FileCabinetRecord>() { record });
             AddInDictionary(this.dateOfBirthDictionary, dateOfBirth.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture), new List<FileCabinetRecord>() { record });
@@ -68,6 +69,7 @@ namespace FileCabinetApp
                     this.list[i].Gender = gender;
                     this.list[i].Experience = experience;
                     this.list[i].Salary = salary;
+
                     AddInDictionary(this.firstNameDictionary, firstName, new List<FileCabinetRecord>() { this.list[i] });
                     AddInDictionary(this.lastNameDictionary, lastName, new List<FileCabinetRecord>() { this.list[i] });
                     AddInDictionary(this.dateOfBirthDictionary, dateOfBirth.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture), new List<FileCabinetRecord>() { this.list[i] });
