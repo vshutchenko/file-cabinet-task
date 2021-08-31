@@ -8,6 +8,7 @@ namespace FileCabinetApp
     public class FileCabinetService
     {
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
+        private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
 
         public int CreateRecord(string firstName, string lastName, DateTime dateOfBirth, char gender, short experience, decimal salary)
@@ -27,6 +28,7 @@ namespace FileCabinetApp
 
             this.list.Add(record);
             AddInDictionary(this.firstNameDictionary, firstName, new List<FileCabinetRecord>() { record });
+            AddInDictionary(this.lastNameDictionary, lastName, new List<FileCabinetRecord>() { record });
 
             return record.Id;
         }
@@ -55,6 +57,7 @@ namespace FileCabinetApp
                 if (id == this.list[i].Id)
                 {
                     this.firstNameDictionary[this.list[i].FirstName.ToUpperInvariant()].Remove(this.list[i]);
+                    this.lastNameDictionary[this.list[i].LastName.ToUpperInvariant()].Remove(this.list[i]);
                     this.list[i].FirstName = firstName;
                     this.list[i].LastName = lastName;
                     this.list[i].DateOfBirth = dateOfBirth;
@@ -62,6 +65,7 @@ namespace FileCabinetApp
                     this.list[i].Experience = experience;
                     this.list[i].Salary = salary;
                     AddInDictionary(this.firstNameDictionary, firstName, new List<FileCabinetRecord>() { this.list[i] });
+                    AddInDictionary(this.lastNameDictionary, lastName, new List<FileCabinetRecord>() { this.list[i] });
                 }
             }
         }
@@ -73,25 +77,23 @@ namespace FileCabinetApp
                 throw new ArgumentNullException(nameof(firstName), $"{nameof(firstName)} is null");
             }
 
-            List<FileCabinetRecord> records = new List<FileCabinetRecord>();
+            List<FileCabinetRecord> records;
             this.firstNameDictionary.TryGetValue(firstName.ToUpperInvariant(), out records);
 
             return records is null ? Array.Empty<FileCabinetRecord>() : records.ToArray();
         }
 
-        public FileCabinetRecord[] FindByLastName(string firstName)
+        public FileCabinetRecord[] FindByLastName(string lastName)
         {
-            List<FileCabinetRecord> records = new List<FileCabinetRecord>();
-
-            for (int i = 0; i < this.list.Count; i++)
+            if (lastName is null)
             {
-                if (string.Equals(this.list[i].LastName, firstName, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    records.Add(this.list[i]);
-                }
+                throw new ArgumentNullException(nameof(lastName), $"{nameof(lastName)} is null");
             }
 
-            return records.ToArray();
+            List<FileCabinetRecord> records;
+            this.lastNameDictionary.TryGetValue(lastName.ToUpperInvariant(), out records);
+
+            return records is null ? Array.Empty<FileCabinetRecord>() : records.ToArray();
         }
 
         public FileCabinetRecord[] FindByDateOfBirth(DateTime dateOfBirth)

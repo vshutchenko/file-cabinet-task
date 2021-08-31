@@ -205,7 +205,8 @@ namespace FileCabinetApp
                     ex is ArgumentException
                     || ex is ArgumentNullException
                     || ex is ArgumentOutOfRangeException
-                    || ex is FormatException)
+                    || ex is FormatException
+                    || ex is OverflowException)
                 {
                     Console.WriteLine("Invalid input.");
                     isValidInput = false;
