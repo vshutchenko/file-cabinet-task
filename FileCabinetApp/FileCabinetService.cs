@@ -9,6 +9,7 @@ namespace FileCabinetApp
     {
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
+        private readonly Dictionary<string, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
 
         public int CreateRecord(string firstName, string lastName, DateTime dateOfBirth, char gender, short experience, decimal salary)
@@ -29,6 +30,7 @@ namespace FileCabinetApp
             this.list.Add(record);
             AddInDictionary(this.firstNameDictionary, firstName, new List<FileCabinetRecord>() { record });
             AddInDictionary(this.lastNameDictionary, lastName, new List<FileCabinetRecord>() { record });
+            AddInDictionary(this.dateOfBirthDictionary, dateOfBirth.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture), new List<FileCabinetRecord>() { record });
 
             return record.Id;
         }
@@ -58,14 +60,18 @@ namespace FileCabinetApp
                 {
                     this.firstNameDictionary[this.list[i].FirstName.ToUpperInvariant()].Remove(this.list[i]);
                     this.lastNameDictionary[this.list[i].LastName.ToUpperInvariant()].Remove(this.list[i]);
+                    this.dateOfBirthDictionary[this.list[i].DateOfBirth.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture)].Remove(this.list[i]);
+
                     this.list[i].FirstName = firstName;
                     this.list[i].LastName = lastName;
                     this.list[i].DateOfBirth = dateOfBirth;
                     this.list[i].Gender = gender;
                     this.list[i].Experience = experience;
                     this.list[i].Salary = salary;
+
                     AddInDictionary(this.firstNameDictionary, firstName, new List<FileCabinetRecord>() { this.list[i] });
                     AddInDictionary(this.lastNameDictionary, lastName, new List<FileCabinetRecord>() { this.list[i] });
+                    AddInDictionary(this.dateOfBirthDictionary, dateOfBirth.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture), new List<FileCabinetRecord>() { this.list[i] });
                 }
             }
         }
@@ -98,17 +104,10 @@ namespace FileCabinetApp
 
         public FileCabinetRecord[] FindByDateOfBirth(DateTime dateOfBirth)
         {
-            List<FileCabinetRecord> records = new List<FileCabinetRecord>();
+            List<FileCabinetRecord> records;
+            this.dateOfBirthDictionary.TryGetValue(dateOfBirth.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture), out records);
 
-            for (int i = 0; i < this.list.Count; i++)
-            {
-                if (this.list[i].DateOfBirth == dateOfBirth)
-                {
-                    records.Add(this.list[i]);
-                }
-            }
-
-            return records.ToArray();
+            return records is null ? Array.Empty<FileCabinetRecord>() : records.ToArray();
         }
 
         private static void AddInDictionary(Dictionary<string, List<FileCabinetRecord>> dictionary, string key, List<FileCabinetRecord> records)
