@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 
 namespace FileCabinetApp
 {
     public class FileCabinetService
     {
+        private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
 
         public int CreateRecord(string firstName, string lastName, DateTime dateOfBirth, char gender, short experience, decimal salary)
@@ -24,6 +26,7 @@ namespace FileCabinetApp
             };
 
             this.list.Add(record);
+            AddInDictionary(this.firstNameDictionary, firstName, new List<FileCabinetRecord>() { record });
 
             return record.Id;
         }
@@ -51,29 +54,29 @@ namespace FileCabinetApp
             {
                 if (id == this.list[i].Id)
                 {
+                    this.firstNameDictionary[this.list[i].FirstName.ToUpperInvariant()].Remove(this.list[i]);
                     this.list[i].FirstName = firstName;
                     this.list[i].LastName = lastName;
                     this.list[i].DateOfBirth = dateOfBirth;
                     this.list[i].Gender = gender;
                     this.list[i].Experience = experience;
                     this.list[i].Salary = salary;
+                    AddInDictionary(this.firstNameDictionary, firstName, new List<FileCabinetRecord>() { this.list[i] });
                 }
             }
         }
 
         public FileCabinetRecord[] FindByFirstName(string firstName)
         {
-            List<FileCabinetRecord> records = new List<FileCabinetRecord>();
-
-            for (int i = 0; i < this.list.Count; i++)
+            if (firstName is null)
             {
-                if (string.Equals(this.list[i].FirstName, firstName, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    records.Add(this.list[i]);
-                }
+                throw new ArgumentNullException(nameof(firstName), $"{nameof(firstName)} is null");
             }
 
-            return records.ToArray();
+            List<FileCabinetRecord> records = new List<FileCabinetRecord>();
+            this.firstNameDictionary.TryGetValue(firstName.ToUpperInvariant(), out records);
+
+            return records is null ? Array.Empty<FileCabinetRecord>() : records.ToArray();
         }
 
         public FileCabinetRecord[] FindByLastName(string firstName)
@@ -104,6 +107,18 @@ namespace FileCabinetApp
             }
 
             return records.ToArray();
+        }
+
+        private static void AddInDictionary(Dictionary<string, List<FileCabinetRecord>> dictionary, string key, List<FileCabinetRecord> records)
+        {
+            List<FileCabinetRecord> existingValue;
+
+            if (!dictionary.TryGetValue(key.ToUpperInvariant(), out existingValue))
+            {
+                existingValue = dictionary[key.ToUpperInvariant()] = new List<FileCabinetRecord>();
+            }
+
+            existingValue.AddRange(records);
         }
 
         private static void ValidateRecordParams(string firstName, string lastName, DateTime dateOfBirth, char gender, short experience, decimal salary)

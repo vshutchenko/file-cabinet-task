@@ -216,9 +216,31 @@ namespace FileCabinetApp
 
         private static void Find(string parameters)
         {
+            if (string.IsNullOrEmpty(parameters) || string.IsNullOrWhiteSpace(parameters))
+            {
+                Console.WriteLine("Wrong parameters. Please specify name of property and text to search.");
+                return;
+            }
+
             string[] paramArray = parameters.Split(' ');
+
+            if (paramArray.Length != 2)
+            {
+                Console.WriteLine("Wrong number of parameters.");
+                return;
+            }
+
             string propertyName = paramArray[0];
-            string textToSearch = paramArray[1][1..^1];
+            string textToSearch = paramArray[1];
+
+            if ((textToSearch[0] != '"') || (textToSearch[^1] != '"') || (textToSearch.Length < 2))
+            {
+                Console.WriteLine("Wrong parameters.");
+                return;
+            }
+
+            textToSearch = textToSearch[1..^1];
+
             FileCabinetRecord[] records = Array.Empty<FileCabinetRecord>();
             string record;
 
