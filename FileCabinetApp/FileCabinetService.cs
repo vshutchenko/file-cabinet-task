@@ -19,33 +19,28 @@ namespace FileCabinetApp
         /// <summary>
         /// This method creates a new record.
         /// </summary>
-        /// <param name="firstName">The first name of the person.</param>
-        /// <param name="lastName">The last name of the person.</param>
-        /// <param name="dateOfBirth">The date of birth of the person.</param>
-        /// <param name="gender">The gender of the person.</param>
-        /// <param name="experience">The person's experience in work.</param>
-        /// <param name="salary">The person's salary.</param>
+        /// <param name="recordParameters">The parameter object for FileCabinetRecord.</param>
         /// <returns>Id of the created record.</returns>
-        public int CreateRecord(string firstName, string lastName, DateTime dateOfBirth, char gender, short experience, decimal salary)
+        public int CreateRecord(RecordParameters recordParameters)
         {
-            ValidateRecordParams(firstName, lastName, dateOfBirth, gender, experience, salary);
+            ValidateRecordParams(recordParameters);
 
             var record = new FileCabinetRecord
             {
                 Id = this.list.Count + 1,
-                FirstName = firstName,
-                LastName = lastName,
-                DateOfBirth = dateOfBirth,
-                Gender = gender,
-                Experience = experience,
-                Salary = salary,
+                FirstName = recordParameters.FirstName,
+                LastName = recordParameters.LastName,
+                DateOfBirth = recordParameters.DateOfBirth,
+                Gender = recordParameters.Gender,
+                Experience = recordParameters.Experience,
+                Salary = recordParameters.Salary,
             };
 
             this.list.Add(record);
 
-            AddInDictionary(this.firstNameDictionary, firstName, new List<FileCabinetRecord>() { record });
-            AddInDictionary(this.lastNameDictionary, lastName, new List<FileCabinetRecord>() { record });
-            AddInDictionary(this.dateOfBirthDictionary, dateOfBirth.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture), new List<FileCabinetRecord>() { record });
+            AddInDictionary(this.firstNameDictionary, recordParameters.FirstName, new List<FileCabinetRecord>() { record });
+            AddInDictionary(this.lastNameDictionary, recordParameters.LastName, new List<FileCabinetRecord>() { record });
+            AddInDictionary(this.dateOfBirthDictionary, recordParameters.DateOfBirth.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture), new List<FileCabinetRecord>() { record });
 
             return record.Id;
         }
@@ -72,20 +67,15 @@ namespace FileCabinetApp
         /// This method creates a new record.
         /// </summary>
         /// <param name="id">The edited record's id.</param>
-        /// <param name="firstName">The edited first name of the person.</param>
-        /// <param name="lastName">The edited last name of the person.</param>
-        /// <param name="dateOfBirth">The edited date of birth of the person.</param>
-        /// <param name="gender">The edited gender of the person.</param>
-        /// <param name="experience">The edited person's experience in work.</param>
-        /// <param name="salary">The edited person's salary.</param>
-        public void EditRecord(int id, string firstName, string lastName, DateTime dateOfBirth, char gender, short experience, decimal salary)
+        /// <param name="recordParameters">The parameter object for FileCabinetRecord.</param>
+        public void EditRecord(int id, RecordParameters recordParameters)
         {
             if ((id < 0) || (id > this.list.Count))
             {
                 throw new ArgumentException($"There is no record with {nameof(id)}={id}");
             }
 
-            ValidateRecordParams(firstName, lastName, dateOfBirth, gender, experience, salary);
+            ValidateRecordParams(recordParameters);
 
             for (int i = 0; i < this.list.Count; i++)
             {
@@ -95,16 +85,16 @@ namespace FileCabinetApp
                     this.lastNameDictionary[this.list[i].LastName.ToUpperInvariant()].Remove(this.list[i]);
                     this.dateOfBirthDictionary[this.list[i].DateOfBirth.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture)].Remove(this.list[i]);
 
-                    this.list[i].FirstName = firstName;
-                    this.list[i].LastName = lastName;
-                    this.list[i].DateOfBirth = dateOfBirth;
-                    this.list[i].Gender = gender;
-                    this.list[i].Experience = experience;
-                    this.list[i].Salary = salary;
+                    this.list[i].FirstName = recordParameters.FirstName;
+                    this.list[i].LastName = recordParameters.LastName;
+                    this.list[i].DateOfBirth = recordParameters.DateOfBirth;
+                    this.list[i].Gender = recordParameters.Gender;
+                    this.list[i].Experience = recordParameters.Experience;
+                    this.list[i].Salary = recordParameters.Salary;
 
-                    AddInDictionary(this.firstNameDictionary, firstName, new List<FileCabinetRecord>() { this.list[i] });
-                    AddInDictionary(this.lastNameDictionary, lastName, new List<FileCabinetRecord>() { this.list[i] });
-                    AddInDictionary(this.dateOfBirthDictionary, dateOfBirth.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture), new List<FileCabinetRecord>() { this.list[i] });
+                    AddInDictionary(this.firstNameDictionary, recordParameters.FirstName, new List<FileCabinetRecord>() { this.list[i] });
+                    AddInDictionary(this.lastNameDictionary, recordParameters.LastName, new List<FileCabinetRecord>() { this.list[i] });
+                    AddInDictionary(this.dateOfBirthDictionary, recordParameters.DateOfBirth.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture), new List<FileCabinetRecord>() { this.list[i] });
                 }
             }
         }
@@ -170,46 +160,51 @@ namespace FileCabinetApp
             existingValue.AddRange(records);
         }
 
-        private static void ValidateRecordParams(string firstName, string lastName, DateTime dateOfBirth, char gender, short experience, decimal salary)
+        private static void ValidateRecordParams(RecordParameters recordParameters)
         {
-            if (string.IsNullOrWhiteSpace(firstName))
+            if (recordParameters is null)
             {
-                throw new ArgumentNullException(nameof(firstName), $"{nameof(firstName)} is null or whitespace");
+                throw new ArgumentNullException(nameof(recordParameters), $"{nameof(recordParameters)} is null.");
             }
 
-            if ((firstName.Length < 2) || (firstName.Length > 60))
+            if (string.IsNullOrWhiteSpace(recordParameters.FirstName))
             {
-                throw new ArgumentException($"{nameof(firstName)} length is not between 2 and 60");
+                throw new ArgumentNullException(nameof(recordParameters.FirstName), $"{nameof(recordParameters.FirstName)} is null or whitespace");
             }
 
-            if (string.IsNullOrWhiteSpace(lastName))
+            if ((recordParameters.FirstName.Length < 2) || (recordParameters.FirstName.Length > 60))
             {
-                throw new ArgumentNullException(nameof(lastName), $"{nameof(lastName)} is null or whitespace");
+                throw new ArgumentException($"{nameof(recordParameters.FirstName)} length is not between 2 and 60");
             }
 
-            if ((lastName.Length < 2) || (lastName.Length > 60))
+            if (string.IsNullOrWhiteSpace(recordParameters.LastName))
             {
-                throw new ArgumentException($"{nameof(lastName)} length is not between 2 and 60");
+                throw new ArgumentNullException(nameof(recordParameters.LastName), $"{nameof(recordParameters.LastName)} is null or whitespace");
             }
 
-            if ((dateOfBirth < new DateTime(1950, 1, 1)) || (dateOfBirth > DateTime.Now))
+            if ((recordParameters.LastName.Length < 2) || (recordParameters.LastName.Length > 60))
             {
-                throw new ArgumentOutOfRangeException(nameof(dateOfBirth), $"{nameof(dateOfBirth)} is not in range between 01-Jan-1950 and current date");
+                throw new ArgumentException($"{nameof(recordParameters.LastName)} length is not between 2 and 60");
             }
 
-            if ((gender != 'M') && (gender != 'F'))
+            if ((recordParameters.DateOfBirth < new DateTime(1950, 1, 1)) || (recordParameters.DateOfBirth > DateTime.Now))
             {
-                throw new ArgumentException($"{nameof(gender)} is not equals to F or M");
+                throw new ArgumentOutOfRangeException(nameof(recordParameters.DateOfBirth), $"{nameof(recordParameters.DateOfBirth)} is not in range between 01-Jan-1950 and current date");
             }
 
-            if (experience < 0)
+            if ((recordParameters.Gender != 'M') && (recordParameters.Gender != 'F'))
             {
-                throw new ArgumentException($"{nameof(experience)} is less than zero");
+                throw new ArgumentException($"{nameof(recordParameters.Gender)} is not equals to F or M");
             }
 
-            if (salary < 0)
+            if (recordParameters.Experience < 0)
             {
-                throw new ArgumentException($"{nameof(salary)} is less than zero");
+                throw new ArgumentException($"{nameof(recordParameters.Experience)} is less than zero");
+            }
+
+            if (recordParameters.Salary < 0)
+            {
+                throw new ArgumentException($"{nameof(recordParameters.Salary)} is less than zero");
             }
         }
     }

@@ -57,16 +57,11 @@
             allows you create, edit and search them.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetService.CreateRecord(System.String,System.String,System.DateTime,System.Char,System.Int16,System.Decimal)">
+        <member name="M:FileCabinetApp.FileCabinetService.CreateRecord(FileCabinetApp.RecordParameters)">
             <summary>
             This method creates a new record.
             </summary>
-            <param name="firstName">The first name of the person.</param>
-            <param name="lastName">The last name of the person.</param>
-            <param name="dateOfBirth">The date of birth of the person.</param>
-            <param name="gender">The gender of the person.</param>
-            <param name="experience">The person's experience in work.</param>
-            <param name="salary">The person's salary.</param>
+            <param name="recordParameters">The parameter object for FileCabinetRecord.</param>
             <returns>Id of the created record.</returns>
         </member>
         <member name="M:FileCabinetApp.FileCabinetService.GetRecords">
@@ -81,17 +76,12 @@
             </summary>
             <returns>Array of stored records.</returns>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetService.EditRecord(System.Int32,System.String,System.String,System.DateTime,System.Char,System.Int16,System.Decimal)">
+        <member name="M:FileCabinetApp.FileCabinetService.EditRecord(System.Int32,FileCabinetApp.RecordParameters)">
             <summary>
             This method creates a new record.
             </summary>
             <param name="id">The edited record's id.</param>
-            <param name="firstName">The edited first name of the person.</param>
-            <param name="lastName">The edited last name of the person.</param>
-            <param name="dateOfBirth">The edited date of birth of the person.</param>
-            <param name="gender">The edited gender of the person.</param>
-            <param name="experience">The edited person's experience in work.</param>
-            <param name="salary">The edited person's salary.</param>
+            <param name="recordParameters">The parameter object for FileCabinetRecord.</param>
         </member>
         <member name="M:FileCabinetApp.FileCabinetService.FindByFirstName(System.String)">
             <summary>
@@ -124,6 +114,58 @@
             This method runs an instance of FileCabinetService and processes console commands.
             </summary>
             <param name="args">Console command parameters.</param>
+        </member>
+        <member name="T:FileCabinetApp.RecordParameters">
+            <summary>
+            This class represents a parameter object for FileCabinetRecord.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.RecordParameters.#ctor(System.String,System.String,System.DateTime,System.Char,System.Int16,System.Decimal)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.RecordParameters"/> class.
+            </summary>
+            <param name="firstName">The first name of the person.</param>
+            <param name="lastName">The last name of the person.</param>
+            <param name="dateOfBirth">The date of birth of the person.</param>
+            <param name="gender">The gender of the person.</param>
+            <param name="experience">The person's experience in work.</param>
+            <param name="salary">The person's salary.</param>
+        </member>
+        <member name="P:FileCabinetApp.RecordParameters.FirstName">
+            <summary>
+            Gets the first name of person.
+            </summary>
+            <value>The first name of person.</value>
+        </member>
+        <member name="P:FileCabinetApp.RecordParameters.LastName">
+            <summary>
+            Gets the last name of person.
+            </summary>
+            <value>The last name of person.</value>
+        </member>
+        <member name="P:FileCabinetApp.RecordParameters.DateOfBirth">
+            <summary>
+            Gets the person's date of birth.
+            </summary>
+            <value>The person's date of birth.</value>
+        </member>
+        <member name="P:FileCabinetApp.RecordParameters.Gender">
+            <summary>
+            Gets the gender of the person.
+            </summary>
+            <value>The gender of the person. 'M' - male, 'F' - female.</value>
+        </member>
+        <member name="P:FileCabinetApp.RecordParameters.Experience">
+            <summary>
+            Gets the experience of person.
+            </summary>
+            <value>The person's experience in work.</value>
+        </member>
+        <member name="P:FileCabinetApp.RecordParameters.Salary">
+            <summary>
+            Gets the salary of the person.
+            </summary>
+            <value>The salary of the person.</value>
         </member>
     </members>
 </doc>

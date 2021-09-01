@@ -125,6 +125,7 @@ namespace FileCabinetApp
         private static void Create(string parameters)
         {
             bool isValidInput;
+            RecordParameters recordParameters;
 
             do
             {
@@ -132,8 +133,8 @@ namespace FileCabinetApp
 
                 try
                 {
-                    ReadAndParseParams(out string firstName, out string lastName, out DateTime dateOfBirth, out char gender, out short experience, out decimal salary);
-                    fileCabinetService.CreateRecord(firstName, lastName, dateOfBirth, gender, experience, salary);
+                    recordParameters = ReadAndParseParams();
+                    fileCabinetService.CreateRecord(recordParameters);
                     Console.WriteLine($"Record #{fileCabinetService.GetStat()} is created.");
                 }
                 catch (Exception ex) when (
@@ -153,22 +154,23 @@ namespace FileCabinetApp
         private static void List(string parameters)
         {
             string record;
-            FileCabinetRecord[] arrayOfRecords = fileCabinetService.GetRecords();
+            FileCabinetRecord[] records = fileCabinetService.GetRecords();
             for (int i = 0; i < fileCabinetService.GetStat(); i++)
             {
-                record = $"#{i + 1}, " +
-                    $"{arrayOfRecords[i].FirstName}, " +
-                    $"{arrayOfRecords[i].LastName}, " +
-                    $"{arrayOfRecords[i].DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture)}, " +
-                    $"{arrayOfRecords[i].Gender}, " +
-                    $"{arrayOfRecords[i].Experience}, " +
-                    $"{arrayOfRecords[i].Salary}$";
+                record = $"#{records[i].Id}, " +
+                    $"{records[i].FirstName}, " +
+                    $"{records[i].LastName}, " +
+                    $"{records[i].DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture)}, " +
+                    $"{records[i].Gender}, " +
+                    $"{records[i].Experience}, " +
+                    $"{records[i].Salary}$";
                 Console.WriteLine(record);
             }
         }
 
         private static void Edit(string parameters)
         {
+            RecordParameters recordParameters;
             bool isValidInput = int.TryParse(parameters, out int id);
 
             if (!isValidInput)
@@ -189,8 +191,8 @@ namespace FileCabinetApp
 
                 try
                 {
-                    ReadAndParseParams(out string firstName, out string lastName, out DateTime dateOfBirth, out char gender, out short experience, out decimal salary);
-                    fileCabinetService.EditRecord(id, firstName, lastName, dateOfBirth, gender, experience, salary);
+                    recordParameters = ReadAndParseParams();
+                    fileCabinetService.EditRecord(id, recordParameters);
                     Console.WriteLine($"Record #{id} is updated.");
                 }
                 catch (Exception ex) when (
@@ -248,7 +250,7 @@ namespace FileCabinetApp
 
             for (int i = 0; i < records.Length; i++)
             {
-                record = $"#{i + 1}, " +
+                record = $"#{records[i].Id}, " +
                 $"{records[i].FirstName}, " +
                 $"{records[i].LastName}, " +
                 $"{records[i].DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture)}, " +
@@ -259,20 +261,23 @@ namespace FileCabinetApp
             }
         }
 
-        private static void ReadAndParseParams(out string firstName, out string lastName, out DateTime dateOfBirth, out char gender, out short experience, out decimal salary)
+        private static RecordParameters ReadAndParseParams()
         {
             Console.Write("First name: ");
-            firstName = Console.ReadLine();
+            string firstName = Console.ReadLine();
             Console.Write("Last name: ");
-            lastName = Console.ReadLine();
+            string lastName = Console.ReadLine();
             Console.Write("Date of birth: ");
-            dateOfBirth = DateTime.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
+            DateTime dateOfBirth = DateTime.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
             Console.Write("Gender: ");
-            gender = char.Parse(Console.ReadLine());
+            char gender = char.Parse(Console.ReadLine());
             Console.Write("Experience: ");
-            experience = short.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
+            short experience = short.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
             Console.Write("Salary: ");
-            salary = decimal.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
+            decimal salary = decimal.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
+
+            RecordParameters recordParameters = new RecordParameters(firstName, lastName, dateOfBirth, gender, experience, salary);
+            return recordParameters;
         }
     }
 }
