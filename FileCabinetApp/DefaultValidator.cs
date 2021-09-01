@@ -4,21 +4,9 @@ using System.Text;
 
 namespace FileCabinetApp
 {
-    /// <summary>
-    /// This class implements default parameters validation.
-    /// </summary>
-    public class FileCabinetDefaultService : FileCabinetService
+    public class DefaultValidator : IRecordValidator
     {
-        protected override IRecordValidator CreateValidator()
-        {
-            return new DefaultValidator();
-        }
-
-        /// <summary>
-        /// This method implements default parameters validation.
-        /// </summary>
-        /// <param name="recordParameters">The parameter object for FileCabinetRecord.</param>
-        protected override void ValidateRecordParams(RecordParameters recordParameters)
+        public void ValidateParameters(RecordParameters recordParameters)
         {
             if (recordParameters is null)
             {

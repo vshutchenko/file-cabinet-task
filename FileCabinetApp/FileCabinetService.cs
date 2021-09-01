@@ -90,7 +90,7 @@ namespace FileCabinetApp
         /// <returns>Id of the created record.</returns>
         internal int CreateRecord(RecordParameters recordParameters)
         {
-            this.ValidateRecordParams(recordParameters);
+            this.CreateValidator().ValidateParameters(recordParameters);
 
             var record = new FileCabinetRecord
             {
@@ -124,7 +124,7 @@ namespace FileCabinetApp
                 throw new ArgumentException($"There is no record with {nameof(id)}={id}");
             }
 
-            this.ValidateRecordParams(recordParameters);
+            this.CreateValidator().ValidateParameters(recordParameters);
 
             for (int i = 0; i < this.list.Count; i++)
             {
@@ -153,6 +153,8 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="recordParameters">The parameter object for FileCabinetRecord.</param>
         protected abstract void ValidateRecordParams(RecordParameters recordParameters);
+
+        protected abstract IRecordValidator CreateValidator();
 
         private static void AddInDictionary(Dictionary<string, List<FileCabinetRecord>> dictionary, string key, List<FileCabinetRecord> records)
         {

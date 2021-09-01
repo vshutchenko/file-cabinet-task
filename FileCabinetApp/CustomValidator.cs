@@ -5,21 +5,9 @@ using System.Text;
 
 namespace FileCabinetApp
 {
-    /// <summary>
-    /// This class implements custom parameters validation.
-    /// </summary>
-    public class FileCabinetCustomService : FileCabinetService
+    public class CustomValidator : IRecordValidator
     {
-        protected override IRecordValidator CreateValidator()
-        {
-            return new CustomValidator();
-        }
-
-        /// <summary>
-        /// This method implements custom parameters validation.
-        /// </summary>
-        /// <param name="recordParameters">The parameter object for FileCabinetRecord.</param>
-        protected override void ValidateRecordParams(RecordParameters recordParameters)
+        public void ValidateParameters(RecordParameters recordParameters)
         {
             if (recordParameters is null)
             {
