@@ -4,28 +4,6 @@
         <name>FileCabinetApp</name>
     </assembly>
     <members>
-        <member name="T:FileCabinetApp.FileCabinetCustomService">
-            <summary>
-            This class implements custom parameters validation.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetCustomService.ValidateRecordParams(FileCabinetApp.RecordParameters)">
-            <summary>
-            This method implements custom parameters validation.
-            </summary>
-            <param name="recordParameters">The parameter object for FileCabinetRecord.</param>
-        </member>
-        <member name="T:FileCabinetApp.FileCabinetDefaultService">
-            <summary>
-            This class implements default parameters validation.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetDefaultService.ValidateRecordParams(FileCabinetApp.RecordParameters)">
-            <summary>
-            This method implements default parameters validation.
-            </summary>
-            <param name="recordParameters">The parameter object for FileCabinetRecord.</param>
-        </member>
         <member name="T:FileCabinetApp.FileCabinetRecord">
             <summary>
             This class represents a record.
@@ -124,12 +102,6 @@
             This method creates a new record.
             </summary>
             <param name="id">The edited record's id.</param>
-            <param name="recordParameters">The parameter object for FileCabinetRecord.</param>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.ValidateRecordParams(FileCabinetApp.RecordParameters)">
-            <summary>
-            The overrides of this method should implements parameters validation.
-            </summary>
             <param name="recordParameters">The parameter object for FileCabinetRecord.</param>
         </member>
         <member name="T:FileCabinetApp.Program">

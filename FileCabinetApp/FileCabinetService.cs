@@ -9,7 +9,7 @@ namespace FileCabinetApp
     /// This class represents a file-cabinet. It stores records and
     /// allows you create, edit and search them.
     /// </summary>
-    public abstract class FileCabinetService
+    public class FileCabinetService
     {
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
@@ -153,12 +153,6 @@ namespace FileCabinetApp
                 }
             }
         }
-
-        /// <summary>
-        /// The overrides of this method should implements parameters validation.
-        /// </summary>
-        /// <param name="recordParameters">The parameter object for FileCabinetRecord.</param>
-        protected abstract void ValidateRecordParams(RecordParameters recordParameters);
 
         private static void AddInDictionary(Dictionary<string, List<FileCabinetRecord>> dictionary, string key, List<FileCabinetRecord> records)
         {
