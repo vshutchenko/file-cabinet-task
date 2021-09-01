@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Text;
 
@@ -26,9 +27,9 @@ namespace FileCabinetApp
         /// This method returns number of stored records.
         /// </summary>
         /// <returns>Number of stored records.</returns>
-        public FileCabinetRecord[] GetRecords()
+        public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
-            return this.list.ToArray();
+            return new ReadOnlyCollection<FileCabinetRecord>(this.list);
         }
 
         /// <summary>
@@ -45,7 +46,7 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="firstName">The person's first name.</param>
         /// <returns>The array of records with matched first name.</returns>
-        public FileCabinetRecord[] FindByFirstName(string firstName)
+        public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
         {
             if (firstName is null)
             {
@@ -53,9 +54,16 @@ namespace FileCabinetApp
             }
 
             List<FileCabinetRecord> records;
-            this.firstNameDictionary.TryGetValue(firstName.ToUpperInvariant(), out records);
+            bool isValueExists = this.firstNameDictionary.TryGetValue(firstName.ToUpperInvariant(), out records);
 
-            return records is null ? Array.Empty<FileCabinetRecord>() : records.ToArray();
+            if (isValueExists)
+            {
+                return new ReadOnlyCollection<FileCabinetRecord>(records);
+            }
+            else
+            {
+                return new ReadOnlyCollection<FileCabinetRecord>(new List<FileCabinetRecord>());
+            }
         }
 
         /// <summary>
@@ -63,7 +71,7 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="lastName">The person's last name.</param>
         /// <returns>The array of records with matched last name.</returns>
-        public FileCabinetRecord[] FindByLastName(string lastName)
+        public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
         {
             if (lastName is null)
             {
@@ -71,9 +79,16 @@ namespace FileCabinetApp
             }
 
             List<FileCabinetRecord> records;
-            this.lastNameDictionary.TryGetValue(lastName.ToUpperInvariant(), out records);
+            bool isValueExists = this.lastNameDictionary.TryGetValue(lastName.ToUpperInvariant(), out records);
 
-            return records is null ? Array.Empty<FileCabinetRecord>() : records.ToArray();
+            if (isValueExists)
+            {
+                return new ReadOnlyCollection<FileCabinetRecord>(records);
+            }
+            else
+            {
+                return new ReadOnlyCollection<FileCabinetRecord>(new List<FileCabinetRecord>());
+            }
         }
 
         /// <summary>
@@ -81,12 +96,19 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="dateOfBirth">The person's date of birth.</param>
         /// <returns>The array of records with matched date of birth.</returns>
-        public FileCabinetRecord[] FindByDateOfBirth(DateTime dateOfBirth)
+        public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
         {
             List<FileCabinetRecord> records;
-            this.dateOfBirthDictionary.TryGetValue(dateOfBirth.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture), out records);
+            bool isValueExists = this.dateOfBirthDictionary.TryGetValue(dateOfBirth.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture), out records);
 
-            return records is null ? Array.Empty<FileCabinetRecord>() : records.ToArray();
+            if (isValueExists)
+            {
+                return new ReadOnlyCollection<FileCabinetRecord>(records);
+            }
+            else
+            {
+                return new ReadOnlyCollection<FileCabinetRecord>(new List<FileCabinetRecord>());
+            }
         }
 
         /// <summary>

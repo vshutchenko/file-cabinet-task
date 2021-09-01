@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 
 namespace FileCabinetApp
@@ -174,7 +176,8 @@ namespace FileCabinetApp
         private static void List(string parameters)
         {
             string record;
-            FileCabinetRecord[] records = fileCabinetService.GetRecords();
+            ReadOnlyCollection<FileCabinetRecord> records = fileCabinetService.GetRecords();
+
             for (int i = 0; i < fileCabinetService.GetStat(); i++)
             {
                 record = $"#{records[i].Id}, " +
@@ -249,7 +252,7 @@ namespace FileCabinetApp
 
             textToSearch = textToSearch[1..^1];
 
-            FileCabinetRecord[] records = Array.Empty<FileCabinetRecord>();
+            ReadOnlyCollection<FileCabinetRecord> records = new ReadOnlyCollection<FileCabinetRecord>(new List<FileCabinetRecord>());
             string record;
 
             if (string.Equals(propertyName, nameof(FileCabinetRecord.FirstName), StringComparison.InvariantCultureIgnoreCase))
@@ -268,7 +271,7 @@ namespace FileCabinetApp
                 }
             }
 
-            for (int i = 0; i < records.Length; i++)
+            for (int i = 0; i < records.Count; i++)
             {
                 record = $"#{records[i].Id}, " +
                 $"{records[i].FirstName}, " +
