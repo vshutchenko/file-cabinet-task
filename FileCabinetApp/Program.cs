@@ -13,7 +13,7 @@ namespace FileCabinetApp
         private const int CommandHelpIndex = 0;
         private const int DescriptionHelpIndex = 1;
         private const int ExplanationHelpIndex = 2;
-        private static FileCabinetService fileCabinetService = new FileCabinetCustomService();
+        private static FileCabinetService fileCabinetService = new FileCabinetDefaultService();
 
         private static bool isRunning = true;
 
@@ -45,7 +45,28 @@ namespace FileCabinetApp
         /// <param name="args">Console command parameters.</param>
         public static void Main(string[] args)
         {
+            string validationRulesHint = "Using default validation rules.";
+
+            if ((args != null) && (args.Length > 0))
+            {
+                if (args[0].ToUpperInvariant() == "-V")
+                {
+                    if (args[1].ToUpperInvariant() == "CUSTOM")
+                    {
+                        fileCabinetService = new FileCabinetCustomService();
+                        validationRulesHint = "Using custom validation rules.";
+                    }
+                }
+                else if ((args[0].Split('=', 2)[0].ToUpperInvariant() == "--VALIDATION-RULES") &&
+                    (args[0].Split('=', 2)[1].ToUpperInvariant() == "CUSTOM"))
+                {
+                    fileCabinetService = new FileCabinetCustomService();
+                    validationRulesHint = "Using custom validation rules.";
+                }
+            }
+
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
+            Console.WriteLine(validationRulesHint);
             Console.WriteLine(Program.HintMessage);
             Console.WriteLine();
             do
