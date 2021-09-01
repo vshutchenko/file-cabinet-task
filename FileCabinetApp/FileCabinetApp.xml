@@ -4,6 +4,28 @@
         <name>FileCabinetApp</name>
     </assembly>
     <members>
+        <member name="T:FileCabinetApp.CustomValidator">
+            <summary>
+            This class implements custom parameters validation.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CustomValidator.ValidateParameters(FileCabinetApp.RecordParameters)">
+            <summary>
+            This method implements custom parameters validation.
+            </summary>
+            <param name="recordParameters">The parameter object for FileCabinetRecord.</param>
+        </member>
+        <member name="T:FileCabinetApp.DefaultValidator">
+            <summary>
+            This class implements default parameters validation.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.DefaultValidator.ValidateParameters(FileCabinetApp.RecordParameters)">
+            <summary>
+            This method implements default parameters validation.
+            </summary>
+            <param name="recordParameters">The parameter object for FileCabinetRecord.</param>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetRecord">
             <summary>
             This class represents a record.
@@ -57,6 +79,12 @@
             allows you create, edit and search them.
             </summary>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetService.#ctor(FileCabinetApp.IRecordValidator)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetService"/> class.
+            </summary>
+            <param name="validator">The validator which will be used for parameters validation.</param>
+        </member>
         <member name="M:FileCabinetApp.FileCabinetService.GetRecords">
             <summary>
             This method returns number of stored records.
@@ -102,6 +130,69 @@
             This method creates a new record.
             </summary>
             <param name="id">The edited record's id.</param>
+            <param name="recordParameters">The parameter object for FileCabinetRecord.</param>
+        </member>
+        <member name="T:FileCabinetApp.IFileCabinetService">
+            <summary>
+            This interface provides methods to work with records.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.GetRecords">
+            <summary>
+            This method returns number of stored records.
+            </summary>
+            <returns>Number of stored records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.GetStat">
+            <summary>
+            This method returns array of stored records.
+            </summary>
+            <returns>Array of stored records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.FindByFirstName(System.String)">
+            <summary>
+            This method performs searching records by first name.
+            </summary>
+            <param name="firstName">The person's first name.</param>
+            <returns>The array of records with matched first name.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.FindByLastName(System.String)">
+            <summary>
+            This method performs searching records by last name.
+            </summary>
+            <param name="lastName">The person's last name.</param>
+            <returns>The array of records with matched last name.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.FindByDateOfBirth(System.DateTime)">
+            <summary>
+            This method performs searching in records by date of birth.
+            </summary>
+            <param name="dateOfBirth">The person's date of birth.</param>
+            <returns>The array of records with matched date of birth.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.CreateRecord(FileCabinetApp.RecordParameters)">
+            <summary>
+            This method creates a new record.
+            </summary>
+            <param name="recordParameters">The parameter object for FileCabinetRecord.</param>
+            <returns>Id of the created record.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.EditRecord(System.Int32,FileCabinetApp.RecordParameters)">
+            <summary>
+            This method creates a new record.
+            </summary>
+            <param name="id">The edited record's id.</param>
+            <param name="recordParameters">The parameter object for FileCabinetRecord.</param>
+        </member>
+        <member name="T:FileCabinetApp.IRecordValidator">
+            <summary>
+            This interface provides a method for parameters validation.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.IRecordValidator.ValidateParameters(FileCabinetApp.RecordParameters)">
+            <summary>
+            This method implements parameters validation.
+            </summary>
             <param name="recordParameters">The parameter object for FileCabinetRecord.</param>
         </member>
         <member name="T:FileCabinetApp.Program">

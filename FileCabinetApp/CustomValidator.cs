@@ -5,8 +5,15 @@ using System.Text;
 
 namespace FileCabinetApp
 {
+    /// <summary>
+    /// This class implements custom parameters validation.
+    /// </summary>
     public class CustomValidator : IRecordValidator
     {
+        /// <summary>
+        /// This method implements custom parameters validation.
+        /// </summary>
+        /// <param name="recordParameters">The parameter object for FileCabinetRecord.</param>
         public void ValidateParameters(RecordParameters recordParameters)
         {
             if (recordParameters is null)
