@@ -15,6 +15,12 @@ namespace FileCabinetApp
         private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private readonly Dictionary<string, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
+        private IRecordValidator validator;
+
+        public FileCabinetService(IRecordValidator validator)
+        {
+            this.validator = validator;
+        }
 
         /// <summary>
         /// This method returns number of stored records.
@@ -90,7 +96,7 @@ namespace FileCabinetApp
         /// <returns>Id of the created record.</returns>
         internal int CreateRecord(RecordParameters recordParameters)
         {
-            this.CreateValidator().ValidateParameters(recordParameters);
+            this.validator.ValidateParameters(recordParameters);
 
             var record = new FileCabinetRecord
             {
@@ -119,12 +125,12 @@ namespace FileCabinetApp
         /// <param name="recordParameters">The parameter object for FileCabinetRecord.</param>
         internal void EditRecord(int id, RecordParameters recordParameters)
         {
+            this.validator.ValidateParameters(recordParameters);
+
             if ((id < 0) || (id > this.list.Count))
             {
                 throw new ArgumentException($"There is no record with {nameof(id)}={id}");
             }
-
-            this.CreateValidator().ValidateParameters(recordParameters);
 
             for (int i = 0; i < this.list.Count; i++)
             {
@@ -153,8 +159,6 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="recordParameters">The parameter object for FileCabinetRecord.</param>
         protected abstract void ValidateRecordParams(RecordParameters recordParameters);
-
-        protected abstract IRecordValidator CreateValidator();
 
         private static void AddInDictionary(Dictionary<string, List<FileCabinetRecord>> dictionary, string key, List<FileCabinetRecord> records)
         {

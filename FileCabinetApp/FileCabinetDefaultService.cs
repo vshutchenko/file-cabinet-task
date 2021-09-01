@@ -9,9 +9,9 @@ namespace FileCabinetApp
     /// </summary>
     public class FileCabinetDefaultService : FileCabinetService
     {
-        protected override IRecordValidator CreateValidator()
+        public FileCabinetDefaultService()
+            : base(new DefaultValidator())
         {
-            return new DefaultValidator();
         }
 
         /// <summary>
