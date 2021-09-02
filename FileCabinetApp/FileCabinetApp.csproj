@@ -24,4 +24,12 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <EditorConfigFiles Remove="C:\Users\Vlad\source\repos\file-cabinet-task\FileCabinetApp\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="C:\Users\Vlad\source\repos\file-cabinet-task\FileCabinetApp\.editorconfig" />
+  </ItemGroup>
+
 </Project>

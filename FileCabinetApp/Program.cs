@@ -16,6 +16,7 @@ namespace FileCabinetApp
         private const int DescriptionHelpIndex = 1;
         private const int ExplanationHelpIndex = 2;
         private static IFileCabinetService fileCabinetService = new FileCabinetService(new DefaultValidator());
+        private static bool isCustomRulesEnabled;
 
         private static bool isRunning = true;
 
@@ -47,24 +48,18 @@ namespace FileCabinetApp
         /// <param name="args">Console command parameters.</param>
         public static void Main(string[] args)
         {
-            string validationRulesHint = "Using default validation rules.";
+            ReadCommandLineParameters(args);
+            string validationRulesHint = isCustomRulesEnabled ? "Using custom validation rules." : "Using default validation rules.";
 
-            if ((args != null) && (args.Length > 0))
+            if (isCustomRulesEnabled)
             {
-                if (args[0].ToUpperInvariant() == "-V")
-                {
-                    if (args[1].ToUpperInvariant() == "CUSTOM")
-                    {
-                        fileCabinetService = new FileCabinetService(new CustomValidator());
-                        validationRulesHint = "Using custom validation rules.";
-                    }
-                }
-                else if ((args[0].Split('=', 2)[0].ToUpperInvariant() == "--VALIDATION-RULES") &&
-                    (args[0].Split('=', 2)[1].ToUpperInvariant() == "CUSTOM"))
-                {
-                    fileCabinetService = new FileCabinetService(new CustomValidator());
-                    validationRulesHint = "Using custom validation rules.";
-                }
+                validationRulesHint = "Using custom validation rules.";
+                fileCabinetService = new FileCabinetService(new CustomValidator());
+            }
+            else
+            {
+                validationRulesHint = "Using default validation rules.";
+                fileCabinetService = new FileCabinetService(new DefaultValidator());
             }
 
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
@@ -146,31 +141,35 @@ namespace FileCabinetApp
 
         private static void Create(string parameters)
         {
-            bool isValidInput;
             RecordParameters recordParameters;
 
-            do
-            {
-                isValidInput = true;
+            Console.Write("First name: ");
+            var firstName = ReadInput(StringConverter, FirstNameValidator);
+            Console.Write("Last name: ");
+            var lastName = ReadInput(StringConverter, LastNameValidator);
+            Console.Write("Date of birth: ");
+            var dateOfBirth = ReadInput(DateTimeConverter, DateOfBirthValidator);
+            Console.Write("Gender: ");
+            var gender = ReadInput(CharConverter, GenderValidator);
+            Console.Write("Experience: ");
+            var experience = ReadInput(ShortConverter, ExperienceValidator);
+            Console.Write("Salary: ");
+            var salary = ReadInput(DecimalConverter, SalaryValidator);
 
-                try
-                {
-                    recordParameters = ReadAndParseParams();
-                    fileCabinetService.CreateRecord(recordParameters);
-                    Console.WriteLine($"Record #{fileCabinetService.GetStat()} is created.");
-                }
-                catch (Exception ex) when (
+            recordParameters = new RecordParameters(firstName, lastName, dateOfBirth, gender, experience, salary);
+
+            try
+            {
+                fileCabinetService.CreateRecord(recordParameters);
+                Console.WriteLine($"Record #{fileCabinetService.GetStat()} is created.");
+            }
+            catch (Exception ex) when (
                     ex is ArgumentException
                     || ex is ArgumentNullException
-                    || ex is ArgumentOutOfRangeException
-                    || ex is FormatException
-                    || ex is OverflowException)
-                {
-                    Console.WriteLine("Invalid input.");
-                    isValidInput = false;
-                }
+                    || ex is ArgumentOutOfRangeException)
+            {
+                Console.WriteLine("Invalid input.");
             }
-            while (isValidInput != true);
         }
 
         private static void List(string parameters)
@@ -194,42 +193,52 @@ namespace FileCabinetApp
         private static void Edit(string parameters)
         {
             RecordParameters recordParameters;
-            bool isValidInput = int.TryParse(parameters, out int id);
-
-            if (!isValidInput)
+            Tuple<bool, string, int> parametersConversionResult = IntConverter(parameters);
+            Tuple<bool, string> recordIdValidationResult;
+            int id;
+            if (!parametersConversionResult.Item1)
             {
-                Console.WriteLine("The entered parameter is not a number.");
+                Console.WriteLine(parametersConversionResult.Item2);
                 return;
             }
-
-            if ((id < 1) || (id > fileCabinetService.GetStat()))
+            else
             {
-                Console.WriteLine($"#{id} record is not found.");
-                return;
-            }
-
-            do
-            {
-                isValidInput = true;
-
-                try
+                id = parametersConversionResult.Item3;
+                recordIdValidationResult = IdValidator(id);
+                if (!recordIdValidationResult.Item1)
                 {
-                    recordParameters = ReadAndParseParams();
-                    fileCabinetService.EditRecord(id, recordParameters);
-                    Console.WriteLine($"Record #{id} is updated.");
+                    Console.WriteLine(recordIdValidationResult.Item2);
+                    return;
                 }
-                catch (Exception ex) when (
+            }
+
+            Console.Write("First name: ");
+            var firstName = ReadInput(StringConverter, FirstNameValidator);
+            Console.Write("Last name: ");
+            var lastName = ReadInput(StringConverter, LastNameValidator);
+            Console.Write("Date of birth: ");
+            var dateOfBirth = ReadInput(DateTimeConverter, DateOfBirthValidator);
+            Console.Write("Gender: ");
+            var gender = ReadInput(CharConverter, GenderValidator);
+            Console.Write("Experience: ");
+            var experience = ReadInput(ShortConverter, ExperienceValidator);
+            Console.Write("Salary: ");
+            var salary = ReadInput(DecimalConverter, SalaryValidator);
+
+            recordParameters = new RecordParameters(firstName, lastName, dateOfBirth, gender, experience, salary);
+
+            try
+            {
+                fileCabinetService.EditRecord(id, recordParameters);
+                Console.WriteLine($"Record #{id} is updated.");
+            }
+            catch (Exception ex) when (
                     ex is ArgumentException
                     || ex is ArgumentNullException
-                    || ex is ArgumentOutOfRangeException
-                    || ex is FormatException
-                    || ex is OverflowException)
-                {
-                    Console.WriteLine("Invalid input.");
-                    isValidInput = false;
-                }
+                    || ex is ArgumentOutOfRangeException)
+            {
+                Console.WriteLine("Invalid input.");
             }
-            while (isValidInput != true);
         }
 
         private static void Find(string parameters)
@@ -284,23 +293,339 @@ namespace FileCabinetApp
             }
         }
 
-        private static RecordParameters ReadAndParseParams()
+        private static T ReadInput<T>(Func<string, Tuple<bool, string, T>> converter, Func<T, Tuple<bool, string>> validator)
         {
-            Console.Write("First name: ");
-            string firstName = Console.ReadLine();
-            Console.Write("Last name: ");
-            string lastName = Console.ReadLine();
-            Console.Write("Date of birth: ");
-            DateTime dateOfBirth = DateTime.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
-            Console.Write("Gender: ");
-            char gender = char.Parse(Console.ReadLine());
-            Console.Write("Experience: ");
-            short experience = short.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
-            Console.Write("Salary: ");
-            decimal salary = decimal.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
+            do
+            {
+                T value;
 
-            RecordParameters recordParameters = new RecordParameters(firstName, lastName, dateOfBirth, gender, experience, salary);
-            return recordParameters;
+                var input = Console.ReadLine();
+                var conversionResult = converter(input);
+
+                if (!conversionResult.Item1)
+                {
+                    Console.WriteLine($"Conversion failed: {conversionResult.Item2}. Please, correct your input.");
+                    continue;
+                }
+
+                value = conversionResult.Item3;
+
+                var validationResult = validator(value);
+                if (!validationResult.Item1)
+                {
+                    Console.WriteLine($"Validation failed: {validationResult.Item2}. Please, correct your input.");
+                    continue;
+                }
+
+                return value;
+            }
+            while (true);
+        }
+
+        private static Tuple<bool, string, int> IntConverter(string stringToConvert)
+        {
+            Tuple<bool, string, int> conversionResult;
+            string conversionErrorMessage = string.Empty;
+
+            bool isConverted = int.TryParse(stringToConvert, out int convertedValue);
+
+            if (!isConverted)
+            {
+                conversionErrorMessage = "Input value is not a number.";
+            }
+
+            conversionResult = new Tuple<bool, string, int>(isConverted, conversionErrorMessage, convertedValue);
+
+            return conversionResult;
+        }
+
+        private static Tuple<bool, string, string> StringConverter(string stringToConvert)
+        {
+            bool isConverted = true;
+            string conversionErrorMessage = string.Empty;
+            if (string.IsNullOrWhiteSpace(stringToConvert) || string.IsNullOrEmpty(stringToConvert))
+            {
+                isConverted = false;
+                conversionErrorMessage = "Input string is null, empty or whitespace";
+            }
+
+            Tuple<bool, string, string> conversionResult = new Tuple<bool, string, string>(isConverted, conversionErrorMessage, stringToConvert);
+            return conversionResult;
+        }
+
+        private static Tuple<bool, string, DateTime> DateTimeConverter(string stringToConvert)
+        {
+            Tuple<bool, string, DateTime> conversionResult;
+            string conversionErrorMessage = string.Empty;
+
+            bool isConverted = DateTime.TryParse(stringToConvert, out DateTime date);
+
+            if (!isConverted)
+            {
+                conversionErrorMessage = "Incorrect date format";
+            }
+
+            conversionResult = new Tuple<bool, string, DateTime>(isConverted, conversionErrorMessage, date);
+
+            return conversionResult;
+        }
+
+        private static Tuple<bool, string, char> CharConverter(string stringToConvert)
+        {
+            Tuple<bool, string, char> conversionResult;
+            string conversionErrorMessage = string.Empty;
+
+            bool isConverted = char.TryParse(stringToConvert, out char convertedValue);
+
+            if (!isConverted)
+            {
+                conversionErrorMessage = "Input value is not a single character";
+            }
+
+            conversionResult = new Tuple<bool, string, char>(isConverted, conversionErrorMessage, convertedValue);
+
+            return conversionResult;
+        }
+
+        private static Tuple<bool, string, short> ShortConverter(string stringToConvert)
+        {
+            Tuple<bool, string, short> conversionResult;
+            string conversionErrorMessage = string.Empty;
+
+            bool isConverted = short.TryParse(stringToConvert, out short convertedValue);
+
+            if (!isConverted)
+            {
+                conversionErrorMessage = "Input value is not a number or a too big value";
+            }
+
+            conversionResult = new Tuple<bool, string, short>(isConverted, conversionErrorMessage, convertedValue);
+
+            return conversionResult;
+        }
+
+        private static Tuple<bool, string, decimal> DecimalConverter(string stringToConvert)
+        {
+            Tuple<bool, string, decimal> conversionResult;
+            string conversionErrorMessage = string.Empty;
+
+            bool isConverted = decimal.TryParse(stringToConvert, out decimal convertedValue);
+
+            if (!isConverted)
+            {
+                conversionErrorMessage = "Input value is not a number";
+            }
+
+            conversionResult = new Tuple<bool, string, decimal>(isConverted, conversionErrorMessage, convertedValue);
+
+            return conversionResult;
+        }
+
+        private static Tuple<bool, string> IdValidator(int id)
+        {
+            bool isValid = true;
+            string validationErrorMessage = string.Empty;
+            int minValue = 1;
+            int maxValue = fileCabinetService.GetStat();
+
+            if ((id < minValue) || (id > maxValue))
+            {
+                isValid = false;
+                validationErrorMessage = $"There is no record with id={id}.";
+            }
+
+            return new Tuple<bool, string>(isValid, validationErrorMessage);
+        }
+
+        private static Tuple<bool, string> ExperienceValidator(short experience)
+        {
+            bool isValid = true;
+            string validationErrorMessage = string.Empty;
+            int minValue = 0;
+            int maxValue = short.MaxValue;
+
+            if (isCustomRulesEnabled)
+            {
+                maxValue = 100;
+            }
+
+            if ((experience < minValue) || (experience > maxValue))
+            {
+                isValid = false;
+                validationErrorMessage = $"Experience must be in range between {minValue} and {maxValue}";
+            }
+
+            return new Tuple<bool, string>(isValid, validationErrorMessage);
+        }
+
+        private static Tuple<bool, string> SalaryValidator(decimal salary)
+        {
+            bool isValid = true;
+            string validationErrorMessage = string.Empty;
+            int minValue = 0;
+
+            if (salary < minValue)
+            {
+                isValid = false;
+                validationErrorMessage = $"Incorrect salary value: {salary} < {minValue}";
+            }
+
+            return new Tuple<bool, string>(isValid, validationErrorMessage);
+        }
+
+        private static Tuple<bool, string> GenderValidator(char gender)
+        {
+            bool isValid = true;
+            string validationErrorMessage = string.Empty;
+            char[] validValues;
+
+            if (isCustomRulesEnabled)
+            {
+                validValues = new char[] { 'F', 'M' };
+            }
+            else
+            {
+                validValues = new char[] { 'F', 'M', 'f', 'm' };
+            }
+
+            if (Array.IndexOf(validValues, gender) == -1)
+            {
+                isValid = false;
+                validationErrorMessage = $"Incorrect gender value";
+            }
+
+            return new Tuple<bool, string>(isValid, validationErrorMessage);
+        }
+
+        private static Tuple<bool, string> DateOfBirthValidator(DateTime dateOfBirth)
+        {
+            bool isValid = true;
+            string validationErrorMessage = string.Empty;
+            DateTime minDate;
+
+            if (isCustomRulesEnabled)
+            {
+                minDate = new DateTime(1950, 1, 1);
+            }
+            else
+            {
+                minDate = new DateTime(1900, 1, 1);
+            }
+
+            DateTime maxDate = DateTime.Now;
+
+            if ((dateOfBirth < minDate) || (dateOfBirth > maxDate))
+            {
+                isValid = false;
+                validationErrorMessage = $"Incorrect date. Specify the date between " +
+                    $"{minDate.ToString("dd-MMM-yyy", CultureInfo.InvariantCulture)} and " +
+                    $"{maxDate.ToString("dd-MMM-yyy", CultureInfo.InvariantCulture)}";
+            }
+
+            return new Tuple<bool, string>(isValid, validationErrorMessage);
+        }
+
+        private static Tuple<bool, string> FirstNameValidator(string firstName)
+        {
+            bool isValid = true;
+            string validationErrorMessage = string.Empty;
+            int maxStringLength = 60;
+            int minStringLegth = 2;
+
+            if ((firstName.Length < minStringLegth) || (firstName.Length > maxStringLength))
+            {
+                isValid = false;
+                validationErrorMessage = $"Incorrect first name length. Minimal length is {minStringLegth}. Maximum length is {maxStringLength}";
+            }
+
+            if (isCustomRulesEnabled)
+            {
+                for (int i = 1; i < firstName.Length; i++)
+                {
+                    if (char.IsUpper(firstName[i]))
+                    {
+                        isValid = false;
+                        validationErrorMessage = $"Only first letter of first name can be capital";
+                    }
+                }
+
+                if (!char.IsUpper(firstName[0]))
+                {
+                    isValid = false;
+                    validationErrorMessage = $"The first letter of first name must be capital";
+                }
+            }
+
+            return new Tuple<bool, string>(isValid, validationErrorMessage);
+        }
+
+        private static Tuple<bool, string> LastNameValidator(string lastName)
+        {
+            bool isValid = true;
+            string validationErrorMessage = string.Empty;
+            int maxStringLength = 60;
+            int minStringLegth = 2;
+
+            if ((lastName.Length < minStringLegth) || (lastName.Length > maxStringLength))
+            {
+                isValid = false;
+                validationErrorMessage = $"Incorrect last name length. Minimal length is {minStringLegth}. Maximum length is {maxStringLength}";
+            }
+
+            if (isCustomRulesEnabled)
+            {
+                for (int i = 1; i < lastName.Length; i++)
+                {
+                    if (char.IsUpper(lastName[i]))
+                    {
+                        isValid = false;
+                        validationErrorMessage = $"Only first letter of last name can be capital";
+                    }
+                }
+
+                if (!char.IsUpper(lastName[0]))
+                {
+                    isValid = false;
+                    validationErrorMessage = $"The first letter of last name must be capital";
+                }
+            }
+
+            return new Tuple<bool, string>(isValid, validationErrorMessage);
+        }
+
+        private static void ReadCommandLineParameters(string[] parameters)
+        {
+            if (parameters is null)
+            {
+                return;
+            }
+
+            for (int i = 0; i < parameters.Length; i += 2)
+            {
+                switch (parameters[i].ToUpperInvariant())
+                {
+                    case "-V":
+                        if (i + 1 < parameters.Length)
+                        {
+                            if (parameters[i + 1] == "CUSTOM")
+                            {
+                                isCustomRulesEnabled = true;
+                            }
+                            else if (parameters[i + 1] == "DEFAULT")
+                            {
+                                isCustomRulesEnabled = false;
+                            }
+                        }
+
+                        break;
+                    case "--VALIDATION-RULES=DEFAULT":
+                        isCustomRulesEnabled = false;
+                        break;
+                    case "--VALIDATION-RULES=CUSTOM":
+                        isCustomRulesEnabled = true;
+                        break;
+                }
+            }
         }
     }
 }
