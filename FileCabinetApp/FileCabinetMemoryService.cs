@@ -19,7 +19,7 @@ namespace FileCabinetApp
         private IRecordValidator validator;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FileCabinetService"/> class.
+        /// Initializes a new instance of the <see cref="FileCabinetMemoryService"/> class.
         /// </summary>
         /// <param name="validator">The validator which will be used for parameters validation.</param>
         public FileCabinetMemoryService(IRecordValidator validator)

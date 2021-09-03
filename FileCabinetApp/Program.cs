@@ -18,6 +18,7 @@ namespace FileCabinetApp
         private const int ExplanationHelpIndex = 2;
         private static IFileCabinetService fileCabinetService = new FileCabinetMemoryService(new DefaultValidator());
         private static bool isCustomRulesEnabled;
+        private static bool isFileSystemServiceEnabled;
 
         private static bool isRunning = true;
 
@@ -53,16 +54,26 @@ namespace FileCabinetApp
         {
             ReadCommandLineParameters(args);
             string validationRulesHint = isCustomRulesEnabled ? "Using custom validation rules." : "Using default validation rules.";
+            IRecordValidator validator;
 
             if (isCustomRulesEnabled)
             {
                 validationRulesHint = "Using custom validation rules.";
-                fileCabinetService = new FileCabinetMemoryService(new CustomValidator());
+                validator = new CustomValidator();
             }
             else
             {
                 validationRulesHint = "Using default validation rules.";
-                fileCabinetService = new FileCabinetMemoryService(new DefaultValidator());
+                validator = new DefaultValidator();
+            }
+
+            if (isFileSystemServiceEnabled)
+            {
+                fileCabinetService = new FileCabinetFilesystemService(new FileStream("cabinet-records.db", FileMode.OpenOrCreate));
+            }
+            else
+            {
+                fileCabinetService = new FileCabinetMemoryService(validator);
             }
 
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
@@ -678,11 +689,31 @@ namespace FileCabinetApp
                         }
 
                         break;
+                    case "-S":
+                        if (i + 1 < parameters.Length)
+                        {
+                            if (parameters[i + 1] == "FILE")
+                            {
+                                isFileSystemServiceEnabled = true;
+                            }
+                            else if (parameters[i + 1] == "MEMORY")
+                            {
+                                isCustomRulesEnabled = false;
+                            }
+                        }
+
+                        break;
                     case "--VALIDATION-RULES=DEFAULT":
                         isCustomRulesEnabled = false;
                         break;
                     case "--VALIDATION-RULES=CUSTOM":
                         isCustomRulesEnabled = true;
+                        break;
+                    case "--STORAGE=MEMORY":
+                        isFileSystemServiceEnabled = false;
+                        break;
+                    case "--STORAGE=FILE":
+                        isFileSystemServiceEnabled = true;
                         break;
                 }
             }
