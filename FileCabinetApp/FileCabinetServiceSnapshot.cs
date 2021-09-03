@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Xml;
 
 namespace FileCabinetApp
 {
@@ -22,7 +23,7 @@ namespace FileCabinetApp
         }
 
         /// <summary>
-        /// Writes array of records using a <see cref="StreamWriter"/> class.
+        /// Writes array of records in a CSV format using a <see cref="StreamWriter"/> class.
         /// </summary>
         /// <param name="writer">The instance of the <see cref="StreamWriter"/> class which will be used for writing data.</param>
         public void SaveToCsv(StreamWriter writer)
@@ -32,6 +33,22 @@ namespace FileCabinetApp
             {
                 csvWriter.Write(this.records[i]);
             }
+        }
+
+        /// <summary>
+        /// Writes array of records in a XML format using a <see cref="StreamWriter"/> class.
+        /// </summary>
+        /// <param name="writer">The instance of the <see cref="StreamWriter"/> class which will be used for writing data.</param>
+        public void SaveToXml(StreamWriter writer)
+        {
+            var xmlWriter = XmlWriter.Create(writer);
+            FileCabinetRecordXmlWriter fileCabinetRecordXmlWriter = new FileCabinetRecordXmlWriter(xmlWriter);
+            for (int i = 0; i < this.records.Length; i++)
+            {
+                fileCabinetRecordXmlWriter.Write(this.records[i]);
+            }
+
+            xmlWriter.Close();
         }
     }
 }

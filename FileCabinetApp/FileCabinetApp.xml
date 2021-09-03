@@ -90,6 +90,23 @@
             </summary>
             <param name="record">The instance of the <see cref="T:FileCabinetApp.FileCabinetRecord"/> class.</param>
         </member>
+        <member name="T:FileCabinetApp.FileCabinetRecordXmlWriter">
+            <summary>
+            This class writes records into XML format.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlWriter.#ctor(System.Xml.XmlWriter)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecordXmlWriter"/> class.
+            </summary>
+            <param name="writer">The instance of the <see cref="T:System.Xml.XmlWriter"/> which will be used for writing records.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlWriter.Write(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Writes one record using an instance of <see cref="T:System.Xml.XmlWriter"/> class.
+            </summary>
+            <param name="record">The instance of the <see cref="T:FileCabinetApp.FileCabinetRecord"/> class.</param>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetService">
             <summary>
             This class represents a file-cabinet. It stores records and
@@ -168,7 +185,13 @@
         </member>
         <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.SaveToCsv(System.IO.StreamWriter)">
             <summary>
-            Writes array of records using a <see cref="T:System.IO.StreamWriter"/> class.
+            Writes array of records in a CSV format using a <see cref="T:System.IO.StreamWriter"/> class.
+            </summary>
+            <param name="writer">The instance of the <see cref="T:System.IO.StreamWriter"/> class which will be used for writing data.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.SaveToXml(System.IO.StreamWriter)">
+            <summary>
+            Writes array of records in a XML format using a <see cref="T:System.IO.StreamWriter"/> class.
             </summary>
             <param name="writer">The instance of the <see cref="T:System.IO.StreamWriter"/> class which will be used for writing data.</param>
         </member>

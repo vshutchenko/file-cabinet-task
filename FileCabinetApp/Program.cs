@@ -219,6 +219,11 @@ namespace FileCabinetApp
                 serviceSnapshot.SaveToCsv(writer);
                 Console.WriteLine($"All records are exported to file {filePath}.");
             }
+            else if (fileFormat.Equals("XML", StringComparison.InvariantCultureIgnoreCase))
+            {
+                serviceSnapshot.SaveToXml(writer);
+                Console.WriteLine($"All records are exported to file {filePath}.");
+            }
             else
             {
                 Console.WriteLine("Unknown file format.");
