@@ -11,6 +11,12 @@ namespace FileCabinetApp
     public interface IFileCabinetService
     {
         /// <summary>
+        /// This method makes snaphot of object.
+        /// </summary>
+        /// <returns>The instnace of <see cref="FileCabinetServiceSnapshot"/> class.</returns>
+        public FileCabinetServiceSnapshot MakeSnapshot();
+
+        /// <summary>
         /// This method returns number of stored records.
         /// </summary>
         /// <returns>Number of stored records.</returns>

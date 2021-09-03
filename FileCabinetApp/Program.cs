@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.IO;
 
 namespace FileCabinetApp
 {
@@ -24,6 +25,7 @@ namespace FileCabinetApp
         {
             new Tuple<string, Action<string>>("help", PrintHelp),
             new Tuple<string, Action<string>>("edit", Edit),
+            new Tuple<string, Action<string>>("export", Export),
             new Tuple<string, Action<string>>("create", Create),
             new Tuple<string, Action<string>>("find", Find),
             new Tuple<string, Action<string>>("list", List),
@@ -35,6 +37,7 @@ namespace FileCabinetApp
         {
             new string[] { "help", "prints the help screen", "The 'help' command prints the help screen." },
             new string[] { "edit", "edits the record with specified id", "The 'edit' command edits the record with specified id." },
+            new string[] { "export", "exports stored records in the CSV file", "The 'export' command exports stored records in the CSV file." },
             new string[] { "create", "creates a new record", "The 'create' command creates a new record." },
             new string[] { "find", "finds records, recieves name of property and text to search", "The 'find' command finds records, recieves name of property and text to search." },
             new string[] { "list", "prints the list of records", "The 'list' command prints the list of records." },
@@ -170,6 +173,63 @@ namespace FileCabinetApp
             {
                 Console.WriteLine("Invalid input.");
             }
+        }
+
+        private static void Export(string parameters)
+        {
+            if (string.IsNullOrEmpty(parameters) || string.IsNullOrWhiteSpace(parameters) || parameters.Split(' ', 2).Length < 2)
+            {
+                Console.WriteLine("Invalid parameters.");
+                return;
+            }
+
+            string[] parametersArray = parameters.Split(' ', 2);
+            string fileFormat = parametersArray[0];
+            string filePath = parametersArray[1];
+
+            if (File.Exists(filePath))
+            {
+                Console.Write($"File is exist - rewrite {filePath}? [Y/n] ");
+                var key = Console.ReadKey();
+                Console.WriteLine();
+                if (key.Key != ConsoleKey.Y)
+                {
+                    return;
+                }
+            }
+            else
+            {
+                try
+                {
+                    File.Create(filePath).Close();
+                }
+                catch (Exception ex) when (
+                ex is DirectoryNotFoundException
+                || ex is ArgumentException)
+                {
+                    Console.WriteLine($"Export failed: can't open file {filePath}.");
+                    return;
+                }
+            }
+
+            StreamWriter writer = new StreamWriter(filePath);
+            FileCabinetServiceSnapshot serviceSnapshot = fileCabinetService.MakeSnapshot();
+            if (fileFormat.Equals("CSV", StringComparison.InvariantCultureIgnoreCase))
+            {
+                serviceSnapshot.SaveToCsv(writer);
+                Console.WriteLine($"All records are exported to file {filePath}.");
+            }
+            else if (fileFormat.Equals("XML", StringComparison.InvariantCultureIgnoreCase))
+            {
+                serviceSnapshot.SaveToXml(writer);
+                Console.WriteLine($"All records are exported to file {filePath}.");
+            }
+            else
+            {
+                Console.WriteLine("Unknown file format.");
+            }
+
+            writer.Close();
         }
 
         private static void List(string parameters)

@@ -73,6 +73,40 @@
             </summary>
             <value>The salary of the person.</value>
         </member>
+        <member name="T:FileCabinetApp.FileCabinetRecordCsvWriter">
+            <summary>
+            This class writes records into CSV format.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordCsvWriter.#ctor(System.IO.TextWriter)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecordCsvWriter"/> class.
+            </summary>
+            <param name="writer">The instance of the <see cref="T:System.IO.TextWriter"/> which will be used for writing records.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordCsvWriter.Write(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Writes one record using an instance of <see cref="T:System.IO.TextWriter"/> class.
+            </summary>
+            <param name="record">The instance of the <see cref="T:FileCabinetApp.FileCabinetRecord"/> class.</param>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetRecordXmlWriter">
+            <summary>
+            This class writes records into XML format.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlWriter.#ctor(System.Xml.XmlWriter)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecordXmlWriter"/> class.
+            </summary>
+            <param name="writer">The instance of the <see cref="T:System.Xml.XmlWriter"/> which will be used for writing records.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlWriter.Write(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Writes one record using an instance of <see cref="T:System.Xml.XmlWriter"/> class.
+            </summary>
+            <param name="record">The instance of the <see cref="T:FileCabinetApp.FileCabinetRecord"/> class.</param>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetService">
             <summary>
             This class represents a file-cabinet. It stores records and
@@ -84,6 +118,12 @@
             Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetService"/> class.
             </summary>
             <param name="validator">The validator which will be used for parameters validation.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.MakeSnapshot">
+            <summary>
+            This method makes snaphot of object.
+            </summary>
+            <returns>The instnace of <see cref="T:FileCabinetApp.FileCabinetServiceSnapshot"/> class.</returns>
         </member>
         <member name="M:FileCabinetApp.FileCabinetService.GetRecords">
             <summary>
@@ -132,10 +172,39 @@
             <param name="id">The edited record's id.</param>
             <param name="recordParameters">The parameter object for FileCabinetRecord.</param>
         </member>
+        <member name="T:FileCabinetApp.FileCabinetServiceSnapshot">
+            <summary>
+            This class represent a snapshot of the <see cref="T:FileCabinetApp.FileCabinetService"/> class.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.#ctor(FileCabinetApp.FileCabinetRecord[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetServiceSnapshot"/> class.
+            </summary>
+            <param name="records">The array of instances of the <see cref="T:FileCabinetApp.FileCabinetRecord"/> class.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.SaveToCsv(System.IO.StreamWriter)">
+            <summary>
+            Writes array of records in a CSV format using a <see cref="T:System.IO.StreamWriter"/> class.
+            </summary>
+            <param name="writer">The instance of the <see cref="T:System.IO.StreamWriter"/> class which will be used for writing data.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.SaveToXml(System.IO.StreamWriter)">
+            <summary>
+            Writes array of records in a XML format using a <see cref="T:System.IO.StreamWriter"/> class.
+            </summary>
+            <param name="writer">The instance of the <see cref="T:System.IO.StreamWriter"/> class which will be used for writing data.</param>
+        </member>
         <member name="T:FileCabinetApp.IFileCabinetService">
             <summary>
             This interface provides methods to work with records.
             </summary>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.MakeSnapshot">
+            <summary>
+            This method makes snaphot of object.
+            </summary>
+            <returns>The instnace of <see cref="T:FileCabinetApp.FileCabinetServiceSnapshot"/> class.</returns>
         </member>
         <member name="M:FileCabinetApp.IFileCabinetService.GetRecords">
             <summary>
