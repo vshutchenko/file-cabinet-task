@@ -16,7 +16,7 @@ namespace FileCabinetApp
         private const int CommandHelpIndex = 0;
         private const int DescriptionHelpIndex = 1;
         private const int ExplanationHelpIndex = 2;
-        private static IFileCabinetService fileCabinetService = new FileCabinetService(new DefaultValidator());
+        private static IFileCabinetService fileCabinetService = new FileCabinetMemoryService(new DefaultValidator());
         private static bool isCustomRulesEnabled;
 
         private static bool isRunning = true;
@@ -46,7 +46,7 @@ namespace FileCabinetApp
         };
 
         /// <summary>
-        /// This method runs an instance of FileCabinetService and processes console commands.
+        /// This method runs an instance of FileCabinetMemoryService and processes console commands.
         /// </summary>
         /// <param name="args">Console command parameters.</param>
         public static void Main(string[] args)
@@ -57,12 +57,12 @@ namespace FileCabinetApp
             if (isCustomRulesEnabled)
             {
                 validationRulesHint = "Using custom validation rules.";
-                fileCabinetService = new FileCabinetService(new CustomValidator());
+                fileCabinetService = new FileCabinetMemoryService(new CustomValidator());
             }
             else
             {
                 validationRulesHint = "Using default validation rules.";
-                fileCabinetService = new FileCabinetService(new DefaultValidator());
+                fileCabinetService = new FileCabinetMemoryService(new DefaultValidator());
             }
 
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
