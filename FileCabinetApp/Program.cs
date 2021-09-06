@@ -55,6 +55,7 @@ namespace FileCabinetApp
             ReadCommandLineParameters(args);
             string validationRulesHint = isCustomRulesEnabled ? "Using custom validation rules." : "Using default validation rules.";
             IRecordValidator validator;
+            FileStream fileStream = null;
 
             if (isCustomRulesEnabled)
             {
@@ -69,7 +70,8 @@ namespace FileCabinetApp
 
             if (isFileSystemServiceEnabled)
             {
-                fileCabinetService = new FileCabinetFilesystemService(new FileStream("cabinet-records.db", FileMode.OpenOrCreate));
+                fileStream = new FileStream("cabinet-records.db", FileMode.OpenOrCreate);
+                fileCabinetService = new FileCabinetFilesystemService(fileStream);
             }
             else
             {
@@ -106,6 +108,11 @@ namespace FileCabinetApp
                 }
             }
             while (isRunning);
+
+            if (fileStream != null)
+            {
+                fileStream.Close();
+            }
         }
 
         private static void PrintMissedCommandInfo(string command)
