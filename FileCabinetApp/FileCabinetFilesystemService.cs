@@ -19,7 +19,7 @@ namespace FileCabinetApp
 
         public int CreateRecord(RecordParameters recordParameters)
         {
-            int id = (int)(fileStream.Length == 0 ? 1 : fileStream.Length / recordSize);
+            int id = (int)(fileStream.Length == 0 ? 1 : (fileStream.Length / recordSize) + 1);
             fileStream.Seek(0, SeekOrigin.End);
             BinaryWriter writer = new BinaryWriter(fileStream);
 
@@ -95,7 +95,14 @@ namespace FileCabinetApp
 
         public int GetStat()
         {
-            throw new NotImplementedException();
+            long recordsCount = fileStream.Length / recordSize;
+
+            if (recordsCount > int.MaxValue)
+            {
+                throw new ArgumentOutOfRangeException($"Number of records is bigger than int.MaxValue.");
+            }
+
+            return (int)recordsCount;
         }
 
         public FileCabinetServiceSnapshot MakeSnapshot()
