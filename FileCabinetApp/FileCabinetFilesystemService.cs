@@ -81,7 +81,6 @@ namespace FileCabinetApp
                     fileStream.Seek(recordSize - sizeof(int), SeekOrigin.Current);
                 }
             }
-
         }
 
         public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
@@ -91,7 +90,36 @@ namespace FileCabinetApp
 
         public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
         {
-            throw new NotImplementedException();
+            int offset = 6;
+            List<FileCabinetRecord> records = new List<FileCabinetRecord>();
+            fileStream.Seek(offset, SeekOrigin.Begin);
+            BinaryReader reader = new BinaryReader(fileStream);
+
+            while (fileStream.Position < fileStream.Length)
+            {
+                string currentRecordFirstName = Encoding.Unicode.GetString(reader.ReadBytes(maxStringLength)).Trim('\0');
+                if (currentRecordFirstName.Equals(firstName, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    fileStream.Seek(-(offset + maxStringLength), SeekOrigin.Current);
+                    fileStream.Seek(2, SeekOrigin.Current);
+
+                    int id = reader.ReadInt32();
+                    firstName = Encoding.Unicode.GetString(reader.ReadBytes(maxStringLength)).Trim('\0');
+                    string lastName = Encoding.Unicode.GetString(reader.ReadBytes(maxStringLength)).Trim('\0');
+
+                    int year = reader.ReadInt32();
+                    int month = reader.ReadInt32();
+                    int day = reader.ReadInt32();
+                    char gender = Encoding.Unicode.GetChars(reader.ReadBytes(2))[0];
+                    short experience = reader.ReadInt16();
+                    decimal salary = reader.ReadDecimal();
+
+                    FileCabinetRecord record = new FileCabinetRecord() { Id = id, FirstName = firstName, LastName = lastName, DateOfBirth = new DateTime(year, month, day), Gender = gender, Experience = experience, Salary = salary };
+                    records.Add(record);
+                }
+            }
+
+            return new ReadOnlyCollection<FileCabinetRecord>(records);
         }
 
         public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
