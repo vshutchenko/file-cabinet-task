@@ -31,7 +31,7 @@ namespace FileCabinetApp
 
             Array.Copy(recordParameters.FirstName.ToCharArray(), firstNameChars, recordParameters.FirstName.Length);
             Array.Copy(recordParameters.LastName.ToCharArray(), lastNameChars, recordParameters.LastName.Length);
-            
+
             writer.Write(Encoding.Unicode.GetBytes(firstNameChars), 0, maxStringLength);
             writer.Write(Encoding.Unicode.GetBytes(lastNameChars), 0, maxStringLength);
 
@@ -42,12 +42,46 @@ namespace FileCabinetApp
             writer.Write(recordParameters.Experience);
             writer.Write(recordParameters.Salary);
 
+            writer.Close();
+
             return id;
         }
 
         public void EditRecord(int id, RecordParameters recordParameters)
         {
-            throw new NotImplementedException();
+            fileStream.Seek(2, SeekOrigin.Begin);
+            BinaryReader reader = new BinaryReader(fileStream);
+            BinaryWriter writer = new BinaryWriter(fileStream);
+
+            while (fileStream.Position < fileStream.Length)
+            {
+                int currentRecordId = reader.ReadInt32();
+                if (currentRecordId == id)
+                {
+                    char[] firstNameChars = new char[maxStringLength];
+                    char[] lastNameChars = new char[maxStringLength];
+
+                    Array.Copy(recordParameters.FirstName.ToCharArray(), firstNameChars, recordParameters.FirstName.Length);
+                    Array.Copy(recordParameters.LastName.ToCharArray(), lastNameChars, recordParameters.LastName.Length);
+
+                    writer.Write(Encoding.Unicode.GetBytes(firstNameChars), 0, maxStringLength);
+                    writer.Write(Encoding.Unicode.GetBytes(lastNameChars), 0, maxStringLength);
+
+                    writer.Write(recordParameters.DateOfBirth.Year);
+                    writer.Write(recordParameters.DateOfBirth.Month);
+                    writer.Write(recordParameters.DateOfBirth.Day);
+                    writer.Write(Encoding.Unicode.GetBytes(new char[] { recordParameters.Gender }));
+                    writer.Write(recordParameters.Experience);
+                    writer.Write(recordParameters.Salary);
+
+                    break;
+                }
+                else
+                {
+                    fileStream.Seek(recordSize - sizeof(int), SeekOrigin.Current);
+                }
+            }
+
         }
 
         public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
@@ -70,7 +104,6 @@ namespace FileCabinetApp
             List<FileCabinetRecord> records = new List<FileCabinetRecord>();
             fileStream.Seek(0, SeekOrigin.Begin);
             BinaryReader reader = new BinaryReader(fileStream);
-            
 
             while (fileStream.Position != fileStream.Length)
             {
