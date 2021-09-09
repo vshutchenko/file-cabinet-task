@@ -41,25 +41,7 @@ namespace FileCabinetApp
             this.fileStream.Seek(0, SeekOrigin.End);
             BinaryWriter writer = new BinaryWriter(this.fileStream, Encoding.Unicode, true);
 
-            writer.Write(new byte[2]);
-            writer.Write(id);
-
-            char[] firstNameChars = new char[MaxStringLength];
-            char[] lastNameChars = new char[MaxStringLength];
-
-            Array.Copy(recordParameters.FirstName.ToCharArray(), firstNameChars, recordParameters.FirstName.Length);
-            Array.Copy(recordParameters.LastName.ToCharArray(), lastNameChars, recordParameters.LastName.Length);
-
-            writer.Write(Encoding.Unicode.GetBytes(firstNameChars), 0, MaxStringLength);
-            writer.Write(Encoding.Unicode.GetBytes(lastNameChars), 0, MaxStringLength);
-
-            writer.Write(recordParameters.DateOfBirth.Year);
-            writer.Write(recordParameters.DateOfBirth.Month);
-            writer.Write(recordParameters.DateOfBirth.Day);
-            writer.Write(Encoding.Unicode.GetBytes(new char[] { recordParameters.Gender }));
-            writer.Write(recordParameters.Experience);
-            writer.Write(recordParameters.Salary);
-
+            WriteRecord(id, recordParameters, writer);
             writer.Close();
 
             return id;
@@ -77,36 +59,18 @@ namespace FileCabinetApp
                 throw new ArgumentNullException(nameof(recordParameters), $"{nameof(recordParameters)} is null.");
             }
 
-            this.fileStream.Seek(2, SeekOrigin.Begin);
             BinaryReader reader = new BinaryReader(this.fileStream, Encoding.Unicode, true);
             BinaryWriter writer = new BinaryWriter(this.fileStream, Encoding.Unicode, true);
+            this.fileStream.Seek(0, SeekOrigin.Begin);
 
             while (this.fileStream.Position < this.fileStream.Length)
             {
-                int currentRecordId = reader.ReadInt32();
-                if (currentRecordId == id)
+                var record = ReadRecord(reader);
+                if (record.Id == id)
                 {
-                    char[] firstNameChars = new char[MaxStringLength];
-                    char[] lastNameChars = new char[MaxStringLength];
-
-                    Array.Copy(recordParameters.FirstName.ToCharArray(), firstNameChars, recordParameters.FirstName.Length);
-                    Array.Copy(recordParameters.LastName.ToCharArray(), lastNameChars, recordParameters.LastName.Length);
-
-                    writer.Write(Encoding.Unicode.GetBytes(firstNameChars), 0, MaxStringLength);
-                    writer.Write(Encoding.Unicode.GetBytes(lastNameChars), 0, MaxStringLength);
-
-                    writer.Write(recordParameters.DateOfBirth.Year);
-                    writer.Write(recordParameters.DateOfBirth.Month);
-                    writer.Write(recordParameters.DateOfBirth.Day);
-                    writer.Write(Encoding.Unicode.GetBytes(new char[] { recordParameters.Gender }));
-                    writer.Write(recordParameters.Experience);
-                    writer.Write(recordParameters.Salary);
-
+                    this.fileStream.Seek(-RecordSize, SeekOrigin.Current);
+                    WriteRecord(id, recordParameters, writer);
                     break;
-                }
-                else
-                {
-                    this.fileStream.Seek(RecordSize - sizeof(int), SeekOrigin.Current);
                 }
             }
 
@@ -140,7 +104,6 @@ namespace FileCabinetApp
                 if (currentRecordDateOfBirth == dateOfBirth)
                 {
                     this.fileStream.Seek(recordStartOffset, SeekOrigin.Current);
-                    this.fileStream.Seek(2, SeekOrigin.Current);
 
                     FileCabinetRecord record = ReadRecord(reader);
                     records.Add(record);
@@ -177,7 +140,6 @@ namespace FileCabinetApp
                 if (currentRecordFirstName.Equals(firstName, StringComparison.InvariantCultureIgnoreCase))
                 {
                     this.fileStream.Seek(recordStartOffset, SeekOrigin.Current);
-                    this.fileStream.Seek(2, SeekOrigin.Current);
 
                     FileCabinetRecord record = ReadRecord(reader);
                     records.Add(record);
@@ -213,7 +175,6 @@ namespace FileCabinetApp
                 if (currentRecordLastName.Equals(lastName, StringComparison.InvariantCultureIgnoreCase))
                 {
                     this.fileStream.Seek(recordStartOffset, SeekOrigin.Current);
-                    this.fileStream.Seek(2, SeekOrigin.Current);
 
                     FileCabinetRecord record = ReadRecord(reader);
                     records.Add(record);
@@ -239,21 +200,9 @@ namespace FileCabinetApp
             this.fileStream.Seek(0, SeekOrigin.Begin);
             BinaryReader reader = new BinaryReader(this.fileStream, Encoding.Unicode, true);
 
-            while (this.fileStream.Position != this.fileStream.Length)
+            while (this.fileStream.Position < this.fileStream.Length)
             {
-                this.fileStream.Seek(2, SeekOrigin.Current);
-
-                int id = reader.ReadInt32();
-                string firstName = Encoding.Unicode.GetString(reader.ReadBytes(MaxStringLength)).Trim('\0');
-                string lastName = Encoding.Unicode.GetString(reader.ReadBytes(MaxStringLength)).Trim('\0');
-                int year = reader.ReadInt32();
-                int month = reader.ReadInt32();
-                int day = reader.ReadInt32();
-                char gender = Encoding.Unicode.GetChars(reader.ReadBytes(2))[0];
-                short experience = reader.ReadInt16();
-                decimal salary = reader.ReadDecimal();
-
-                FileCabinetRecord record = new FileCabinetRecord() { Id = id, FirstName = firstName, LastName = lastName, DateOfBirth = new DateTime(year, month, day), Gender = gender, Experience = experience, Salary = salary };
+                FileCabinetRecord record = ReadRecord(reader);
                 records.Add(record);
             }
 
@@ -290,8 +239,6 @@ namespace FileCabinetApp
 
             while (this.fileStream.Position < this.fileStream.Length)
             {
-                this.fileStream.Seek(2, SeekOrigin.Current);
-
                 FileCabinetRecord record = ReadRecord(reader);
                 records.Add(record);
             }
@@ -303,6 +250,7 @@ namespace FileCabinetApp
 
         private static FileCabinetRecord ReadRecord(BinaryReader reader)
         {
+            reader.BaseStream.Seek(2, SeekOrigin.Current);
             int id = reader.ReadInt32();
             string firstName = Encoding.Unicode.GetString(reader.ReadBytes(MaxStringLength)).Trim('\0');
             string lastName = Encoding.Unicode.GetString(reader.ReadBytes(MaxStringLength)).Trim('\0');
@@ -316,6 +264,28 @@ namespace FileCabinetApp
             FileCabinetRecord record = new FileCabinetRecord() { Id = id, FirstName = firstName, LastName = lastName, DateOfBirth = new DateTime(year, month, day), Gender = gender, Experience = experience, Salary = salary };
 
             return record;
+        }
+
+        private static void WriteRecord(int id, RecordParameters recordParameters, BinaryWriter writer)
+        {
+            writer.Write(new byte[2]);
+            writer.Write(id);
+
+            char[] firstNameChars = new char[MaxStringLength];
+            char[] lastNameChars = new char[MaxStringLength];
+
+            Array.Copy(recordParameters.FirstName.ToCharArray(), firstNameChars, recordParameters.FirstName.Length);
+            Array.Copy(recordParameters.LastName.ToCharArray(), lastNameChars, recordParameters.LastName.Length);
+
+            writer.Write(Encoding.Unicode.GetBytes(firstNameChars), 0, MaxStringLength);
+            writer.Write(Encoding.Unicode.GetBytes(lastNameChars), 0, MaxStringLength);
+
+            writer.Write(recordParameters.DateOfBirth.Year);
+            writer.Write(recordParameters.DateOfBirth.Month);
+            writer.Write(recordParameters.DateOfBirth.Day);
+            writer.Write(Encoding.Unicode.GetBytes(new char[] { recordParameters.Gender }));
+            writer.Write(recordParameters.Experience);
+            writer.Write(recordParameters.Salary);
         }
     }
 }
