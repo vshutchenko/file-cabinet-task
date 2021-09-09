@@ -10,7 +10,7 @@ namespace FileCabinetApp
     /// This class represents a file-cabinet. It stores records and
     /// allows you create, edit and search them.
     /// </summary>
-    public class FileCabinetService : IFileCabinetService
+    public class FileCabinetMemoryService : IFileCabinetService
     {
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
@@ -19,10 +19,10 @@ namespace FileCabinetApp
         private IRecordValidator validator;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FileCabinetService"/> class.
+        /// Initializes a new instance of the <see cref="FileCabinetMemoryService"/> class.
         /// </summary>
         /// <param name="validator">The validator which will be used for parameters validation.</param>
-        public FileCabinetService(IRecordValidator validator)
+        public FileCabinetMemoryService(IRecordValidator validator)
         {
             this.validator = validator;
         }
@@ -155,10 +155,10 @@ namespace FileCabinetApp
         }
 
         /// <summary>
-        /// This method creates a new record.
+        /// This method updates record.
         /// </summary>
-        /// <param name="id">The edited record's id.</param>
-        /// <param name="recordParameters">The parameter object for FileCabinetRecord.</param>
+        /// <param name="id">Id of edited record.</param>
+        /// <param name="recordParameters">Parameters object for <see cref="FileCabinetRecord"/> class.</param>
         public void EditRecord(int id, RecordParameters recordParameters)
         {
             this.validator.ValidateParameters(recordParameters);

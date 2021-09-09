@@ -16,8 +16,9 @@ namespace FileCabinetApp
         private const int CommandHelpIndex = 0;
         private const int DescriptionHelpIndex = 1;
         private const int ExplanationHelpIndex = 2;
-        private static IFileCabinetService fileCabinetService = new FileCabinetService(new DefaultValidator());
+        private static IFileCabinetService fileCabinetService = new FileCabinetMemoryService(new DefaultValidator());
         private static bool isCustomRulesEnabled;
+        private static bool isFileSystemServiceEnabled;
 
         private static bool isRunning = true;
 
@@ -46,23 +47,35 @@ namespace FileCabinetApp
         };
 
         /// <summary>
-        /// This method runs an instance of FileCabinetService and processes console commands.
+        /// This method runs an instance of FileCabinetMemoryService and processes console commands.
         /// </summary>
         /// <param name="args">Console command parameters.</param>
         public static void Main(string[] args)
         {
             ReadCommandLineParameters(args);
             string validationRulesHint = isCustomRulesEnabled ? "Using custom validation rules." : "Using default validation rules.";
+            IRecordValidator validator;
+            FileStream fileStream = null;
 
             if (isCustomRulesEnabled)
             {
                 validationRulesHint = "Using custom validation rules.";
-                fileCabinetService = new FileCabinetService(new CustomValidator());
+                validator = new CustomValidator();
             }
             else
             {
                 validationRulesHint = "Using default validation rules.";
-                fileCabinetService = new FileCabinetService(new DefaultValidator());
+                validator = new DefaultValidator();
+            }
+
+            if (isFileSystemServiceEnabled)
+            {
+                fileStream = new FileStream("cabinet-records.db", FileMode.OpenOrCreate);
+                fileCabinetService = new FileCabinetFilesystemService(fileStream);
+            }
+            else
+            {
+                fileCabinetService = new FileCabinetMemoryService(validator);
             }
 
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
@@ -95,6 +108,11 @@ namespace FileCabinetApp
                 }
             }
             while (isRunning);
+
+            if (fileStream != null)
+            {
+                fileStream.Close();
+            }
         }
 
         private static void PrintMissedCommandInfo(string command)
@@ -678,11 +696,31 @@ namespace FileCabinetApp
                         }
 
                         break;
+                    case "-S":
+                        if (i + 1 < parameters.Length)
+                        {
+                            if (parameters[i + 1] == "FILE")
+                            {
+                                isFileSystemServiceEnabled = true;
+                            }
+                            else if (parameters[i + 1] == "MEMORY")
+                            {
+                                isCustomRulesEnabled = false;
+                            }
+                        }
+
+                        break;
                     case "--VALIDATION-RULES=DEFAULT":
                         isCustomRulesEnabled = false;
                         break;
                     case "--VALIDATION-RULES=CUSTOM":
                         isCustomRulesEnabled = true;
+                        break;
+                    case "--STORAGE=MEMORY":
+                        isFileSystemServiceEnabled = false;
+                        break;
+                    case "--STORAGE=FILE":
+                        isFileSystemServiceEnabled = true;
                         break;
                 }
             }

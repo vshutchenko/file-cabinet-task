@@ -26,6 +26,136 @@
             </summary>
             <param name="recordParameters">The parameter object for FileCabinetRecord.</param>
         </member>
+        <member name="T:FileCabinetApp.FileCabinetFilesystemService">
+            <summary>
+            This class represents a file-cabinet. It stores records in the file and
+            allows create, edit and search records.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.#ctor(System.IO.FileStream)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetFilesystemService"/> class.
+            </summary>
+            <param name="fileStream">The stream to file with records.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.CreateRecord(FileCabinetApp.RecordParameters)">
+            <summary>
+            Creates new record.
+            </summary>
+            <param name="recordParameters">Parameters object for <see cref="T:FileCabinetApp.FileCabinetRecord"/> class.</param>
+            <returns>Id of new record.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.EditRecord(System.Int32,FileCabinetApp.RecordParameters)">
+            <summary>
+            This method updates record.
+            </summary>
+            <param name="id">Id of edited record.</param>
+            <param name="recordParameters">Parameters object for <see cref="T:FileCabinetApp.FileCabinetRecord"/> class.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.FindByDateOfBirth(System.DateTime)">
+            <summary>
+            This method performs searching in records by date of birth.
+            </summary>
+            <param name="dateOfBirth">The person's date of birth.</param>
+            <returns>The array of records with matched date of birth.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.FindByFirstName(System.String)">
+            <summary>
+            This method performs searching records by first name.
+            </summary>
+            <param name="firstName">The person's first name.</param>
+            <returns>The array of records with matched first name.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.FindByLastName(System.String)">
+            <summary>
+            This method performs searching records by last name.
+            </summary>
+            <param name="lastName">The person's last name.</param>
+            <returns>The array of records with matched last name.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.GetRecords">
+            <summary>
+            This method returns number of stored records.
+            </summary>
+            <returns>Number of stored records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.GetStat">
+            <summary>
+            This method returns array of stored records.
+            </summary>
+            <returns>Array of stored records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.MakeSnapshot">
+            <summary>
+            This method makes snapshot of object.
+            </summary>
+            <returns>The instnace of <see cref="T:FileCabinetApp.FileCabinetServiceSnapshot"/> class.</returns>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetMemoryService">
+            <summary>
+            This class represents a file-cabinet. It stores records and
+            allows you create, edit and search them.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.#ctor(FileCabinetApp.IRecordValidator)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetMemoryService"/> class.
+            </summary>
+            <param name="validator">The validator which will be used for parameters validation.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.MakeSnapshot">
+            <summary>
+            This method makes snaphot of object.
+            </summary>
+            <returns>The instnace of <see cref="T:FileCabinetApp.FileCabinetServiceSnapshot"/> class.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.GetRecords">
+            <summary>
+            This method returns number of stored records.
+            </summary>
+            <returns>Number of stored records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.GetStat">
+            <summary>
+            This method returns array of stored records.
+            </summary>
+            <returns>Array of stored records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.FindByFirstName(System.String)">
+            <summary>
+            This method performs searching records by first name.
+            </summary>
+            <param name="firstName">The person's first name.</param>
+            <returns>The array of records with matched first name.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.FindByLastName(System.String)">
+            <summary>
+            This method performs searching records by last name.
+            </summary>
+            <param name="lastName">The person's last name.</param>
+            <returns>The array of records with matched last name.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.FindByDateOfBirth(System.DateTime)">
+            <summary>
+            This method performs searching in records by date of birth.
+            </summary>
+            <param name="dateOfBirth">The person's date of birth.</param>
+            <returns>The array of records with matched date of birth.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.CreateRecord(FileCabinetApp.RecordParameters)">
+            <summary>
+            This method creates a new record.
+            </summary>
+            <param name="recordParameters">The parameter object for FileCabinetRecord.</param>
+            <returns>Id of the created record.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.EditRecord(System.Int32,FileCabinetApp.RecordParameters)">
+            <summary>
+            This method updates record.
+            </summary>
+            <param name="id">Id of edited record.</param>
+            <param name="recordParameters">Parameters object for <see cref="T:FileCabinetApp.FileCabinetRecord"/> class.</param>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetRecord">
             <summary>
             This class represents a record.
@@ -107,74 +237,9 @@
             </summary>
             <param name="record">The instance of the <see cref="T:FileCabinetApp.FileCabinetRecord"/> class.</param>
         </member>
-        <member name="T:FileCabinetApp.FileCabinetService">
-            <summary>
-            This class represents a file-cabinet. It stores records and
-            allows you create, edit and search them.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.#ctor(FileCabinetApp.IRecordValidator)">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetService"/> class.
-            </summary>
-            <param name="validator">The validator which will be used for parameters validation.</param>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.MakeSnapshot">
-            <summary>
-            This method makes snaphot of object.
-            </summary>
-            <returns>The instnace of <see cref="T:FileCabinetApp.FileCabinetServiceSnapshot"/> class.</returns>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.GetRecords">
-            <summary>
-            This method returns number of stored records.
-            </summary>
-            <returns>Number of stored records.</returns>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.GetStat">
-            <summary>
-            This method returns array of stored records.
-            </summary>
-            <returns>Array of stored records.</returns>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.FindByFirstName(System.String)">
-            <summary>
-            This method performs searching records by first name.
-            </summary>
-            <param name="firstName">The person's first name.</param>
-            <returns>The array of records with matched first name.</returns>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.FindByLastName(System.String)">
-            <summary>
-            This method performs searching records by last name.
-            </summary>
-            <param name="lastName">The person's last name.</param>
-            <returns>The array of records with matched last name.</returns>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.FindByDateOfBirth(System.DateTime)">
-            <summary>
-            This method performs searching in records by date of birth.
-            </summary>
-            <param name="dateOfBirth">The person's date of birth.</param>
-            <returns>The array of records with matched date of birth.</returns>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.CreateRecord(FileCabinetApp.RecordParameters)">
-            <summary>
-            This method creates a new record.
-            </summary>
-            <param name="recordParameters">The parameter object for FileCabinetRecord.</param>
-            <returns>Id of the created record.</returns>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.EditRecord(System.Int32,FileCabinetApp.RecordParameters)">
-            <summary>
-            This method creates a new record.
-            </summary>
-            <param name="id">The edited record's id.</param>
-            <param name="recordParameters">The parameter object for FileCabinetRecord.</param>
-        </member>
         <member name="T:FileCabinetApp.FileCabinetServiceSnapshot">
             <summary>
-            This class represent a snapshot of the <see cref="T:FileCabinetApp.FileCabinetService"/> class.
+            This class represent a snapshot of the <see cref="T:FileCabinetApp.IFileCabinetService"/>.
             </summary>
         </member>
         <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.#ctor(FileCabinetApp.FileCabinetRecord[])">
@@ -271,7 +336,7 @@
         </member>
         <member name="M:FileCabinetApp.Program.Main(System.String[])">
             <summary>
-            This method runs an instance of FileCabinetService and processes console commands.
+            This method runs an instance of FileCabinetMemoryService and processes console commands.
             </summary>
             <param name="args">Console command parameters.</param>
         </member>
