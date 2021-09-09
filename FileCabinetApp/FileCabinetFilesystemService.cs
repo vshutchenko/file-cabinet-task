@@ -278,9 +278,27 @@ namespace FileCabinetApp
             return (int)recordsCount;
         }
 
+        /// <summary>
+        /// This method makes snapshot of object.
+        /// </summary>
+        /// <returns>The instnace of <see cref="FileCabinetServiceSnapshot"/> class.</returns>
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
-            throw new NotImplementedException();
+            List<FileCabinetRecord> records = new List<FileCabinetRecord>();
+            this.fileStream.Seek(0, SeekOrigin.Begin);
+            BinaryReader reader = new BinaryReader(this.fileStream, Encoding.Unicode, true);
+
+            while (this.fileStream.Position < this.fileStream.Length)
+            {
+                this.fileStream.Seek(2, SeekOrigin.Current);
+
+                FileCabinetRecord record = ReadRecord(reader);
+                records.Add(record);
+            }
+
+            reader.Close();
+
+            return new FileCabinetServiceSnapshot(records.ToArray());
         }
 
         private static FileCabinetRecord ReadRecord(BinaryReader reader)
