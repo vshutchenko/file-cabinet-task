@@ -155,10 +155,10 @@ namespace FileCabinetApp
         }
 
         /// <summary>
-        /// This method creates a new record.
+        /// This method updates record.
         /// </summary>
-        /// <param name="id">The edited record's id.</param>
-        /// <param name="recordParameters">The parameter object for FileCabinetRecord.</param>
+        /// <param name="id">Id of edited record.</param>
+        /// <param name="recordParameters">Parameters object for <see cref="FileCabinetRecord"/> class.</param>
         public void EditRecord(int id, RecordParameters recordParameters)
         {
             this.validator.ValidateParameters(recordParameters);

@@ -6,17 +6,30 @@ using System.Text;
 
 namespace FileCabinetApp
 {
+    /// <summary>
+    /// This class represents a file-cabinet. It stores records in the file and
+    /// allows create, edit and search records.
+    /// </summary>
     public class FileCabinetFilesystemService : IFileCabinetService
     {
         private const int MaxStringLength = 120;
         private const int RecordSize = (sizeof(short) * 2) + (sizeof(int) * 4) + (MaxStringLength * 2) + sizeof(char) + sizeof(decimal);
         private FileStream fileStream;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FileCabinetFilesystemService"/> class.
+        /// </summary>
+        /// <param name="fileStream">The stream to file with records.</param>
         public FileCabinetFilesystemService(FileStream fileStream)
         {
             this.fileStream = fileStream;
         }
 
+        /// <summary>
+        /// Creates new record.
+        /// </summary>
+        /// <param name="recordParameters">Parameters object for <see cref="FileCabinetRecord"/> class.</param>
+        /// <returns>Id of new record.</returns>
         public int CreateRecord(RecordParameters recordParameters)
         {
             if (recordParameters is null)
@@ -52,6 +65,11 @@ namespace FileCabinetApp
             return id;
         }
 
+        /// <summary>
+        /// This method updates record.
+        /// </summary>
+        /// <param name="id">Id of edited record.</param>
+        /// <param name="recordParameters">Parameters object for <see cref="FileCabinetRecord"/> class.</param>
         public void EditRecord(int id, RecordParameters recordParameters)
         {
             if (recordParameters is null)
@@ -96,6 +114,11 @@ namespace FileCabinetApp
             writer.Close();
         }
 
+        /// <summary>
+        /// This method performs searching in records by date of birth.
+        /// </summary>
+        /// <param name="dateOfBirth">The person's date of birth.</param>
+        /// <returns>The array of records with matched date of birth.</returns>
         public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
         {
             int dateOfBirthOffset = 246;
@@ -133,6 +156,11 @@ namespace FileCabinetApp
             return new ReadOnlyCollection<FileCabinetRecord>(records);
         }
 
+        /// <summary>
+        /// This method performs searching records by first name.
+        /// </summary>
+        /// <param name="firstName">The person's first name.</param>
+        /// <returns>The array of records with matched first name.</returns>
         public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
         {
             int firstNameOffset = 6;
@@ -165,6 +193,11 @@ namespace FileCabinetApp
             return new ReadOnlyCollection<FileCabinetRecord>(records);
         }
 
+        /// <summary>
+        /// This method performs searching records by last name.
+        /// </summary>
+        /// <param name="lastName">The person's last name.</param>
+        /// <returns>The array of records with matched last name.</returns>
         public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
         {
             int lastNameOffset = 126;
@@ -196,6 +229,10 @@ namespace FileCabinetApp
             return new ReadOnlyCollection<FileCabinetRecord>(records);
         }
 
+        /// <summary>
+        /// This method returns number of stored records.
+        /// </summary>
+        /// <returns>Number of stored records.</returns>
         public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
             List<FileCabinetRecord> records = new List<FileCabinetRecord>();
@@ -225,6 +262,10 @@ namespace FileCabinetApp
             return new ReadOnlyCollection<FileCabinetRecord>(records);
         }
 
+        /// <summary>
+        /// This method returns array of stored records.
+        /// </summary>
+        /// <returns>Array of stored records.</returns>
         public int GetStat()
         {
             long recordsCount = this.fileStream.Length / RecordSize;
