@@ -1,5 +1,7 @@
-﻿using System;
+﻿using FileCabinetApp;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 
 namespace FileCabinetGenerator
@@ -8,10 +10,6 @@ namespace FileCabinetGenerator
     {
         public static void Main(string[] args)
         {
-            string outputFilePath;
-            string format;
-            int amountOfRecords;
-            int startId;
             bool isParametersValid;
             Tuple<string, string, int, int> vallidParameters;
 
@@ -20,13 +18,43 @@ namespace FileCabinetGenerator
 
             if (isParametersValid)
             {
-                format = vallidParameters.Item1;
-                outputFilePath = vallidParameters.Item2;
-                amountOfRecords = vallidParameters.Item3;
-                startId = vallidParameters.Item4;
+                string format = vallidParameters.Item1;
+                string outputFilePath = vallidParameters.Item2;
+                int amountOfRecords = vallidParameters.Item3;
+                int startId = vallidParameters.Item4;
+                ReadOnlyCollection<FileCabinetRecord> records = GenerateRecords(startId, amountOfRecords);
 
                 Console.WriteLine($"{amountOfRecords} records were written to {outputFilePath}.");
             }
+        }
+
+        private static ReadOnlyCollection<FileCabinetRecord> GenerateRecords(int startId, int amountOfRecords)
+        {
+            List<FileCabinetRecord> records = new List<FileCabinetRecord>();
+
+            string[] firstNames = new[] { "Justin", "Brian", "Gilbert", "William", "Camron", "John", "Matthew", "Paul", "Stephie", "Ann", "Ariana", "Latoya", "Julio" };
+            string[] lastNames = new[] { "Thompson", "Simpson", "Olson", "Richardson", "Johnston", "John", "Taylor", "Monroe", "Ellis", "Walker", "Wilson", "Davis", "Martin" };
+            char[] genders = new[] { 'F', 'M' };
+            Random random = new Random();
+
+            for (int i = startId; i < startId + amountOfRecords; i++)
+            {
+                int firstNameIndex = random.Next(0, firstNames.Length - 1);
+                int lastNameIndex = random.Next(0, lastNames.Length - 1);
+                int genderIndex = random.Next(0, genders.Length - 1);
+
+                DateTime dateOfBirth = new DateTime(1950, 1, 1);
+                int range = (DateTime.Today - dateOfBirth).Days;
+                dateOfBirth.AddDays(random.Next(range));
+
+                short experence = (short)random.Next(0, short.MaxValue);
+                decimal salary = random.Next(0, int.MaxValue);
+
+                FileCabinetRecord record = new FileCabinetRecord() { Id = i, FirstName = firstNames[firstNameIndex], LastName = lastNames[lastNameIndex], DateOfBirth = dateOfBirth, Gender = genders[genderIndex], Experience = experence, Salary = salary };
+                records.Add(record);
+            }
+
+            return new ReadOnlyCollection<FileCabinetRecord>(records);
         }
 
         private static bool IsParametersValid(Dictionary<string, string> parameters, out Tuple<string, string, int, int> vallidParameters)
