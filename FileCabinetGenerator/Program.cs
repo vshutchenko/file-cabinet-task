@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
+using System.Xml.Serialization;
 using FileCabinetApp;
 
 namespace FileCabinetGenerator
@@ -23,12 +24,39 @@ namespace FileCabinetGenerator
                 string outputFilePath = vallidParameters.Item2;
                 int amountOfRecords = vallidParameters.Item3;
                 int startId = vallidParameters.Item4;
-                ReadOnlyCollection<FileCabinetRecord> records = GenerateRecords(startId, amountOfRecords);
-                ExportToCsv(outputFilePath, records);
+                List<FileCabinetRecord> records = GenerateRecords(startId, amountOfRecords);
+                if (format.Equals("CSV", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    ExportToCsv(outputFilePath, records);
+                }
+                else
+                {
+                    ExportToXml(outputFilePath, records);
+                }
             }
         }
 
-        private static void ExportToCsv(string filePath, ReadOnlyCollection<FileCabinetRecord> records)
+        private static void ExportToXml(string filePath, List<FileCabinetRecord> records)
+        {
+            XmlSerializerNamespaces namespaces = new XmlSerializerNamespaces();
+            namespaces.Add(string.Empty, string.Empty);
+
+            XmlSerializer serializer = new XmlSerializer(typeof(List<FileCabinetRecordSerializable>), new XmlRootAttribute("records"));
+            List<FileCabinetRecordSerializable> serializableRecords = new List<FileCabinetRecordSerializable>();
+
+            for (int i = 0; i < records.Count; i++)
+            {
+                serializableRecords.Add(new FileCabinetRecordSerializable() { DateOfBirth = records[i].DateOfBirth, Experience = records[i].Experience, Gender = records[i].Gender, Id = records[i].Id, Salary = records[i].Salary, Name = new Name() { FirstName = records[i].FirstName, LastName = records[i].LastName } });
+            }
+
+            StreamWriter writer = new StreamWriter(filePath);
+            serializer.Serialize(writer, serializableRecords, namespaces);
+            writer.Close();
+
+            Console.WriteLine($"{records.Count} records were written to {filePath}.");
+        }
+
+        private static void ExportToCsv(string filePath, List<FileCabinetRecord> records)
         {
             StreamWriter writer = new StreamWriter(filePath);
             for (int i = 0; i < records.Count; i++)
@@ -47,7 +75,7 @@ namespace FileCabinetGenerator
             Console.WriteLine($"{records.Count} records were written to {filePath}.");
         }
 
-        private static ReadOnlyCollection<FileCabinetRecord> GenerateRecords(int startId, int amountOfRecords)
+        private static List<FileCabinetRecord> GenerateRecords(int startId, int amountOfRecords)
         {
             List<FileCabinetRecord> records = new List<FileCabinetRecord>();
 
@@ -73,7 +101,7 @@ namespace FileCabinetGenerator
                 records.Add(record);
             }
 
-            return new ReadOnlyCollection<FileCabinetRecord>(records);
+            return records;
         }
 
         private static bool IsParametersValid(Dictionary<string, string> parameters, out Tuple<string, string, int, int> vallidParameters)

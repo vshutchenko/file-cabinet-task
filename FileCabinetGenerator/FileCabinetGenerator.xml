@@ -4,5 +4,53 @@
         <name>FileCabinetGenerator</name>
     </assembly>
     <members>
+        <member name="P:FileCabinetGenerator.FileCabinetRecordSerializable.Id">
+            <summary>
+            Gets or sets the record id.
+            </summary>
+            <value>The record id.</value>
+        </member>
+        <member name="P:FileCabinetGenerator.FileCabinetRecordSerializable.Name">
+            <summary>
+            Gets or sets the full name of person.
+            </summary>
+            <value>The full name of person.</value>
+        </member>
+        <member name="P:FileCabinetGenerator.FileCabinetRecordSerializable.DateOfBirth">
+            <summary>
+            Gets or sets the person's date of birth.
+            </summary>
+            <value>The person's date of birth.</value>
+        </member>
+        <member name="P:FileCabinetGenerator.FileCabinetRecordSerializable.Gender">
+            <summary>
+            Gets or sets the gender of the person.
+            </summary>
+            <value>The gender of the person. 'M' - male, 'F' - female.</value>
+        </member>
+        <member name="P:FileCabinetGenerator.FileCabinetRecordSerializable.Experience">
+            <summary>
+            Gets or sets the experience of person.
+            </summary>
+            <value>The person's experience in work.</value>
+        </member>
+        <member name="P:FileCabinetGenerator.FileCabinetRecordSerializable.Salary">
+            <summary>
+            Gets or sets the salary of the person.
+            </summary>
+            <value>The salary of the person.</value>
+        </member>
+        <member name="P:FileCabinetGenerator.Name.FirstName">
+            <summary>
+            Gets or sets the first name of person.
+            </summary>
+            <value>The first name of person.</value>
+        </member>
+        <member name="P:FileCabinetGenerator.Name.LastName">
+            <summary>
+            Gets or sets the last name of person.
+            </summary>
+            <value>The last name of person.</value>
+        </member>
     </members>
 </doc>
