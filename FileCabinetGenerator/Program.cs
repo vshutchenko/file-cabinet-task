@@ -1,8 +1,9 @@
-﻿using FileCabinetApp;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.IO;
+using FileCabinetApp;
 
 namespace FileCabinetGenerator
 {
@@ -23,9 +24,27 @@ namespace FileCabinetGenerator
                 int amountOfRecords = vallidParameters.Item3;
                 int startId = vallidParameters.Item4;
                 ReadOnlyCollection<FileCabinetRecord> records = GenerateRecords(startId, amountOfRecords);
-
-                Console.WriteLine($"{amountOfRecords} records were written to {outputFilePath}.");
+                ExportToCsv(outputFilePath, records);
             }
+        }
+
+        private static void ExportToCsv(string filePath, ReadOnlyCollection<FileCabinetRecord> records)
+        {
+            StreamWriter writer = new StreamWriter(filePath);
+            for (int i = 0; i < records.Count; i++)
+            {
+                string record = $"#{records[i].Id}, " +
+                    $"{records[i].FirstName}, " +
+                    $"{records[i].LastName}, " +
+                    $"{records[i].DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture)}, " +
+                    $"{records[i].Gender}, " +
+                    $"{records[i].Experience}, " +
+                    $"{records[i].Salary}$";
+                writer.WriteLine(record);
+            }
+
+            writer.Close();
+            Console.WriteLine($"{records.Count} records were written to {filePath}.");
         }
 
         private static ReadOnlyCollection<FileCabinetRecord> GenerateRecords(int startId, int amountOfRecords)
@@ -39,9 +58,9 @@ namespace FileCabinetGenerator
 
             for (int i = startId; i < startId + amountOfRecords; i++)
             {
-                int firstNameIndex = random.Next(0, firstNames.Length - 1);
-                int lastNameIndex = random.Next(0, lastNames.Length - 1);
-                int genderIndex = random.Next(0, genders.Length - 1);
+                int firstNameIndex = random.Next(0, firstNames.Length);
+                int lastNameIndex = random.Next(0, lastNames.Length);
+                int genderIndex = random.Next(0, genders.Length);
 
                 DateTime dateOfBirth = new DateTime(1950, 1, 1);
                 int range = (DateTime.Today - dateOfBirth).Days;
