@@ -25,6 +25,11 @@ namespace FileCabinetApp
             this.fileStream = fileStream;
         }
 
+        public void Restore(FileCabinetServiceSnapshot serviceSnapshot)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Creates new record.
         /// </summary>

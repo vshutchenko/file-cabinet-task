@@ -62,5 +62,7 @@ namespace FileCabinetApp
         /// <param name="id">The edited record's id.</param>
         /// <param name="recordParameters">The parameter object for FileCabinetRecord.</param>
         public void EditRecord(int id, RecordParameters recordParameters);
+
+        public void Restore(FileCabinetServiceSnapshot serviceSnapshot);
     }
 }

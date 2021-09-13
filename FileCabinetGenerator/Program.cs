@@ -61,13 +61,13 @@ namespace FileCabinetGenerator
             StreamWriter writer = new StreamWriter(filePath);
             for (int i = 0; i < records.Count; i++)
             {
-                string record = $"#{records[i].Id}, " +
-                    $"{records[i].FirstName}, " +
-                    $"{records[i].LastName}, " +
-                    $"{records[i].DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture)}, " +
-                    $"{records[i].Gender}, " +
-                    $"{records[i].Experience}, " +
-                    $"{records[i].Salary}$";
+                string record = $"{records[i].Id}," +
+                    $"{records[i].FirstName}," +
+                    $"{records[i].LastName}," +
+                    $"{records[i].DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture)}," +
+                    $"{records[i].Gender}," +
+                    $"{records[i].Experience}," +
+                    $"{records[i].Salary}";
                 writer.WriteLine(record);
             }
 

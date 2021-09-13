@@ -28,7 +28,31 @@ namespace FileCabinetApp
         }
 
         /// <summary>
-        /// This method makes snaphot of object.
+        /// This method restores records from service snapshot.
+        /// </summary>
+        /// <param name="serviceSnapshot">The snapshot of <see cref="IFileCabinetService"/> class.</param>
+        public void Restore(FileCabinetServiceSnapshot serviceSnapshot)
+        {
+            if (serviceSnapshot is null)
+            {
+                throw new ArgumentNullException(nameof(serviceSnapshot), $"{nameof(serviceSnapshot)} is null.");
+            }
+
+            this.firstNameDictionary.Clear();
+            this.lastNameDictionary.Clear();
+            this.dateOfBirthDictionary.Clear();
+
+            for (int i = 0; i < serviceSnapshot.Records.Count; i++)
+            {
+                this.list.Add(serviceSnapshot.Records[i]);
+                AddInDictionary(this.firstNameDictionary, serviceSnapshot.Records[i].FirstName, new List<FileCabinetRecord>() { serviceSnapshot.Records[i] });
+                AddInDictionary(this.lastNameDictionary, serviceSnapshot.Records[i].LastName, new List<FileCabinetRecord>() { serviceSnapshot.Records[i] });
+                AddInDictionary(this.dateOfBirthDictionary, serviceSnapshot.Records[i].DateOfBirth.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture), new List<FileCabinetRecord>() { serviceSnapshot.Records[i] });
+            }
+        }
+
+        /// <summary>
+        /// This method makes snapshot of object.
         /// </summary>
         /// <returns>The instnace of <see cref="FileCabinetServiceSnapshot"/> class.</returns>
         public FileCabinetServiceSnapshot MakeSnapshot()
