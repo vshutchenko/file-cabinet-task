@@ -38,16 +38,26 @@ namespace FileCabinetApp
                 throw new ArgumentNullException(nameof(serviceSnapshot), $"{nameof(serviceSnapshot)} is null.");
             }
 
-            this.firstNameDictionary.Clear();
-            this.lastNameDictionary.Clear();
-            this.dateOfBirthDictionary.Clear();
-
-            for (int i = 0; i < serviceSnapshot.Records.Count; i++)
+            foreach (var record in serviceSnapshot.Records)
             {
-                this.list.Add(serviceSnapshot.Records[i]);
-                AddInDictionary(this.firstNameDictionary, serviceSnapshot.Records[i].FirstName, new List<FileCabinetRecord>() { serviceSnapshot.Records[i] });
-                AddInDictionary(this.lastNameDictionary, serviceSnapshot.Records[i].LastName, new List<FileCabinetRecord>() { serviceSnapshot.Records[i] });
-                AddInDictionary(this.dateOfBirthDictionary, serviceSnapshot.Records[i].DateOfBirth.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture), new List<FileCabinetRecord>() { serviceSnapshot.Records[i] });
+                if (record.Id <= this.GetStat())
+                {
+                    RecordParameters recordParameters = new RecordParameters(
+                        record.FirstName,
+                        record.LastName,
+                        record.DateOfBirth,
+                        record.Gender,
+                        record.Experience,
+                        record.Salary);
+                    this.EditRecord(record.Id, recordParameters);
+                }
+                else
+                {
+                    this.list.Add(record);
+                    AddInDictionary(this.firstNameDictionary, record.FirstName, new List<FileCabinetRecord>() { record });
+                    AddInDictionary(this.lastNameDictionary, record.LastName, new List<FileCabinetRecord>() { record });
+                    AddInDictionary(this.dateOfBirthDictionary, record.DateOfBirth.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture), new List<FileCabinetRecord>() { record });
+                }
             }
         }
 

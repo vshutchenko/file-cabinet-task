@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Text;
 using System.Xml;
+using System.Xml.Serialization;
 
 namespace FileCabinetApp
 {
@@ -72,6 +73,14 @@ namespace FileCabinetApp
         {
             FileCabinetRecordCsvReader csvReader = new FileCabinetRecordCsvReader(reader);
             var records = csvReader.ReadAll();
+            this.records = new FileCabinetRecord[records.Count];
+            records.CopyTo(this.records, 0);
+        }
+
+        public void LoadFromXml(StreamReader reader)
+        {
+            FileCabinetRecordXmlReader xmlReader = new FileCabinetRecordXmlReader(reader);
+            var records = xmlReader.ReadAll();
             this.records = new FileCabinetRecord[records.Count];
             records.CopyTo(this.records, 0);
         }

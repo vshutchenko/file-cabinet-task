@@ -206,15 +206,34 @@ namespace FileCabinetApp
             string[] parametersArray = parameters.Split(' ', 2);
             string fileFormat = parametersArray[0];
             string filePath = parametersArray[1];
+            FileStream fileStream;
+            StreamReader reader;
+            FileCabinetServiceSnapshot serviceSnapshot = new FileCabinetServiceSnapshot();
+
+            if (!File.Exists(filePath))
+            {
+                Console.WriteLine($"Import error: file {filePath} is not exist.");
+                return;
+            }
+
+            fileStream = new FileStream(filePath, FileMode.Open);
+            reader = new StreamReader(fileStream);
 
             if (fileFormat.Equals("CSV", StringComparison.InvariantCultureIgnoreCase))
             {
-                FileStream fileStream = new FileStream(filePath, FileMode.Open);
-                FileCabinetServiceSnapshot serviceSnapshot = new FileCabinetServiceSnapshot();
-                StreamReader reader = new StreamReader(fileStream);
                 serviceSnapshot.LoadFromCsv(reader);
                 fileCabinetService.Restore(serviceSnapshot);
             }
+            else if (fileFormat.Equals("XML", StringComparison.InvariantCultureIgnoreCase))
+            {
+                serviceSnapshot.LoadFromXml(reader);
+                fileCabinetService.Restore(serviceSnapshot);
+            }
+
+            Console.WriteLine($"{serviceSnapshot.Records.Count} records were imported from {filePath}.");
+
+            reader.Close();
+            fileStream.Close();
         }
 
         private static void Export(string parameters)
