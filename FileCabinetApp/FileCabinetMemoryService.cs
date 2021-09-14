@@ -224,6 +224,28 @@ namespace FileCabinetApp
             }
         }
 
+        /// <summary>
+        /// This method removes record with specified id.
+        /// </summary>
+        /// <param name="id">Id of the record.</param>
+        /// <returns>True if record was removed, false if record doesn't exist.</returns>
+        public bool Remove(int id)
+        {
+            for (int i = 0; i < this.list.Count; i++)
+            {
+                if (this.list[i].Id == id)
+                {
+                    this.firstNameDictionary[this.list[i].FirstName.ToUpperInvariant()].Remove(this.list[i]);
+                    this.lastNameDictionary[this.list[i].LastName.ToUpperInvariant()].Remove(this.list[i]);
+                    this.dateOfBirthDictionary[this.list[i].DateOfBirth.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture)].Remove(this.list[i]);
+                    this.list.RemoveAt(i);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         private static void AddInDictionary(Dictionary<string, List<FileCabinetRecord>> dictionary, string key, List<FileCabinetRecord> records)
         {
             List<FileCabinetRecord> existingValue;

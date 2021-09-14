@@ -31,6 +31,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("find", Find),
             new Tuple<string, Action<string>>("import", Import),
             new Tuple<string, Action<string>>("list", List),
+            new Tuple<string, Action<string>>("remove", Remove),
             new Tuple<string, Action<string>>("stat", Stat),
             new Tuple<string, Action<string>>("exit", Exit),
         };
@@ -44,6 +45,7 @@ namespace FileCabinetApp
             new string[] { "find", "finds records, recieves name of property and text to search", "The 'find' command finds records, recieves name of property and text to search." },
             new string[] { "import", "imports stored records in the CSV or XML file", "The 'import' command imports stored records in the CSV or XML file." },
             new string[] { "list", "prints the list of records", "The 'list' command prints the list of records." },
+            new string[] { "remove", "removes the record with specified id", "The 'remove' command removes the record with specified id." },
             new string[] { "stat", "prints number of records stored in the service", "The 'stat' command prints number of records stored in the service." },
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
         };
@@ -192,6 +194,32 @@ namespace FileCabinetApp
                     || ex is ArgumentOutOfRangeException)
             {
                 Console.WriteLine("Invalid input.");
+            }
+        }
+
+        private static void Remove(string parameters)
+        {
+            if (parameters is null)
+            {
+                Console.WriteLine("Wrong parameters. Please, specify id of record to remove.");
+            }
+
+            int id;
+            if (int.TryParse(parameters, out id))
+            {
+                bool isDeleted = fileCabinetService.Remove(id);
+                if (isDeleted)
+                {
+                    Console.WriteLine($"Record #{id} is removed.");
+                }
+                else
+                {
+                    Console.WriteLine($"Record #{id} doesn't exists.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Input parameter shoud be an integer value.");
             }
         }
 

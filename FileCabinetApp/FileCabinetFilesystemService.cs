@@ -283,6 +283,16 @@ namespace FileCabinetApp
             return new FileCabinetServiceSnapshot(records.ToArray());
         }
 
+        /// <summary>
+        /// This method removes record with specified id.
+        /// </summary>
+        /// <param name="id">Id of the record.</param>
+        /// <returns>True if record was removed, false if record doesn't exist.</returns>
+        public bool Remove(int id)
+        {
+            throw new NotImplementedException();
+        }
+
         private static FileCabinetRecord ReadRecord(BinaryReader reader)
         {
             reader.BaseStream.Seek(2, SeekOrigin.Current);
