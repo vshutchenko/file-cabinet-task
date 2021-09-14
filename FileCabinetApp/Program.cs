@@ -219,15 +219,21 @@ namespace FileCabinetApp
             fileStream = new FileStream(filePath, FileMode.Open);
             reader = new StreamReader(fileStream);
 
-            if (fileFormat.Equals("CSV", StringComparison.InvariantCultureIgnoreCase))
+            FileInfo fileInfo = new FileInfo(filePath);
+
+            if (fileFormat.Equals("CSV", StringComparison.InvariantCultureIgnoreCase) && fileInfo.Extension.ToUpperInvariant().Equals(".CSV", StringComparison.InvariantCultureIgnoreCase))
             {
                 serviceSnapshot.LoadFromCsv(reader);
                 fileCabinetService.Restore(serviceSnapshot);
             }
-            else if (fileFormat.Equals("XML", StringComparison.InvariantCultureIgnoreCase))
+            else if (fileFormat.Equals("XML", StringComparison.InvariantCultureIgnoreCase) && fileInfo.Extension.ToUpperInvariant().Equals(".XML", StringComparison.InvariantCultureIgnoreCase))
             {
                 serviceSnapshot.LoadFromXml(reader);
                 fileCabinetService.Restore(serviceSnapshot);
+            }
+            else
+            {
+                Console.WriteLine("Invalid file type.");
             }
 
             Console.WriteLine($"{serviceSnapshot.Records.Count} records were imported from {filePath}.");
@@ -275,6 +281,7 @@ namespace FileCabinetApp
 
             StreamWriter writer = new StreamWriter(filePath);
             FileCabinetServiceSnapshot serviceSnapshot = fileCabinetService.MakeSnapshot();
+
             if (fileFormat.Equals("CSV", StringComparison.InvariantCultureIgnoreCase))
             {
                 serviceSnapshot.SaveToCsv(writer);

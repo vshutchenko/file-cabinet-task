@@ -27,7 +27,33 @@ namespace FileCabinetApp
 
         public void Restore(FileCabinetServiceSnapshot serviceSnapshot)
         {
-            throw new NotImplementedException();
+            if (serviceSnapshot is null)
+            {
+                throw new ArgumentNullException(nameof(serviceSnapshot), $"{nameof(serviceSnapshot)} is null.");
+            }
+
+            foreach (var record in serviceSnapshot.Records)
+            {
+                RecordParameters recordParameters = new RecordParameters(
+                        record.FirstName,
+                        record.LastName,
+                        record.DateOfBirth,
+                        record.Gender,
+                        record.Experience,
+                        record.Salary);
+
+                if (record.Id <= this.GetStat())
+                {
+                    this.EditRecord(record.Id, recordParameters);
+                }
+                else
+                {
+                    BinaryWriter writer = new BinaryWriter(this.fileStream, Encoding.Unicode, true);
+                    writer.Seek(0, SeekOrigin.End);
+                    WriteRecord(record.Id, recordParameters, writer);
+                    writer.Close();
+                }
+            }
         }
 
         /// <summary>
