@@ -5,19 +5,22 @@ using System.Xml.Serialization;
 
 namespace FileCabinetApp
 {
+    /// <summary>
+    /// This class represents xml model of name element.
+    /// </summary>
     public class Name
     {
         /// <summary>
-        /// Gets or sets the first name of person.
+        /// Gets or sets the first name.
         /// </summary>
-        /// <value>The first name of person.</value>
+        /// <value>The first name.</value>
         [XmlAttribute("first")]
         public string FirstName { get; set; }
 
         /// <summary>
-        /// Gets or sets the last name of person.
+        /// Gets or sets the last name.
         /// </summary>
-        /// <value>The last name of person.</value>
+        /// <value>The last name.</value>
         [XmlAttribute("last")]
         public string LastName { get; set; }
     }

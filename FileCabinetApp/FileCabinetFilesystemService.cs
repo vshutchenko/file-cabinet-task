@@ -25,6 +25,10 @@ namespace FileCabinetApp
             this.fileStream = fileStream;
         }
 
+        /// <summary>
+        /// This method restores state of object from snapshot.
+        /// </summary>
+        /// <param name="serviceSnapshot">The snapshot of service.</param>
         public void Restore(FileCabinetServiceSnapshot serviceSnapshot)
         {
             if (serviceSnapshot is null)

@@ -15,14 +15,6 @@ namespace FileCabinetApp
     {
         private FileCabinetRecord[] records;
 
-        public ReadOnlyCollection<FileCabinetRecord> Records
-        {
-            get
-            {
-                return new ReadOnlyCollection<FileCabinetRecord>(new List<FileCabinetRecord>(records));
-            }
-        }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetServiceSnapshot"/> class.
         /// </summary>
@@ -38,6 +30,20 @@ namespace FileCabinetApp
         public FileCabinetServiceSnapshot(FileCabinetRecord[] records)
         {
             this.records = records;
+        }
+
+        /// <summary>
+        /// Gets collection of records store in snapshot.
+        /// </summary>
+        /// <value>
+        /// Collection of records.
+        /// </value>
+        public ReadOnlyCollection<FileCabinetRecord> Records
+        {
+            get
+            {
+                return new ReadOnlyCollection<FileCabinetRecord>(new List<FileCabinetRecord>(this.records));
+            }
         }
 
         /// <summary>
@@ -69,6 +75,10 @@ namespace FileCabinetApp
             xmlWriter.Close();
         }
 
+        /// <summary>
+        /// Loads records from csv file.
+        /// </summary>
+        /// <param name="reader">A stream to csv file.</param>
         public void LoadFromCsv(StreamReader reader)
         {
             FileCabinetRecordCsvReader csvReader = new FileCabinetRecordCsvReader(reader);
@@ -77,6 +87,10 @@ namespace FileCabinetApp
             records.CopyTo(this.records, 0);
         }
 
+        /// <summary>
+        /// Loads records from xml file.
+        /// </summary>
+        /// <param name="reader">A stream to xml file.</param>
         public void LoadFromXml(StreamReader reader)
         {
             FileCabinetRecordXmlReader xmlReader = new FileCabinetRecordXmlReader(reader);

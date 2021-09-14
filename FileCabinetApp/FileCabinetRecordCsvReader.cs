@@ -6,15 +6,26 @@ using System.Text;
 
 namespace FileCabinetApp
 {
+    /// <summary>
+    /// This class performs reading of csv files.
+    /// </summary>
     public class FileCabinetRecordCsvReader
     {
         private StreamReader reader;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FileCabinetRecordCsvReader"/> class.
+        /// </summary>
+        /// <param name="reader">An exemplar of <see cref="StreamReader"/> class opened to csv file.</param>
         public FileCabinetRecordCsvReader(StreamReader reader)
         {
             this.reader = reader;
         }
 
+        /// <summary>
+        /// Reads all data from csv file.
+        /// </summary>
+        /// <returns>Collection of <see cref="FileCabinetRecord"/>.</returns>
         public IList<FileCabinetRecord> ReadAll()
         {
             List<FileCabinetRecord> records = new List<FileCabinetRecord>();
@@ -29,9 +40,9 @@ namespace FileCabinetApp
             short experience;
             decimal salary;
 
-            while (!reader.EndOfStream)
+            while (!this.reader.EndOfStream)
             {
-                recordString = reader.ReadLine().Split(',');
+                recordString = this.reader.ReadLine().Split(',');
                 id = int.Parse(recordString[0], CultureInfo.InvariantCulture);
                 firstName = recordString[1];
                 lastName = recordString[2];

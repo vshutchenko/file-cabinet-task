@@ -5,6 +5,9 @@ using System.Xml.Serialization;
 
 namespace FileCabinetApp
 {
+    /// <summary>
+    /// Serializable model of <see cref="FileCabinetRecord"/> class.
+    /// </summary>
     [XmlType("record")]
     public class FileCabinetRecordSerializable
     {

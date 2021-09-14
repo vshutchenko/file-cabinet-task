@@ -63,6 +63,10 @@ namespace FileCabinetApp
         /// <param name="recordParameters">The parameter object for FileCabinetRecord.</param>
         public void EditRecord(int id, RecordParameters recordParameters);
 
+        /// <summary>
+        /// This method restores state of object from snapshot.
+        /// </summary>
+        /// <param name="serviceSnapshot">The snapshot of service.</param>
         public void Restore(FileCabinetServiceSnapshot serviceSnapshot);
     }
 }

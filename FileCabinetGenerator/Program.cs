@@ -8,8 +8,15 @@ using FileCabinetApp;
 
 namespace FileCabinetGenerator
 {
+    /// <summary>
+    /// This class performs generating xml and cvs files.
+    /// </summary>
     public static class Program
     {
+        /// <summary>
+        /// Entry point of app.
+        /// </summary>
+        /// <param name="args">Command line arguments.</param>
         public static void Main(string[] args)
         {
             bool isParametersValid;
