@@ -14,6 +14,7 @@ namespace FileCabinetApp
     {
         private const int MaxStringLength = 120;
         private const int RecordSize = (sizeof(short) * 2) + (sizeof(int) * 4) + (MaxStringLength * 2) + sizeof(char) + sizeof(decimal);
+        private const short DeletedBitFlag = 0b_0000_0100;
         private FileStream fileStream;
 
         /// <summary>
@@ -100,8 +101,7 @@ namespace FileCabinetApp
 
             while (this.fileStream.Position < this.fileStream.Length)
             {
-                var record = ReadRecord(reader);
-                if (record.Id == id)
+                if (TryReadRecord(reader, out FileCabinetRecord record) && (record.Id == id))
                 {
                     this.fileStream.Seek(-RecordSize, SeekOrigin.Current);
                     WriteRecord(id, recordParameters, writer);
@@ -140,8 +140,10 @@ namespace FileCabinetApp
                 {
                     this.fileStream.Seek(recordStartOffset, SeekOrigin.Current);
 
-                    FileCabinetRecord record = ReadRecord(reader);
-                    records.Add(record);
+                    if (TryReadRecord(reader, out FileCabinetRecord record))
+                    {
+                        records.Add(record);
+                    }
                 }
                 else
                 {
@@ -176,8 +178,10 @@ namespace FileCabinetApp
                 {
                     this.fileStream.Seek(recordStartOffset, SeekOrigin.Current);
 
-                    FileCabinetRecord record = ReadRecord(reader);
-                    records.Add(record);
+                    if (TryReadRecord(reader, out FileCabinetRecord record))
+                    {
+                        records.Add(record);
+                    }
                 }
                 else
                 {
@@ -211,8 +215,10 @@ namespace FileCabinetApp
                 {
                     this.fileStream.Seek(recordStartOffset, SeekOrigin.Current);
 
-                    FileCabinetRecord record = ReadRecord(reader);
-                    records.Add(record);
+                    if (TryReadRecord(reader, out FileCabinetRecord record))
+                    {
+                        records.Add(record);
+                    }
                 }
                 else
                 {
@@ -237,8 +243,10 @@ namespace FileCabinetApp
 
             while (this.fileStream.Position < this.fileStream.Length)
             {
-                FileCabinetRecord record = ReadRecord(reader);
-                records.Add(record);
+                if (TryReadRecord(reader, out FileCabinetRecord record))
+                {
+                    records.Add(record);
+                }
             }
 
             reader.Close();
@@ -252,11 +260,25 @@ namespace FileCabinetApp
         /// <returns>Array of stored records.</returns>
         public int GetStat()
         {
+            BinaryReader reader = new BinaryReader(this.fileStream, Encoding.Unicode, true);
             long recordsCount = this.fileStream.Length / RecordSize;
 
             if (recordsCount > int.MaxValue)
             {
                 throw new ArgumentOutOfRangeException($"Number of records is bigger than int.MaxValue.");
+            }
+
+            this.fileStream.Seek(0, SeekOrigin.Begin);
+
+            while (this.fileStream.Position < this.fileStream.Length)
+            {
+                short reservedBytes = reader.ReadInt16();
+                if ((reservedBytes & DeletedBitFlag) == DeletedBitFlag)
+                {
+                    recordsCount--;
+                }
+
+                reader.BaseStream.Seek(RecordSize - sizeof(short), SeekOrigin.Current);
             }
 
             return (int)recordsCount;
@@ -274,8 +296,10 @@ namespace FileCabinetApp
 
             while (this.fileStream.Position < this.fileStream.Length)
             {
-                FileCabinetRecord record = ReadRecord(reader);
-                records.Add(record);
+                if (TryReadRecord(reader, out FileCabinetRecord record))
+                {
+                    records.Add(record);
+                }
             }
 
             reader.Close();
@@ -290,12 +314,35 @@ namespace FileCabinetApp
         /// <returns>True if record was removed, false if record doesn't exist.</returns>
         public bool Remove(int id)
         {
-            throw new NotImplementedException();
+            BinaryReader reader = new BinaryReader(this.fileStream, Encoding.Unicode, true);
+            BinaryWriter writer = new BinaryWriter(this.fileStream, Encoding.Unicode, true);
+
+            this.fileStream.Seek(0, SeekOrigin.Begin);
+
+            while (this.fileStream.Position < this.fileStream.Length)
+            {
+                if (TryReadRecord(reader, out FileCabinetRecord record) && (record.Id == id))
+                {
+                    this.fileStream.Seek(-RecordSize, SeekOrigin.Current);
+                    writer.Write(DeletedBitFlag);
+                    return true;
+                }
+            }
+
+            return false;
         }
 
-        private static FileCabinetRecord ReadRecord(BinaryReader reader)
+        private static bool TryReadRecord(BinaryReader reader, out FileCabinetRecord record)
         {
-            reader.BaseStream.Seek(2, SeekOrigin.Current);
+            short reservedBytes = reader.ReadInt16();
+
+            if ((reservedBytes & DeletedBitFlag) == DeletedBitFlag)
+            {
+                reader.BaseStream.Seek(RecordSize - sizeof(short), SeekOrigin.Current);
+                record = null;
+                return false;
+            }
+
             int id = reader.ReadInt32();
             string firstName = Encoding.Unicode.GetString(reader.ReadBytes(MaxStringLength)).Trim('\0');
             string lastName = Encoding.Unicode.GetString(reader.ReadBytes(MaxStringLength)).Trim('\0');
@@ -306,9 +353,9 @@ namespace FileCabinetApp
             short experience = reader.ReadInt16();
             decimal salary = reader.ReadDecimal();
 
-            FileCabinetRecord record = new FileCabinetRecord() { Id = id, FirstName = firstName, LastName = lastName, DateOfBirth = new DateTime(year, month, day), Gender = gender, Experience = experience, Salary = salary };
+            record = new FileCabinetRecord() { Id = id, FirstName = firstName, LastName = lastName, DateOfBirth = new DateTime(year, month, day), Gender = gender, Experience = experience, Salary = salary };
 
-            return record;
+            return true;
         }
 
         private static void WriteRecord(int id, RecordParameters recordParameters, BinaryWriter writer)
