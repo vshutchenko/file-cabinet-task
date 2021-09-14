@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Text;
 using System.Xml;
+using System.Xml.Serialization;
 
 namespace FileCabinetApp
 {
@@ -16,10 +18,32 @@ namespace FileCabinetApp
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetServiceSnapshot"/> class.
         /// </summary>
+        public FileCabinetServiceSnapshot()
+        {
+            this.records = Array.Empty<FileCabinetRecord>();
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FileCabinetServiceSnapshot"/> class.
+        /// </summary>
         /// <param name="records">The array of instances of the <see cref="FileCabinetRecord"/> class.</param>
         public FileCabinetServiceSnapshot(FileCabinetRecord[] records)
         {
             this.records = records;
+        }
+
+        /// <summary>
+        /// Gets collection of records store in snapshot.
+        /// </summary>
+        /// <value>
+        /// Collection of records.
+        /// </value>
+        public ReadOnlyCollection<FileCabinetRecord> Records
+        {
+            get
+            {
+                return new ReadOnlyCollection<FileCabinetRecord>(new List<FileCabinetRecord>(this.records));
+            }
         }
 
         /// <summary>
@@ -49,6 +73,30 @@ namespace FileCabinetApp
             }
 
             xmlWriter.Close();
+        }
+
+        /// <summary>
+        /// Loads records from csv file.
+        /// </summary>
+        /// <param name="reader">A stream to csv file.</param>
+        public void LoadFromCsv(StreamReader reader)
+        {
+            FileCabinetRecordCsvReader csvReader = new FileCabinetRecordCsvReader(reader);
+            var records = csvReader.ReadAll();
+            this.records = new FileCabinetRecord[records.Count];
+            records.CopyTo(this.records, 0);
+        }
+
+        /// <summary>
+        /// Loads records from xml file.
+        /// </summary>
+        /// <param name="reader">A stream to xml file.</param>
+        public void LoadFromXml(StreamReader reader)
+        {
+            FileCabinetRecordXmlReader xmlReader = new FileCabinetRecordXmlReader(reader);
+            var records = xmlReader.ReadAll();
+            this.records = new FileCabinetRecord[records.Count];
+            records.CopyTo(this.records, 0);
         }
     }
 }

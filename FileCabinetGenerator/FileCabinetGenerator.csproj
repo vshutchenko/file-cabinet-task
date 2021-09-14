@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -8,12 +8,8 @@
     <CodeAnalysisRuleSet>code-analysis.ruleset</CodeAnalysisRuleSet>
     <DocumentationFile>$(OutputPath)$(AssemblyName).xml</DocumentationFile>
     <NoWarn>$(NoWarn),1573,1591,1712</NoWarn>
+    
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Remove="FileCabinetCustomService.cs" />
-    <Compile Remove="FileCabinetDefaultService.cs" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
@@ -23,11 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EditorConfigFiles Remove="C:\Users\Vlad\source\repos\file-cabinet-task\FileCabinetApp\.editorconfig" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="C:\Users\Vlad\source\repos\file-cabinet-task\FileCabinetApp\.editorconfig" />
+    <ProjectReference Include="..\FileCabinetApp\FileCabinetApp.csproj" />
   </ItemGroup>
 
 </Project>

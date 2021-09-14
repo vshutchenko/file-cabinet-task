@@ -103,9 +103,15 @@
             </summary>
             <param name="validator">The validator which will be used for parameters validation.</param>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
+            <summary>
+            This method restores records from service snapshot.
+            </summary>
+            <param name="serviceSnapshot">The snapshot of <see cref="T:FileCabinetApp.IFileCabinetService"/> class.</param>
+        </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.MakeSnapshot">
             <summary>
-            This method makes snaphot of object.
+            This method makes snapshot of object.
             </summary>
             <returns>The instnace of <see cref="T:FileCabinetApp.FileCabinetServiceSnapshot"/> class.</returns>
         </member>
@@ -220,6 +226,42 @@
             </summary>
             <param name="record">The instance of the <see cref="T:FileCabinetApp.FileCabinetRecord"/> class.</param>
         </member>
+        <member name="P:FileCabinetApp.FileCabinetRecordSerializable.Id">
+            <summary>
+            Gets or sets the record id.
+            </summary>
+            <value>The record id.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecordSerializable.Name">
+            <summary>
+            Gets or sets the full name of person.
+            </summary>
+            <value>The full name of person.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecordSerializable.DateOfBirth">
+            <summary>
+            Gets or sets the person's date of birth.
+            </summary>
+            <value>The person's date of birth.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecordSerializable.Gender">
+            <summary>
+            Gets or sets the gender of the person.
+            </summary>
+            <value>The gender of the person. 'M' - male, 'F' - female.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecordSerializable.Experience">
+            <summary>
+            Gets or sets the experience of person.
+            </summary>
+            <value>The person's experience in work.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecordSerializable.Salary">
+            <summary>
+            Gets or sets the salary of the person.
+            </summary>
+            <value>The salary of the person.</value>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetRecordXmlWriter">
             <summary>
             This class writes records into XML format.
@@ -240,6 +282,11 @@
         <member name="T:FileCabinetApp.FileCabinetServiceSnapshot">
             <summary>
             This class represent a snapshot of the <see cref="T:FileCabinetApp.IFileCabinetService"/>.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetServiceSnapshot"/> class.
             </summary>
         </member>
         <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.#ctor(FileCabinetApp.FileCabinetRecord[])">
@@ -328,6 +375,18 @@
             This method implements parameters validation.
             </summary>
             <param name="recordParameters">The parameter object for FileCabinetRecord.</param>
+        </member>
+        <member name="P:FileCabinetApp.Name.FirstName">
+            <summary>
+            Gets or sets the first name of person.
+            </summary>
+            <value>The first name of person.</value>
+        </member>
+        <member name="P:FileCabinetApp.Name.LastName">
+            <summary>
+            Gets or sets the last name of person.
+            </summary>
+            <value>The last name of person.</value>
         </member>
         <member name="T:FileCabinetApp.Program">
             <summary>

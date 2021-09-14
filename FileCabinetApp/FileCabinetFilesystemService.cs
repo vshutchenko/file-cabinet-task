@@ -26,6 +26,41 @@ namespace FileCabinetApp
         }
 
         /// <summary>
+        /// This method restores state of object from snapshot.
+        /// </summary>
+        /// <param name="serviceSnapshot">The snapshot of service.</param>
+        public void Restore(FileCabinetServiceSnapshot serviceSnapshot)
+        {
+            if (serviceSnapshot is null)
+            {
+                throw new ArgumentNullException(nameof(serviceSnapshot), $"{nameof(serviceSnapshot)} is null.");
+            }
+
+            foreach (var record in serviceSnapshot.Records)
+            {
+                RecordParameters recordParameters = new RecordParameters(
+                        record.FirstName,
+                        record.LastName,
+                        record.DateOfBirth,
+                        record.Gender,
+                        record.Experience,
+                        record.Salary);
+
+                if (record.Id <= this.GetStat())
+                {
+                    this.EditRecord(record.Id, recordParameters);
+                }
+                else
+                {
+                    BinaryWriter writer = new BinaryWriter(this.fileStream, Encoding.Unicode, true);
+                    writer.Seek(0, SeekOrigin.End);
+                    WriteRecord(record.Id, recordParameters, writer);
+                    writer.Close();
+                }
+            }
+        }
+
+        /// <summary>
         /// Creates new record.
         /// </summary>
         /// <param name="recordParameters">Parameters object for <see cref="FileCabinetRecord"/> class.</param>

@@ -29,6 +29,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("export", Export),
             new Tuple<string, Action<string>>("create", Create),
             new Tuple<string, Action<string>>("find", Find),
+            new Tuple<string, Action<string>>("import", Import),
             new Tuple<string, Action<string>>("list", List),
             new Tuple<string, Action<string>>("stat", Stat),
             new Tuple<string, Action<string>>("exit", Exit),
@@ -38,9 +39,10 @@ namespace FileCabinetApp
         {
             new string[] { "help", "prints the help screen", "The 'help' command prints the help screen." },
             new string[] { "edit", "edits the record with specified id", "The 'edit' command edits the record with specified id." },
-            new string[] { "export", "exports stored records in the CSV file", "The 'export' command exports stored records in the CSV file." },
+            new string[] { "export", "exports stored records in the CSV or XML file", "The 'export' command exports stored records in the CSV or XML file." },
             new string[] { "create", "creates a new record", "The 'create' command creates a new record." },
             new string[] { "find", "finds records, recieves name of property and text to search", "The 'find' command finds records, recieves name of property and text to search." },
+            new string[] { "import", "imports stored records in the CSV or XML file", "The 'import' command imports stored records in the CSV or XML file." },
             new string[] { "list", "prints the list of records", "The 'list' command prints the list of records." },
             new string[] { "stat", "prints number of records stored in the service", "The 'stat' command prints number of records stored in the service." },
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
@@ -193,6 +195,53 @@ namespace FileCabinetApp
             }
         }
 
+        private static void Import(string parameters)
+        {
+            if (string.IsNullOrEmpty(parameters) || string.IsNullOrWhiteSpace(parameters) || parameters.Split(' ', 2).Length < 2)
+            {
+                Console.WriteLine("Invalid parameters.");
+                return;
+            }
+
+            string[] parametersArray = parameters.Split(' ', 2);
+            string fileFormat = parametersArray[0];
+            string filePath = parametersArray[1];
+            FileStream fileStream;
+            StreamReader reader;
+            FileCabinetServiceSnapshot serviceSnapshot = new FileCabinetServiceSnapshot();
+
+            if (!File.Exists(filePath))
+            {
+                Console.WriteLine($"Import error: file {filePath} is not exist.");
+                return;
+            }
+
+            fileStream = new FileStream(filePath, FileMode.Open);
+            reader = new StreamReader(fileStream);
+
+            FileInfo fileInfo = new FileInfo(filePath);
+
+            if (fileFormat.Equals("CSV", StringComparison.InvariantCultureIgnoreCase) && fileInfo.Extension.ToUpperInvariant().Equals(".CSV", StringComparison.InvariantCultureIgnoreCase))
+            {
+                serviceSnapshot.LoadFromCsv(reader);
+                fileCabinetService.Restore(serviceSnapshot);
+            }
+            else if (fileFormat.Equals("XML", StringComparison.InvariantCultureIgnoreCase) && fileInfo.Extension.ToUpperInvariant().Equals(".XML", StringComparison.InvariantCultureIgnoreCase))
+            {
+                serviceSnapshot.LoadFromXml(reader);
+                fileCabinetService.Restore(serviceSnapshot);
+            }
+            else
+            {
+                Console.WriteLine("Invalid file type.");
+            }
+
+            Console.WriteLine($"{serviceSnapshot.Records.Count} records were imported from {filePath}.");
+
+            reader.Close();
+            fileStream.Close();
+        }
+
         private static void Export(string parameters)
         {
             if (string.IsNullOrEmpty(parameters) || string.IsNullOrWhiteSpace(parameters) || parameters.Split(' ', 2).Length < 2)
@@ -232,6 +281,7 @@ namespace FileCabinetApp
 
             StreamWriter writer = new StreamWriter(filePath);
             FileCabinetServiceSnapshot serviceSnapshot = fileCabinetService.MakeSnapshot();
+
             if (fileFormat.Equals("CSV", StringComparison.InvariantCultureIgnoreCase))
             {
                 serviceSnapshot.SaveToCsv(writer);
