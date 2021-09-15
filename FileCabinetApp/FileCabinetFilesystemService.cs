@@ -27,6 +27,37 @@ namespace FileCabinetApp
         }
 
         /// <summary>
+        /// This method removes empty records with from file.
+        /// </summary>
+        /// <returns>Number of purged records.</returns>
+        public Tuple<int, int> Purge()
+        {
+            RecordParameters recordParameters;
+            BinaryWriter writer = new BinaryWriter(this.fileStream, Encoding.Unicode, true);
+            var records = this.GetRecords();
+            long deletedRecords = (this.fileStream.Length / RecordSize) - records.Count;
+            long recordsCount = this.fileStream.Length / RecordSize;
+            this.fileStream.SetLength(0);
+            this.fileStream.Seek(0, SeekOrigin.Begin);
+
+            for (int i = 0; i < records.Count; i++)
+            {
+                recordParameters = new RecordParameters(
+                    records[i].FirstName,
+                    records[i].LastName,
+                    records[i].DateOfBirth,
+                    records[i].Gender,
+                    records[i].Experience,
+                    records[i].Salary);
+                WriteRecord(records[i].Id, recordParameters, writer);
+            }
+
+            writer.Close();
+
+            return new Tuple<int, int>((int)deletedRecords, (int)recordsCount);
+        }
+
+        /// <summary>
         /// This method restores state of object from snapshot.
         /// </summary>
         /// <param name="serviceSnapshot">The snapshot of service.</param>
@@ -328,6 +359,9 @@ namespace FileCabinetApp
                     return true;
                 }
             }
+
+            reader.Close();
+            writer.Close();
 
             return false;
         }

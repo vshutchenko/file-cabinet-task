@@ -28,6 +28,15 @@ namespace FileCabinetApp
         }
 
         /// <summary>
+        /// This method removes empty records with from file.
+        /// </summary>
+        /// <returns>Number of purged records.</returns>
+        public Tuple<int, int> Purge()
+        {
+            return new Tuple<int, int>(0, this.list.Count);
+        }
+
+        /// <summary>
         /// This method restores records from service snapshot.
         /// </summary>
         /// <param name="serviceSnapshot">The snapshot of <see cref="IFileCabinetService"/> class.</param>

@@ -75,5 +75,11 @@ namespace FileCabinetApp
         /// <param name="id">Id of the record.</param>
         /// <returns>True if record was removed, false if record doesn't exist.</returns>
         public bool Remove(int id);
+
+        /// <summary>
+        /// This method removes empty records with from file.
+        /// </summary>
+        /// <returns>Number of purged records.</returns>
+        public Tuple<int, int> Purge();
     }
 }

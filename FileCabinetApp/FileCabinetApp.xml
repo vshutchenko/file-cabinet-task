@@ -38,6 +38,12 @@
             </summary>
             <param name="fileStream">The stream to file with records.</param>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.Purge">
+            <summary>
+            This method removes empty records with from file.
+            </summary>
+            <returns>Number of purged records.</returns>
+        </member>
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
             <summary>
             This method restores state of object from snapshot.
@@ -115,6 +121,12 @@
             Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetMemoryService"/> class.
             </summary>
             <param name="validator">The validator which will be used for parameters validation.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.Purge">
+            <summary>
+            This method removes empty records with from file.
+            </summary>
+            <returns>Number of purged records.</returns>
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
             <summary>
@@ -456,6 +468,12 @@
             </summary>
             <param name="id">Id of the record.</param>
             <returns>True if record was removed, false if record doesn't exist.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.Purge">
+            <summary>
+            This method removes empty records with from file.
+            </summary>
+            <returns>Number of purged records.</returns>
         </member>
         <member name="T:FileCabinetApp.IRecordValidator">
             <summary>

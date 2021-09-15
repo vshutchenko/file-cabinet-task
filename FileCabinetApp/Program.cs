@@ -31,6 +31,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("find", Find),
             new Tuple<string, Action<string>>("import", Import),
             new Tuple<string, Action<string>>("list", List),
+            new Tuple<string, Action<string>>("purge", Purge),
             new Tuple<string, Action<string>>("remove", Remove),
             new Tuple<string, Action<string>>("stat", Stat),
             new Tuple<string, Action<string>>("exit", Exit),
@@ -45,6 +46,7 @@ namespace FileCabinetApp
             new string[] { "find", "finds records, recieves name of property and text to search", "The 'find' command finds records, recieves name of property and text to search." },
             new string[] { "import", "imports stored records in the CSV or XML file", "The 'import' command imports stored records in the CSV or XML file." },
             new string[] { "list", "prints the list of records", "The 'list' command prints the list of records." },
+            new string[] { "purge", "defragments the file", "The 'purge' command defragments the file." },
             new string[] { "remove", "removes the record with specified id", "The 'remove' command removes the record with specified id." },
             new string[] { "stat", "prints number of records stored in the service", "The 'stat' command prints number of records stored in the service." },
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
@@ -150,6 +152,12 @@ namespace FileCabinetApp
             }
 
             Console.WriteLine();
+        }
+
+        private static void Purge(string parameters)
+        {
+            Tuple<int, int> numberOfRecords = fileCabinetService.Purge();
+            Console.WriteLine($"Data file processing is completed: {numberOfRecords.Item1} of {numberOfRecords.Item2} records were purged.");
         }
 
         private static void Exit(string parameters)
