@@ -87,15 +87,15 @@
         </member>
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.GetRecords">
             <summary>
-            This method returns number of stored records.
+            This method returns collection of stored records.
             </summary>
-            <returns>Number of stored records.</returns>
+            <returns>Collection of stored records.</returns>
         </member>
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.GetStat">
             <summary>
-            This method returns array of stored records.
+            This method returns number of deleted and stored records.
             </summary>
-            <returns>Array of stored records.</returns>
+            <returns>Number of deleted and stored records.</returns>
         </member>
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.MakeSnapshot">
             <summary>
@@ -142,15 +142,15 @@
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.GetRecords">
             <summary>
-            This method returns number of stored records.
+            This method returns collection of stored records.
             </summary>
-            <returns>Number of stored records.</returns>
+            <returns>Collection of stored records.</returns>
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.GetStat">
             <summary>
-            This method returns array of stored records.
+            This method returns number of deleted and stored records.
             </summary>
-            <returns>Array of stored records.</returns>
+            <returns>Number of deleted and stored records.</returns>
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.FindByFirstName(System.String)">
             <summary>
@@ -411,15 +411,15 @@
         </member>
         <member name="M:FileCabinetApp.IFileCabinetService.GetRecords">
             <summary>
-            This method returns number of stored records.
+            This method returns collection of stored records.
             </summary>
-            <returns>Number of stored records.</returns>
+            <returns>Collection of stored records.</returns>
         </member>
         <member name="M:FileCabinetApp.IFileCabinetService.GetStat">
             <summary>
-            This method returns array of stored records.
+            This method returns number of deleted and stored records.
             </summary>
-            <returns>Array of stored records.</returns>
+            <returns>Number of deleted and stored records.</returns>
         </member>
         <member name="M:FileCabinetApp.IFileCabinetService.FindByFirstName(System.String)">
             <summary>

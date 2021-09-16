@@ -78,7 +78,7 @@ namespace FileCabinetApp
                         record.Experience,
                         record.Salary);
 
-                if (record.Id <= this.GetStat())
+                if (record.Id <= this.GetStat().Item2)
                 {
                     this.EditRecord(record.Id, recordParameters);
                 }
@@ -263,9 +263,9 @@ namespace FileCabinetApp
         }
 
         /// <summary>
-        /// This method returns number of stored records.
+        /// This method returns collection of stored records.
         /// </summary>
-        /// <returns>Number of stored records.</returns>
+        /// <returns>Collection of stored records.</returns>
         public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
             List<FileCabinetRecord> records = new List<FileCabinetRecord>();
@@ -286,13 +286,14 @@ namespace FileCabinetApp
         }
 
         /// <summary>
-        /// This method returns array of stored records.
+        /// This method returns number of deleted and stored records.
         /// </summary>
-        /// <returns>Array of stored records.</returns>
-        public int GetStat()
+        /// <returns>Number of deleted and stored records.</returns>
+        public Tuple<int, int> GetStat()
         {
             BinaryReader reader = new BinaryReader(this.fileStream, Encoding.Unicode, true);
-            long recordsCount = this.fileStream.Length / RecordSize;
+            int recordsCount = (int)(this.fileStream.Length / RecordSize);
+            int deletedRecordsCount = 0;
 
             if (recordsCount > int.MaxValue)
             {
@@ -306,13 +307,15 @@ namespace FileCabinetApp
                 short reservedBytes = reader.ReadInt16();
                 if ((reservedBytes & DeletedBitFlag) == DeletedBitFlag)
                 {
-                    recordsCount--;
+                    deletedRecordsCount++;
                 }
 
                 reader.BaseStream.Seek(RecordSize - sizeof(short), SeekOrigin.Current);
             }
 
-            return (int)recordsCount;
+            recordsCount -= deletedRecordsCount;
+
+            return new Tuple<int, int>(deletedRecordsCount, recordsCount);
         }
 
         /// <summary>

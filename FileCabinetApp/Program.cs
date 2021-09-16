@@ -169,7 +169,7 @@ namespace FileCabinetApp
         private static void Stat(string parameters)
         {
             var recordsCount = Program.fileCabinetService.GetStat();
-            Console.WriteLine($"{recordsCount} record(s).");
+            Console.WriteLine($"{recordsCount.Item2} record(s). Deleted records: {recordsCount.Item1}.");
         }
 
         private static void Create(string parameters)
@@ -341,7 +341,7 @@ namespace FileCabinetApp
             string record;
             ReadOnlyCollection<FileCabinetRecord> records = fileCabinetService.GetRecords();
 
-            for (int i = 0; i < fileCabinetService.GetStat(); i++)
+            for (int i = 0; i < fileCabinetService.GetStat().Item2; i++)
             {
                 record = $"#{records[i].Id}, " +
                     $"{records[i].FirstName}, " +
@@ -590,7 +590,7 @@ namespace FileCabinetApp
             bool isValid = true;
             string validationErrorMessage = string.Empty;
             int minValue = 1;
-            int maxValue = fileCabinetService.GetStat();
+            int maxValue = fileCabinetService.GetStat().Item2;
 
             if ((id < minValue) || (id > maxValue))
             {

@@ -49,7 +49,7 @@ namespace FileCabinetApp
 
             foreach (var record in serviceSnapshot.Records)
             {
-                if (record.Id <= this.GetStat())
+                if (record.Id <= this.GetStat().Item2)
                 {
                     RecordParameters recordParameters = new RecordParameters(
                         record.FirstName,
@@ -81,21 +81,21 @@ namespace FileCabinetApp
         }
 
         /// <summary>
-        /// This method returns number of stored records.
+        /// This method returns collection of stored records.
         /// </summary>
-        /// <returns>Number of stored records.</returns>
+        /// <returns>Collection of stored records.</returns>
         public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
             return new ReadOnlyCollection<FileCabinetRecord>(this.list);
         }
 
         /// <summary>
-        /// This method returns array of stored records.
+        /// This method returns number of deleted and stored records.
         /// </summary>
-        /// <returns>Array of stored records.</returns>
-        public int GetStat()
+        /// <returns>Number of deleted and stored records.</returns>
+        public Tuple<int, int> GetStat()
         {
-            return this.list.Count;
+            return new Tuple<int, int>(0, this.list.Count);
         }
 
         /// <summary>

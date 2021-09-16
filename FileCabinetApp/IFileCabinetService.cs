@@ -17,16 +17,16 @@ namespace FileCabinetApp
         public FileCabinetServiceSnapshot MakeSnapshot();
 
         /// <summary>
-        /// This method returns number of stored records.
+        /// This method returns collection of stored records.
         /// </summary>
-        /// <returns>Number of stored records.</returns>
+        /// <returns>Collection of stored records.</returns>
         public ReadOnlyCollection<FileCabinetRecord> GetRecords();
 
         /// <summary>
-        /// This method returns array of stored records.
+        /// This method returns number of deleted and stored records.
         /// </summary>
-        /// <returns>Array of stored records.</returns>
-        public int GetStat();
+        /// <returns>Number of deleted and stored records.</returns>
+        public Tuple<int, int> GetStat();
 
         /// <summary>
         /// This method performs searching records by first name.
