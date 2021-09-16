@@ -4,5 +4,16 @@
         <name>FileCabinetGenerator</name>
     </assembly>
     <members>
+        <member name="T:FileCabinetGenerator.Program">
+            <summary>
+            This class performs generating xml and cvs files.
+            </summary>
+        </member>
+        <member name="M:FileCabinetGenerator.Program.Main(System.String[])">
+            <summary>
+            Entry point of app.
+            </summary>
+            <param name="args">Command line arguments.</param>
+        </member>
     </members>
 </doc>

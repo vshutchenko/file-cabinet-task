@@ -31,6 +31,8 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("find", Find),
             new Tuple<string, Action<string>>("import", Import),
             new Tuple<string, Action<string>>("list", List),
+            new Tuple<string, Action<string>>("purge", Purge),
+            new Tuple<string, Action<string>>("remove", Remove),
             new Tuple<string, Action<string>>("stat", Stat),
             new Tuple<string, Action<string>>("exit", Exit),
         };
@@ -44,6 +46,8 @@ namespace FileCabinetApp
             new string[] { "find", "finds records, recieves name of property and text to search", "The 'find' command finds records, recieves name of property and text to search." },
             new string[] { "import", "imports stored records in the CSV or XML file", "The 'import' command imports stored records in the CSV or XML file." },
             new string[] { "list", "prints the list of records", "The 'list' command prints the list of records." },
+            new string[] { "purge", "defragments the file", "The 'purge' command defragments the file." },
+            new string[] { "remove", "removes the record with specified id", "The 'remove' command removes the record with specified id." },
             new string[] { "stat", "prints number of records stored in the service", "The 'stat' command prints number of records stored in the service." },
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
         };
@@ -150,6 +154,12 @@ namespace FileCabinetApp
             Console.WriteLine();
         }
 
+        private static void Purge(string parameters)
+        {
+            Tuple<int, int> numberOfRecords = fileCabinetService.Purge();
+            Console.WriteLine($"Data file processing is completed: {numberOfRecords.Item1} of {numberOfRecords.Item2} records were purged.");
+        }
+
         private static void Exit(string parameters)
         {
             Console.WriteLine("Exiting an application...");
@@ -159,7 +169,7 @@ namespace FileCabinetApp
         private static void Stat(string parameters)
         {
             var recordsCount = Program.fileCabinetService.GetStat();
-            Console.WriteLine($"{recordsCount} record(s).");
+            Console.WriteLine($"{recordsCount.Item2} record(s). Deleted records: {recordsCount.Item1}.");
         }
 
         private static void Create(string parameters)
@@ -192,6 +202,32 @@ namespace FileCabinetApp
                     || ex is ArgumentOutOfRangeException)
             {
                 Console.WriteLine("Invalid input.");
+            }
+        }
+
+        private static void Remove(string parameters)
+        {
+            if (parameters is null)
+            {
+                Console.WriteLine("Wrong parameters. Please, specify id of record to remove.");
+            }
+
+            int id;
+            if (int.TryParse(parameters, out id))
+            {
+                bool isDeleted = fileCabinetService.Remove(id);
+                if (isDeleted)
+                {
+                    Console.WriteLine($"Record #{id} is removed.");
+                }
+                else
+                {
+                    Console.WriteLine($"Record #{id} doesn't exists.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Input parameter shoud be an integer value.");
             }
         }
 
@@ -305,7 +341,7 @@ namespace FileCabinetApp
             string record;
             ReadOnlyCollection<FileCabinetRecord> records = fileCabinetService.GetRecords();
 
-            for (int i = 0; i < fileCabinetService.GetStat(); i++)
+            for (int i = 0; i < fileCabinetService.GetStat().Item2; i++)
             {
                 record = $"#{records[i].Id}, " +
                     $"{records[i].FirstName}, " +
@@ -554,7 +590,7 @@ namespace FileCabinetApp
             bool isValid = true;
             string validationErrorMessage = string.Empty;
             int minValue = 1;
-            int maxValue = fileCabinetService.GetStat();
+            int maxValue = fileCabinetService.GetStat().Item2;
 
             if ((id < minValue) || (id > maxValue))
             {

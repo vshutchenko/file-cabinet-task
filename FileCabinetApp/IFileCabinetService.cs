@@ -17,16 +17,16 @@ namespace FileCabinetApp
         public FileCabinetServiceSnapshot MakeSnapshot();
 
         /// <summary>
-        /// This method returns number of stored records.
+        /// This method returns collection of stored records.
         /// </summary>
-        /// <returns>Number of stored records.</returns>
+        /// <returns>Collection of stored records.</returns>
         public ReadOnlyCollection<FileCabinetRecord> GetRecords();
 
         /// <summary>
-        /// This method returns array of stored records.
+        /// This method returns number of deleted and stored records.
         /// </summary>
-        /// <returns>Array of stored records.</returns>
-        public int GetStat();
+        /// <returns>Number of deleted and stored records.</returns>
+        public Tuple<int, int> GetStat();
 
         /// <summary>
         /// This method performs searching records by first name.
@@ -68,5 +68,18 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="serviceSnapshot">The snapshot of service.</param>
         public void Restore(FileCabinetServiceSnapshot serviceSnapshot);
+
+        /// <summary>
+        /// This method removes record with specified id.
+        /// </summary>
+        /// <param name="id">Id of the record.</param>
+        /// <returns>True if record was removed, false if record doesn't exist.</returns>
+        public bool Remove(int id);
+
+        /// <summary>
+        /// This method removes empty records with from file.
+        /// </summary>
+        /// <returns>Number of purged records.</returns>
+        public Tuple<int, int> Purge();
     }
 }
