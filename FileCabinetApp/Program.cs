@@ -97,16 +97,15 @@ namespace FileCabinetApp
         private static ICommandHandler CreateCommandHandler()
         {
             static void Exit(bool b) => isRunning = b;
-            var recordPrinter = new DefaultRecordPrinter();
 
             var helpCommandHandler = new HelpCommandHandler();
             var createCommandHandler = new CreateCommandHandler(fileCabinetService);
             var editCommandHandler = new EditCommandHandler(fileCabinetService);
             var exitCommandHandler = new ExitCommandHandler(Exit);
             var exportCommandHandler = new ExportCommandHandler(fileCabinetService);
-            var findCommandHandler = new FindCommandHandler(fileCabinetService, recordPrinter);
+            var findCommandHandler = new FindCommandHandler(fileCabinetService, DefaultRecordPrint);
             var importCommandHandler = new ImportCommandHandler(fileCabinetService);
-            var listCommandHandler = new ListCommandHandler(fileCabinetService, recordPrinter);
+            var listCommandHandler = new ListCommandHandler(fileCabinetService, DefaultRecordPrint);
             var purgeCommandHandler = new PurgeCommandHandler(fileCabinetService);
             var removeCommandHandler = new RemoveCommandHandler(fileCabinetService);
             var statCommandHandler = new StatCommandHandler(fileCabinetService);
@@ -146,6 +145,22 @@ namespace FileCabinetApp
                 return value;
             }
             while (true);
+        }
+
+        public static void DefaultRecordPrint(IEnumerable<FileCabinetRecord> records)
+        {
+            string recordString;
+            foreach (var record in records)
+            {
+                recordString = $"#{record.Id}, " +
+                    $"{record.FirstName}, " +
+                    $"{record.LastName}, " +
+                    $"{record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture)}, " +
+                    $"{record.Gender}, " +
+                    $"{record.Experience}, " +
+                    $"{record.Salary}$";
+                Console.WriteLine(recordString);
+            }
         }
 
         private static void ReadCommandLineParameters(string[] parameters)

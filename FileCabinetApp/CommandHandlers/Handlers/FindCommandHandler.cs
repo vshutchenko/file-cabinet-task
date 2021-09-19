@@ -9,12 +9,12 @@ namespace FileCabinetApp.CommandHandlers.Handlers
     public class FindCommandHandler : ServiceCommandHandlerBase
     {
         private const string Command = "FIND";
-        private IRecordPrinter printer;
+        private Action<IEnumerable<FileCabinetRecord>> print;
 
-        public FindCommandHandler(IFileCabinetService fileCabinetService, IRecordPrinter printer)
+        public FindCommandHandler(IFileCabinetService fileCabinetService, Action<IEnumerable<FileCabinetRecord>> print)
             : base(fileCabinetService)
         {
-            this.printer = printer;
+            this.print = print;
         }
 
         public override void Handle(AppCommandRequest request)
@@ -72,7 +72,7 @@ namespace FileCabinetApp.CommandHandlers.Handlers
                 }
             }
 
-            this.printer.Print(records);
+            this.print(records);
         }
     }
 }
