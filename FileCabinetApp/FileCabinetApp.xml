@@ -4,28 +4,6 @@
         <name>FileCabinetApp</name>
     </assembly>
     <members>
-        <member name="T:FileCabinetApp.CustomValidator">
-            <summary>
-            This class implements custom parameters validation.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.CustomValidator.ValidateParameters(FileCabinetApp.RecordParameters)">
-            <summary>
-            This method implements custom parameters validation.
-            </summary>
-            <param name="recordParameters">The parameter object for FileCabinetRecord.</param>
-        </member>
-        <member name="T:FileCabinetApp.DefaultValidator">
-            <summary>
-            This class implements default parameters validation.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.DefaultValidator.ValidateParameters(FileCabinetApp.RecordParameters)">
-            <summary>
-            This method implements default parameters validation.
-            </summary>
-            <param name="recordParameters">The parameter object for FileCabinetRecord.</param>
-        </member>
         <member name="T:FileCabinetApp.FileCabinetFilesystemService">
             <summary>
             This class represents a file-cabinet. It stores records in the file and
@@ -565,6 +543,28 @@
             Gets the salary of the person.
             </summary>
             <value>The salary of the person.</value>
+        </member>
+        <member name="T:FileCabinetApp.Validators.Custom.CustomValidator">
+            <summary>
+            This class implements custom parameters validation.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.Custom.CustomValidator.ValidateParameters(FileCabinetApp.RecordParameters)">
+            <summary>
+            This method implements custom parameters validation.
+            </summary>
+            <param name="recordParameters">The parameter object for FileCabinetRecord.</param>
+        </member>
+        <member name="T:FileCabinetApp.Validators.Default.DefaultValidator">
+            <summary>
+            This class implements default parameters validation.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.Default.DefaultValidator.ValidateParameters(FileCabinetApp.RecordParameters)">
+            <summary>
+            This method implements default parameters validation.
+            </summary>
+            <param name="recordParameters">The parameter object for FileCabinetRecord.</param>
         </member>
     </members>
 </doc>
