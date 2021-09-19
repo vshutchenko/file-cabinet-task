@@ -9,6 +9,12 @@ namespace FileCabinetApp.CommandHandlers.Handlers
     public class ListCommandHandler : CommandHandlerBase
     {
         private const string Command = "LIST";
+        private IFileCabinetService fileCabinetService;
+
+        public ListCommandHandler(IFileCabinetService fileCabinetService)
+        {
+            this.fileCabinetService = fileCabinetService;
+        }
 
         public override void Handle(AppCommandRequest request)
         {
@@ -30,9 +36,9 @@ namespace FileCabinetApp.CommandHandlers.Handlers
         private void List(string parameters)
         {
             string record;
-            ReadOnlyCollection<FileCabinetRecord> records = Program.fileCabinetService.GetRecords();
+            ReadOnlyCollection<FileCabinetRecord> records = this.fileCabinetService.GetRecords();
 
-            for (int i = 0; i < Program.fileCabinetService.GetStat().Item2; i++)
+            for (int i = 0; i < this.fileCabinetService.GetStat().Item2; i++)
             {
                 record = $"#{records[i].Id}, " +
                     $"{records[i].FirstName}, " +

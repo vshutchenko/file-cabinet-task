@@ -8,6 +8,12 @@ namespace FileCabinetApp.CommandHandlers.Handlers
     public class ImportCommandHandler : CommandHandlerBase
     {
         private const string Command = "IMPORT";
+        private IFileCabinetService fileCabinetService;
+
+        public ImportCommandHandler(IFileCabinetService fileCabinetService)
+        {
+            this.fileCabinetService = fileCabinetService;
+        }
 
         public override void Handle(AppCommandRequest request)
         {
@@ -55,12 +61,12 @@ namespace FileCabinetApp.CommandHandlers.Handlers
             if (fileFormat.Equals("CSV", StringComparison.InvariantCultureIgnoreCase) && fileInfo.Extension.ToUpperInvariant().Equals(".CSV", StringComparison.InvariantCultureIgnoreCase))
             {
                 serviceSnapshot.LoadFromCsv(reader);
-                Program.fileCabinetService.Restore(serviceSnapshot);
+                this.fileCabinetService.Restore(serviceSnapshot);
             }
             else if (fileFormat.Equals("XML", StringComparison.InvariantCultureIgnoreCase) && fileInfo.Extension.ToUpperInvariant().Equals(".XML", StringComparison.InvariantCultureIgnoreCase))
             {
                 serviceSnapshot.LoadFromXml(reader);
-                Program.fileCabinetService.Restore(serviceSnapshot);
+                this.fileCabinetService.Restore(serviceSnapshot);
             }
             else
             {

@@ -5,15 +5,21 @@ using System.Text;
 
 namespace FileCabinetApp.InputHandlers
 {
-    public static class InputValidator
+    public class InputValidator
     {
+        private IFileCabinetService fileCabinetService;
 
-        public static Tuple<bool, string> IdValidator(int id)
+        public InputValidator(IFileCabinetService fileCabinetService)
+        {
+            this.fileCabinetService = fileCabinetService;
+        }
+
+        public Tuple<bool, string> IdValidator(int id)
         {
             bool isValid = true;
             string validationErrorMessage = string.Empty;
             int minValue = 1;
-            int maxValue = Program.fileCabinetService.GetStat().Item2;
+            int maxValue = this.fileCabinetService.GetStat().Item2;
 
             if ((id < minValue) || (id > maxValue))
             {
@@ -24,14 +30,14 @@ namespace FileCabinetApp.InputHandlers
             return new Tuple<bool, string>(isValid, validationErrorMessage);
         }
 
-        public static Tuple<bool, string> ExperienceValidator(short experience)
+        public Tuple<bool, string> ExperienceValidator(short experience)
         {
             bool isValid = true;
             string validationErrorMessage = string.Empty;
             int minValue = 0;
             int maxValue = short.MaxValue;
 
-            if (Program.isCustomRulesEnabled)
+            if (Program.IsCustomRulesEnabled)
             {
                 maxValue = 100;
             }
@@ -45,7 +51,7 @@ namespace FileCabinetApp.InputHandlers
             return new Tuple<bool, string>(isValid, validationErrorMessage);
         }
 
-        public static Tuple<bool, string> SalaryValidator(decimal salary)
+        public Tuple<bool, string> SalaryValidator(decimal salary)
         {
             bool isValid = true;
             string validationErrorMessage = string.Empty;
@@ -60,13 +66,13 @@ namespace FileCabinetApp.InputHandlers
             return new Tuple<bool, string>(isValid, validationErrorMessage);
         }
 
-        public static Tuple<bool, string> GenderValidator(char gender)
+        public Tuple<bool, string> GenderValidator(char gender)
         {
             bool isValid = true;
             string validationErrorMessage = string.Empty;
             char[] validValues;
 
-            if (Program.isCustomRulesEnabled)
+            if (Program.IsCustomRulesEnabled)
             {
                 validValues = new char[] { 'F', 'M' };
             }
@@ -84,13 +90,13 @@ namespace FileCabinetApp.InputHandlers
             return new Tuple<bool, string>(isValid, validationErrorMessage);
         }
 
-        public static Tuple<bool, string> DateOfBirthValidator(DateTime dateOfBirth)
+        public Tuple<bool, string> DateOfBirthValidator(DateTime dateOfBirth)
         {
             bool isValid = true;
             string validationErrorMessage = string.Empty;
             DateTime minDate;
 
-            if (Program.isCustomRulesEnabled)
+            if (Program.IsCustomRulesEnabled)
             {
                 minDate = new DateTime(1950, 1, 1);
             }
@@ -112,7 +118,7 @@ namespace FileCabinetApp.InputHandlers
             return new Tuple<bool, string>(isValid, validationErrorMessage);
         }
 
-        public static Tuple<bool, string> FirstNameValidator(string firstName)
+        public Tuple<bool, string> FirstNameValidator(string firstName)
         {
             bool isValid = true;
             string validationErrorMessage = string.Empty;
@@ -125,7 +131,7 @@ namespace FileCabinetApp.InputHandlers
                 validationErrorMessage = $"Incorrect first name length. Minimal length is {minStringLegth}. Maximum length is {maxStringLength}";
             }
 
-            if (Program.isCustomRulesEnabled)
+            if (Program.IsCustomRulesEnabled)
             {
                 for (int i = 1; i < firstName.Length; i++)
                 {
@@ -146,7 +152,7 @@ namespace FileCabinetApp.InputHandlers
             return new Tuple<bool, string>(isValid, validationErrorMessage);
         }
 
-        public static Tuple<bool, string> LastNameValidator(string lastName)
+        public Tuple<bool, string> LastNameValidator(string lastName)
         {
             bool isValid = true;
             string validationErrorMessage = string.Empty;
@@ -159,7 +165,7 @@ namespace FileCabinetApp.InputHandlers
                 validationErrorMessage = $"Incorrect last name length. Minimal length is {minStringLegth}. Maximum length is {maxStringLength}";
             }
 
-            if (Program.isCustomRulesEnabled)
+            if (Program.IsCustomRulesEnabled)
             {
                 for (int i = 1; i < lastName.Length; i++)
                 {

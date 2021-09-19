@@ -8,6 +8,12 @@ namespace FileCabinetApp.CommandHandlers.Handlers
     public class EditCommandHandler : CommandHandlerBase
     {
         private const string Command = "EDIT";
+        private IFileCabinetService fileCabinetService;
+
+        public EditCommandHandler(IFileCabinetService fileCabinetService)
+        {
+            this.fileCabinetService = fileCabinetService;
+        }
 
         public override void Handle(AppCommandRequest request)
         {
@@ -29,6 +35,7 @@ namespace FileCabinetApp.CommandHandlers.Handlers
         private void Edit(string parameters)
         {
             RecordParameters recordParameters;
+            InputValidator validator = new InputValidator(fileCabinetService);
             Tuple<bool, string, int> parametersConversionResult = InputConverter.IntConverter(parameters);
             Tuple<bool, string> recordIdValidationResult;
             int id;
@@ -40,7 +47,7 @@ namespace FileCabinetApp.CommandHandlers.Handlers
             else
             {
                 id = parametersConversionResult.Item3;
-                recordIdValidationResult = InputValidator.IdValidator(id);
+                recordIdValidationResult = validator.IdValidator(id);
                 if (!recordIdValidationResult.Item1)
                 {
                     Console.WriteLine(recordIdValidationResult.Item2);
@@ -49,23 +56,23 @@ namespace FileCabinetApp.CommandHandlers.Handlers
             }
 
             Console.Write("First name: ");
-            var firstName = Program.ReadInput(InputConverter.StringConverter, InputValidator.FirstNameValidator);
+            var firstName = Program.ReadInput(InputConverter.StringConverter, validator.FirstNameValidator);
             Console.Write("Last name: ");
-            var lastName = Program.ReadInput(InputConverter.StringConverter, InputValidator.LastNameValidator);
+            var lastName = Program.ReadInput(InputConverter.StringConverter, validator.LastNameValidator);
             Console.Write("Date of birth: ");
-            var dateOfBirth = Program.ReadInput(InputConverter.DateTimeConverter, InputValidator.DateOfBirthValidator);
+            var dateOfBirth = Program.ReadInput(InputConverter.DateTimeConverter, validator.DateOfBirthValidator);
             Console.Write("Gender: ");
-            var gender = Program.ReadInput(InputConverter.CharConverter, InputValidator.GenderValidator);
+            var gender = Program.ReadInput(InputConverter.CharConverter, validator.GenderValidator);
             Console.Write("Experience: ");
-            var experience = Program.ReadInput(InputConverter.ShortConverter, InputValidator.ExperienceValidator);
+            var experience = Program.ReadInput(InputConverter.ShortConverter, validator.ExperienceValidator);
             Console.Write("Salary: ");
-            var salary = Program.ReadInput(InputConverter.DecimalConverter, InputValidator.SalaryValidator);
+            var salary = Program.ReadInput(InputConverter.DecimalConverter, validator.SalaryValidator);
 
             recordParameters = new RecordParameters(firstName, lastName, dateOfBirth, gender, experience, salary);
 
             try
             {
-                Program.fileCabinetService.EditRecord(id, recordParameters);
+                this.fileCabinetService.EditRecord(id, recordParameters);
                 Console.WriteLine($"Record #{id} is updated.");
             }
             catch (Exception ex) when (

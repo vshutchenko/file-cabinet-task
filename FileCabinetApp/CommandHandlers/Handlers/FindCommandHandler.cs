@@ -9,6 +9,12 @@ namespace FileCabinetApp.CommandHandlers.Handlers
     public class FindCommandHandler : CommandHandlerBase
     {
         private const string Command = "FIND";
+        private IFileCabinetService fileCabinetService;
+
+        public FindCommandHandler(IFileCabinetService fileCabinetService)
+        {
+            this.fileCabinetService = fileCabinetService;
+        }
 
         public override void Handle(AppCommandRequest request)
         {
@@ -52,17 +58,17 @@ namespace FileCabinetApp.CommandHandlers.Handlers
 
             if (string.Equals(propertyName, nameof(FileCabinetRecord.FirstName), StringComparison.InvariantCultureIgnoreCase))
             {
-                records = Program.fileCabinetService.FindByFirstName(textToSearch);
+                records = this.fileCabinetService.FindByFirstName(textToSearch);
             }
             else if (string.Equals(propertyName, nameof(FileCabinetRecord.LastName), StringComparison.InvariantCultureIgnoreCase))
             {
-                records = Program.fileCabinetService.FindByLastName(textToSearch);
+                records = this.fileCabinetService.FindByLastName(textToSearch);
             }
             else if (string.Equals(propertyName, nameof(FileCabinetRecord.DateOfBirth), StringComparison.InvariantCultureIgnoreCase))
             {
                 if (DateTime.TryParse(textToSearch, out DateTime dateOfBirth))
                 {
-                    records = Program.fileCabinetService.FindByDateOfBirth(dateOfBirth);
+                    records = this.fileCabinetService.FindByDateOfBirth(dateOfBirth);
                 }
             }
 

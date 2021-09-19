@@ -8,6 +8,12 @@ namespace FileCabinetApp.CommandHandlers.Handlers
     public class ExportCommandHandler : CommandHandlerBase
     {
         private const string Command = "EXPORT";
+        private IFileCabinetService fileCabinetService;
+
+        public ExportCommandHandler(IFileCabinetService fileCabinetService)
+        {
+            this.fileCabinetService = fileCabinetService;
+        }
 
         public override void Handle(AppCommandRequest request)
         {
@@ -64,7 +70,7 @@ namespace FileCabinetApp.CommandHandlers.Handlers
             }
 
             StreamWriter writer = new StreamWriter(filePath);
-            FileCabinetServiceSnapshot serviceSnapshot = Program.fileCabinetService.MakeSnapshot();
+            FileCabinetServiceSnapshot serviceSnapshot = this.fileCabinetService.MakeSnapshot();
 
             if (fileFormat.Equals("CSV", StringComparison.InvariantCultureIgnoreCase))
             {

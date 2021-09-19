@@ -7,6 +7,12 @@ namespace FileCabinetApp.CommandHandlers.Handlers
     public class PurgeCommandHandler : CommandHandlerBase
     {
         private const string Command = "PURGE";
+        private IFileCabinetService fileCabinetService;
+
+        public PurgeCommandHandler(IFileCabinetService fileCabinetService)
+        {
+            this.fileCabinetService = fileCabinetService;
+        }
 
         public override void Handle(AppCommandRequest request)
         {
@@ -27,7 +33,7 @@ namespace FileCabinetApp.CommandHandlers.Handlers
 
         private void Purge(string parameters)
         {
-            Tuple<int, int> numberOfRecords = Program.fileCabinetService.Purge();
+            Tuple<int, int> numberOfRecords = this.fileCabinetService.Purge();
             Console.WriteLine($"Data file processing is completed: {numberOfRecords.Item1} of {numberOfRecords.Item2} records were purged.");
         }
     }

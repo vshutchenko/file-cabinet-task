@@ -6,7 +6,6 @@ using System.IO;
 using FileCabinetApp.CommandHandlers;
 using FileCabinetApp.CommandHandlers.Handlers;
 
-
 namespace FileCabinetApp
 {
     /// <summary>
@@ -16,11 +15,13 @@ namespace FileCabinetApp
     {
         private const string DeveloperName = "Vladislav Shutchenko";
         private const string HintMessage = "Enter your command, or enter 'help' to get help.";
-        public static bool isCustomRulesEnabled;
-        public static bool isFileSystemServiceEnabled;
-
         public static bool isRunning = true;
-        public static IFileCabinetService fileCabinetService = new FileCabinetMemoryService(new DefaultValidator());
+
+        public static bool IsCustomRulesEnabled { get; private set; }
+
+        public static bool IsFileSystemServiceEnabled { get; private set; }
+
+        private static IFileCabinetService fileCabinetService = new FileCabinetMemoryService(new DefaultValidator());
 
         /// <summary>
         /// This method runs an instance of FileCabinetMemoryService and processes console commands.
@@ -29,11 +30,11 @@ namespace FileCabinetApp
         public static void Main(string[] args)
         {
             ReadCommandLineParameters(args);
-            string validationRulesHint = isCustomRulesEnabled ? "Using custom validation rules." : "Using default validation rules.";
+            string validationRulesHint = IsCustomRulesEnabled ? "Using custom validation rules." : "Using default validation rules.";
             IRecordValidator validator;
             FileStream fileStream = null;
 
-            if (isCustomRulesEnabled)
+            if (IsCustomRulesEnabled)
             {
                 validationRulesHint = "Using custom validation rules.";
                 validator = new CustomValidator();
@@ -44,7 +45,7 @@ namespace FileCabinetApp
                 validator = new DefaultValidator();
             }
 
-            if (isFileSystemServiceEnabled)
+            if (IsFileSystemServiceEnabled)
             {
                 fileStream = new FileStream("cabinet-records.db", FileMode.OpenOrCreate);
                 fileCabinetService = new FileCabinetFilesystemService(fileStream);
@@ -96,16 +97,16 @@ namespace FileCabinetApp
         private static ICommandHandler CreateCommandHandler()
         {
             var helpCommandHandler = new HelpCommandHandler();
-            var createCommandHandler = new CreateCommandHandler();
-            var editCommandHandler = new EditCommandHandler();
+            var createCommandHandler = new CreateCommandHandler(fileCabinetService);
+            var editCommandHandler = new EditCommandHandler(fileCabinetService);
             var exitCommandHandler = new ExitCommandHandler();
-            var exportCommandHandler = new ExportCommandHandler();
-            var findCommandHandler = new FindCommandHandler();
-            var importCommandHandler = new ImportCommandHandler();
-            var listCommandHandler = new ListCommandHandler();
-            var purgeCommandHandler = new PurgeCommandHandler();
-            var removeCommandHandler = new RemoveCommandHandler();
-            var statCommandHandler = new StatCommandHandler();
+            var exportCommandHandler = new ExportCommandHandler(fileCabinetService);
+            var findCommandHandler = new FindCommandHandler(fileCabinetService);
+            var importCommandHandler = new ImportCommandHandler(fileCabinetService);
+            var listCommandHandler = new ListCommandHandler(fileCabinetService);
+            var purgeCommandHandler = new PurgeCommandHandler(fileCabinetService);
+            var removeCommandHandler = new RemoveCommandHandler(fileCabinetService);
+            var statCommandHandler = new StatCommandHandler(fileCabinetService);
 
             helpCommandHandler.SetNext(createCommandHandler).SetNext(createCommandHandler).SetNext(editCommandHandler).
                 SetNext(exitCommandHandler).SetNext(exportCommandHandler).SetNext(findCommandHandler).
@@ -160,11 +161,11 @@ namespace FileCabinetApp
                         {
                             if (parameters[i + 1] == "CUSTOM")
                             {
-                                isCustomRulesEnabled = true;
+                                IsCustomRulesEnabled = true;
                             }
                             else if (parameters[i + 1] == "DEFAULT")
                             {
-                                isCustomRulesEnabled = false;
+                                IsCustomRulesEnabled = false;
                             }
                         }
 
@@ -174,26 +175,26 @@ namespace FileCabinetApp
                         {
                             if (parameters[i + 1] == "FILE")
                             {
-                                isFileSystemServiceEnabled = true;
+                                IsFileSystemServiceEnabled = true;
                             }
                             else if (parameters[i + 1] == "MEMORY")
                             {
-                                isCustomRulesEnabled = false;
+                                IsCustomRulesEnabled = false;
                             }
                         }
 
                         break;
                     case "--VALIDATION-RULES=DEFAULT":
-                        isCustomRulesEnabled = false;
+                        IsCustomRulesEnabled = false;
                         break;
                     case "--VALIDATION-RULES=CUSTOM":
-                        isCustomRulesEnabled = true;
+                        IsCustomRulesEnabled = true;
                         break;
                     case "--STORAGE=MEMORY":
-                        isFileSystemServiceEnabled = false;
+                        IsFileSystemServiceEnabled = false;
                         break;
                     case "--STORAGE=FILE":
-                        isFileSystemServiceEnabled = true;
+                        IsFileSystemServiceEnabled = true;
                         break;
                 }
             }
