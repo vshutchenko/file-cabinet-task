@@ -5,14 +5,13 @@ using FileCabinetApp.InputHandlers;
 
 namespace FileCabinetApp.CommandHandlers.Handlers
 {
-    public class EditCommandHandler : CommandHandlerBase
+    public class EditCommandHandler : ServiceCommandHandlerBase
     {
         private const string Command = "EDIT";
-        private IFileCabinetService fileCabinetService;
 
         public EditCommandHandler(IFileCabinetService fileCabinetService)
+            : base(fileCabinetService)
         {
-            this.fileCabinetService = fileCabinetService;
         }
 
         public override void Handle(AppCommandRequest request)

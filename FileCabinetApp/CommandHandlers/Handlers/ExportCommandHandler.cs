@@ -5,14 +5,13 @@ using System.Text;
 
 namespace FileCabinetApp.CommandHandlers.Handlers
 {
-    public class ExportCommandHandler : CommandHandlerBase
+    public class ExportCommandHandler : ServiceCommandHandlerBase
     {
         private const string Command = "EXPORT";
-        private IFileCabinetService fileCabinetService;
 
         public ExportCommandHandler(IFileCabinetService fileCabinetService)
+            : base(fileCabinetService)
         {
-            this.fileCabinetService = fileCabinetService;
         }
 
         public override void Handle(AppCommandRequest request)

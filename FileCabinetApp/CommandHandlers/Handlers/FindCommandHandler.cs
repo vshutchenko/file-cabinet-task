@@ -6,14 +6,13 @@ using System.Text;
 
 namespace FileCabinetApp.CommandHandlers.Handlers
 {
-    public class FindCommandHandler : CommandHandlerBase
+    public class FindCommandHandler : ServiceCommandHandlerBase
     {
         private const string Command = "FIND";
-        private IFileCabinetService fileCabinetService;
 
         public FindCommandHandler(IFileCabinetService fileCabinetService)
+            : base(fileCabinetService)
         {
-            this.fileCabinetService = fileCabinetService;
         }
 
         public override void Handle(AppCommandRequest request)

@@ -4,14 +4,13 @@ using System.Text;
 
 namespace FileCabinetApp.CommandHandlers.Handlers
 {
-    public class RemoveCommandHandler : CommandHandlerBase
+    public class RemoveCommandHandler : ServiceCommandHandlerBase
     {
         private const string Command = "REMOVE";
-        private IFileCabinetService fileCabinetService;
 
         public RemoveCommandHandler(IFileCabinetService fileCabinetService)
+            : base(fileCabinetService)
         {
-            this.fileCabinetService = fileCabinetService;
         }
 
         public override void Handle(AppCommandRequest request)
