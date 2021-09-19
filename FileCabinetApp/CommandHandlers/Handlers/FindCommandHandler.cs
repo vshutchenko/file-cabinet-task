@@ -9,10 +9,12 @@ namespace FileCabinetApp.CommandHandlers.Handlers
     public class FindCommandHandler : ServiceCommandHandlerBase
     {
         private const string Command = "FIND";
+        private IRecordPrinter printer;
 
-        public FindCommandHandler(IFileCabinetService fileCabinetService)
+        public FindCommandHandler(IFileCabinetService fileCabinetService, IRecordPrinter printer)
             : base(fileCabinetService)
         {
+            this.printer = printer;
         }
 
         public override void Handle(AppCommandRequest request)
@@ -53,7 +55,6 @@ namespace FileCabinetApp.CommandHandlers.Handlers
             textToSearch = textToSearch[1..^1];
 
             ReadOnlyCollection<FileCabinetRecord> records = new ReadOnlyCollection<FileCabinetRecord>(new List<FileCabinetRecord>());
-            string record;
 
             if (string.Equals(propertyName, nameof(FileCabinetRecord.FirstName), StringComparison.InvariantCultureIgnoreCase))
             {
@@ -71,17 +72,7 @@ namespace FileCabinetApp.CommandHandlers.Handlers
                 }
             }
 
-            for (int i = 0; i < records.Count; i++)
-            {
-                record = $"#{records[i].Id}, " +
-                $"{records[i].FirstName}, " +
-                $"{records[i].LastName}, " +
-                $"{records[i].DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture)}, " +
-                $"{records[i].Gender}, " +
-                $"{records[i].Experience}, " +
-                $"{records[i].Salary}$";
-                Console.WriteLine(record);
-            }
+            this.printer.Print(records);
         }
     }
 }

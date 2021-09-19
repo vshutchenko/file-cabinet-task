@@ -9,10 +9,12 @@ namespace FileCabinetApp.CommandHandlers.Handlers
     public class ListCommandHandler : ServiceCommandHandlerBase
     {
         private const string Command = "LIST";
+        private IRecordPrinter printer;
 
-        public ListCommandHandler(IFileCabinetService fileCabinetService)
+        public ListCommandHandler(IFileCabinetService fileCabinetService, IRecordPrinter printer)
             : base(fileCabinetService)
         {
+            this.printer = printer;
         }
 
         public override void Handle(AppCommandRequest request)
@@ -34,20 +36,8 @@ namespace FileCabinetApp.CommandHandlers.Handlers
 
         private void List(string parameters)
         {
-            string record;
             ReadOnlyCollection<FileCabinetRecord> records = this.fileCabinetService.GetRecords();
-
-            for (int i = 0; i < this.fileCabinetService.GetStat().Item2; i++)
-            {
-                record = $"#{records[i].Id}, " +
-                    $"{records[i].FirstName}, " +
-                    $"{records[i].LastName}, " +
-                    $"{records[i].DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture)}, " +
-                    $"{records[i].Gender}, " +
-                    $"{records[i].Experience}, " +
-                    $"{records[i].Salary}$";
-                Console.WriteLine(record);
-            }
+            this.printer.Print(records);
         }
     }
 }
