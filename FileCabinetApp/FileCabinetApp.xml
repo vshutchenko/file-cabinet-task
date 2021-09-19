@@ -544,23 +544,23 @@
             </summary>
             <value>The salary of the person.</value>
         </member>
-        <member name="T:FileCabinetApp.Validators.Custom.CustomValidator">
+        <member name="T:FileCabinetApp.Validators.CustomValidator">
             <summary>
             This class implements custom parameters validation.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.Validators.Custom.CustomValidator.ValidateParameters(FileCabinetApp.RecordParameters)">
+        <member name="M:FileCabinetApp.Validators.CustomValidator.ValidateParameters(FileCabinetApp.RecordParameters)">
             <summary>
             This method implements custom parameters validation.
             </summary>
             <param name="recordParameters">The parameter object for FileCabinetRecord.</param>
         </member>
-        <member name="T:FileCabinetApp.Validators.Default.DefaultValidator">
+        <member name="T:FileCabinetApp.Validators.DefaultValidator">
             <summary>
             This class implements default parameters validation.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.Validators.Default.DefaultValidator.ValidateParameters(FileCabinetApp.RecordParameters)">
+        <member name="M:FileCabinetApp.Validators.DefaultValidator.ValidateParameters(FileCabinetApp.RecordParameters)">
             <summary>
             This method implements default parameters validation.
             </summary>

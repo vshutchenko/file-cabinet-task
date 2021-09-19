@@ -5,8 +5,7 @@ using System.Globalization;
 using System.IO;
 using FileCabinetApp.CommandHandlers;
 using FileCabinetApp.CommandHandlers.Handlers;
-using FileCabinetApp.Validators.Custom;
-using FileCabinetApp.Validators.Default;
+using FileCabinetApp.Validators;
 
 namespace FileCabinetApp
 {

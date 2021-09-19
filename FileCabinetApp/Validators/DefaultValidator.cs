@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace FileCabinetApp.Validators.Default
+namespace FileCabinetApp.Validators
 {
     /// <summary>
     /// This class implements default parameters validation.
@@ -20,12 +20,12 @@ namespace FileCabinetApp.Validators.Default
                 throw new ArgumentNullException(nameof(recordParameters), $"{nameof(recordParameters)} is null.");
             }
 
-            new DefaultFirstNameValidator().ValidateParameters(recordParameters);
-            new DefaultLastNameValidator().ValidateParameters(recordParameters);
-            new DefaultDateOfBirthValidator().ValidateParameters(recordParameters);
-            new DefaultGenderValidator().ValidateParameters(recordParameters);
-            new DefaultExperienceValidator().ValidateParameters(recordParameters);
-            new DefaultSalaryValidator().ValidateParameters(recordParameters);
+            new FirstNameValidator(2, 60).ValidateParameters(recordParameters);
+            new LastNameValidator(2, 60).ValidateParameters(recordParameters);
+            new DateOfBirthValidator(new DateTime(1950, 1, 1), DateTime.Now).ValidateParameters(recordParameters);
+            new GenderValidator(new[] { 'F', 'M' }).ValidateParameters(recordParameters);
+            new ExperienceValidator(0, 10).ValidateParameters(recordParameters);
+            new SalaryValidator(1000, 10000).ValidateParameters(recordParameters);
         }
     }
 }

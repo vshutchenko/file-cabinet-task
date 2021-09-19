@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 
-namespace FileCabinetApp.Validators.Custom
+namespace FileCabinetApp.Validators
 {
     /// <summary>
     /// This class implements custom parameters validation.
@@ -21,12 +21,12 @@ namespace FileCabinetApp.Validators.Custom
                 throw new ArgumentNullException(nameof(recordParameters), $"{nameof(recordParameters)} is null.");
             }
 
-            new CustomFirstNameValidator().ValidateParameters(recordParameters);
-            new CustomLastNameValidator().ValidateParameters(recordParameters);
-            new CustomDateOfBirthValidator().ValidateParameters(recordParameters);
-            new CustomGenderValidator().ValidateParameters(recordParameters);
-            new CustomExperienceValidator().ValidateParameters(recordParameters);
-            new CustomSalaryValidator().ValidateParameters(recordParameters);
+            new FirstNameValidator(2, 60).ValidateParameters(recordParameters);
+            new LastNameValidator(2, 60).ValidateParameters(recordParameters);
+            new DateOfBirthValidator(new DateTime(1900, 1, 1), DateTime.Now).ValidateParameters(recordParameters);
+            new GenderValidator(new[] { 'F', 'M', 'f', 'm' }).ValidateParameters(recordParameters);
+            new ExperienceValidator(5, 40).ValidateParameters(recordParameters);
+            new SalaryValidator(300, 1000).ValidateParameters(recordParameters);
         }
     }
 }
