@@ -15,7 +15,7 @@ namespace FileCabinetApp
     {
         private const string DeveloperName = "Vladislav Shutchenko";
         private const string HintMessage = "Enter your command, or enter 'help' to get help.";
-        public static bool isRunning = true;
+        private static bool isRunning = true;
 
         public static bool IsCustomRulesEnabled { get; private set; }
 
@@ -96,10 +96,12 @@ namespace FileCabinetApp
 
         private static ICommandHandler CreateCommandHandler()
         {
+            static void Exit(bool b) => isRunning = b;
+
             var helpCommandHandler = new HelpCommandHandler();
             var createCommandHandler = new CreateCommandHandler(fileCabinetService);
             var editCommandHandler = new EditCommandHandler(fileCabinetService);
-            var exitCommandHandler = new ExitCommandHandler();
+            var exitCommandHandler = new ExitCommandHandler(Exit);
             var exportCommandHandler = new ExportCommandHandler(fileCabinetService);
             var findCommandHandler = new FindCommandHandler(fileCabinetService);
             var importCommandHandler = new ImportCommandHandler(fileCabinetService);
