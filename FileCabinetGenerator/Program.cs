@@ -5,14 +5,20 @@ using System.Globalization;
 using System.IO;
 using System.Xml.Serialization;
 using FileCabinetApp;
+using FileCabinetApp.InputHandlers;
+using FileCabinetApp.RecordModel;
+using FileCabinetApp.RecordModel.XmlModel;
 
 namespace FileCabinetGenerator
 {
     /// <summary>
-    /// This class performs generating xml and cvs files.
+    /// This class performs generating xml and csv files.
     /// </summary>
     public static class Program
     {
+        private static readonly string XmlString = "XML";
+        private static readonly string CsvString = "CSV";
+
         /// <summary>
         /// Entry point of app.
         /// </summary>
@@ -21,8 +27,9 @@ namespace FileCabinetGenerator
         {
             bool isParametersValid;
             Tuple<string, string, int, int> vallidParameters;
+            InputHandler inputHandler = new InputHandler();
 
-            Dictionary<string, string> parameters = ReadParameters(args);
+            Dictionary<string, string> parameters = inputHandler.ReadCommandLineParameters(args);
             isParametersValid = IsParametersValid(parameters, out vallidParameters);
 
             if (isParametersValid)
@@ -32,7 +39,7 @@ namespace FileCabinetGenerator
                 int amountOfRecords = vallidParameters.Item3;
                 int startId = vallidParameters.Item4;
                 List<FileCabinetRecord> records = GenerateRecords(startId, amountOfRecords);
-                if (format.Equals("CSV", StringComparison.InvariantCultureIgnoreCase))
+                if (format.Equals(CsvString, StringComparison.InvariantCultureIgnoreCase))
                 {
                     ExportToCsv(outputFilePath, records);
                 }
@@ -53,7 +60,19 @@ namespace FileCabinetGenerator
 
             for (int i = 0; i < records.Count; i++)
             {
-                serializableRecords.Add(new FileCabinetRecordSerializable() { DateOfBirth = records[i].DateOfBirth, Experience = records[i].Experience, Gender = records[i].Gender, Id = records[i].Id, Salary = records[i].Salary, Name = new Name() { FirstName = records[i].FirstName, LastName = records[i].LastName } });
+                serializableRecords.Add(new FileCabinetRecordSerializable()
+                {
+                    DateOfBirth = records[i].DateOfBirth,
+                    Experience = records[i].Experience,
+                    Gender = records[i].Gender,
+                    Id = records[i].Id,
+                    Salary = records[i].Salary,
+                    Name = new Name()
+                    {
+                        FirstName = records[i].FirstName,
+                        LastName = records[i].LastName,
+                    },
+                });
             }
 
             StreamWriter writer = new StreamWriter(filePath);
@@ -104,7 +123,16 @@ namespace FileCabinetGenerator
                 short experence = (short)random.Next(0, short.MaxValue);
                 decimal salary = random.Next(0, int.MaxValue);
 
-                FileCabinetRecord record = new FileCabinetRecord() { Id = i, FirstName = firstNames[firstNameIndex], LastName = lastNames[lastNameIndex], DateOfBirth = dateOfBirth, Gender = genders[genderIndex], Experience = experence, Salary = salary };
+                FileCabinetRecord record = new FileCabinetRecord()
+                {
+                    Id = i,
+                    FirstName = firstNames[firstNameIndex],
+                    LastName = lastNames[lastNameIndex],
+                    DateOfBirth = dateOfBirth,
+                    Gender = genders[genderIndex],
+                    Experience = experence,
+                    Salary = salary,
+                };
                 records.Add(record);
             }
 
@@ -124,7 +152,7 @@ namespace FileCabinetGenerator
 
             if (parameters.TryGetValue("-T", out format) || parameters.TryGetValue("--OUTPUT-TYPE", out format))
             {
-                if (!format.Equals("CSV", StringComparison.InvariantCultureIgnoreCase) && !format.Equals("XML", StringComparison.InvariantCultureIgnoreCase))
+                if (!format.Equals(CsvString, StringComparison.InvariantCultureIgnoreCase) && !format.Equals(XmlString, StringComparison.InvariantCultureIgnoreCase))
                 {
                     Console.WriteLine("Invalid output format type (supported formats: csv, xml).");
                     return false;
@@ -189,31 +217,6 @@ namespace FileCabinetGenerator
 
             vallidParameters = new Tuple<string, string, int, int>(format, outputFilePath, amountOfRecords, startId);
             return true;
-        }
-
-        private static Dictionary<string, string> ReadParameters(string[] args)
-        {
-            char dash = '-';
-            string doubleDash = "--";
-            string equals = "=";
-
-            Dictionary<string, string> parameters = new Dictionary<string, string>();
-
-            for (int i = 0; i < args.Length; i++)
-            {
-                if (args[i].StartsWith(doubleDash))
-                {
-                    string[] currentParameter = args[i].Split(equals, 2);
-                    parameters.Add(currentParameter[0].ToUpperInvariant(), currentParameter[^1]);
-                }
-                else if (args[i].StartsWith(dash) && (i + 1 < args.Length))
-                {
-                    parameters.Add(args[i].ToUpperInvariant(), args[i + 1]);
-                    i++;
-                }
-            }
-
-            return parameters;
         }
     }
 }

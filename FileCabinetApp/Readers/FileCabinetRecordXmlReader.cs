@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Xml.Serialization;
+using FileCabinetApp.RecordModel;
+using FileCabinetApp.RecordModel.XmlModel;
 
-namespace FileCabinetApp
+namespace FileCabinetApp.Readers
 {
     /// <summary>
     /// This class performs reading of xml files.
