@@ -4,8 +4,16 @@ using System.Text;
 
 namespace FileCabinetApp.Validators
 {
+    /// <summary>
+    /// This class provides extension methods for <see cref="ValidatorBuilder"></see> class.
+    /// </summary>
     public static class BuilderExtensions
     {
+        /// <summary>
+        /// Creates validator with default parameters.
+        /// </summary>
+        /// <param name="validator">Validator to build.</param>
+        /// <returns>The validator with default parameters.</returns>
         public static IRecordValidator CreateDefault(this ValidatorBuilder validator)
         {
             return validator.
@@ -18,6 +26,11 @@ namespace FileCabinetApp.Validators
                     Create();
         }
 
+        /// <summary>
+        /// Creates validator with custom parameters.
+        /// </summary>
+        /// <param name="validator">Validator to build.</param>
+        /// <returns>The validator with custom parameters.</returns>
         public static IRecordValidator CreateCustom(this ValidatorBuilder validator)
         {
             return validator.

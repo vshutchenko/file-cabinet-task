@@ -4,6 +4,358 @@
         <name>FileCabinetApp</name>
     </assembly>
     <members>
+        <member name="T:FileCabinetApp.CommandHandlers.AppCommandRequest">
+            <summary>
+            This class represents command line request to service.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.AppCommandRequest.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.AppCommandRequest"/> class.
+            </summary>
+            <param name="command">String representation of the command.</param>
+            <param name="parameters">Command parameters separated with space.</param>
+        </member>
+        <member name="P:FileCabinetApp.CommandHandlers.AppCommandRequest.Command">
+            <summary>
+            Gets string representation of the command.
+            </summary>
+            <value>String representation of the command.</value>
+        </member>
+        <member name="P:FileCabinetApp.CommandHandlers.AppCommandRequest.Parameters">
+            <summary>
+            Gets string representation of parameters.
+            </summary>
+            <value>Command parameters separated with space.</value>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.CommandHandlerBase">
+            <summary>
+            Represents a base class for command handlers.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <summary>
+            Calls next command handler in the chain of handlers.
+            </summary>
+            <param name="request">A command with parameters.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.SetNext(FileCabinetApp.CommandHandlers.ICommandHandler)">
+            <summary>
+            Sets next command handler in the chain of handlers.
+            </summary>
+            <param name="handler">Next handler in the chain.</param>
+            <returns>Next command handler.</returns>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.Handlers.CreateCommandHandler">
+            <summary>
+            Provides handler for create command.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.Handlers.CreateCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService,FileCabinetApp.Validators.IInputValidator)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.Handlers.CreateCommandHandler"/> class.
+            </summary>
+            <param name="fileCabinetService">A reference to service class is needed because
+            create command handler calls service methods.</param>
+            <param name="inputValidator">A validator which will be used for input validation.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.Handlers.CreateCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <summary>
+            Handles the command or calls next command handler.
+            </summary>
+            <param name="request">A command with parameters.</param>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.Handlers.EditCommandHandler">
+            <summary>
+            Provides handler for stat command.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.Handlers.EditCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService,FileCabinetApp.Validators.IInputValidator)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.Handlers.EditCommandHandler"/> class.
+            </summary>
+            <param name="fileCabinetService">A reference to service class is needed because
+            edit command handler calls service methods.</param>
+            <param name="inputValidator">A validator which will be used for input validation.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.Handlers.EditCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <summary>
+            Handles the command or calls next command handler.
+            </summary>
+            <param name="request">A command with parameters.</param>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.Handlers.ExitCommandHandler">
+            <summary>
+            Provides handler for exit command.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.Handlers.ExitCommandHandler.#ctor(System.Action{System.Boolean})">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.Handlers.ExitCommandHandler"/> class.
+            </summary>
+            <param name="action">Delegate which will be used for exiting the application.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.Handlers.ExitCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <summary>
+            Handles the command or calls next command handler.
+            </summary>
+            <param name="request">A command with parameters.</param>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.Handlers.ExportCommandHandler">
+            <summary>
+            Provides handler for export command.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.Handlers.ExportCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.Handlers.ExportCommandHandler"/> class.
+            </summary>
+            <param name="fileCabinetService">A reference to service class is needed because
+            export command handler calls service methods.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.Handlers.ExportCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <summary>
+            Handles the command or calls next command handler.
+            </summary>
+            <param name="request">A command with parameters.</param>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.Handlers.FindCommandHandler">
+            <summary>
+            Provides handler for find command.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.Handlers.FindCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService,System.Action{System.Collections.Generic.IEnumerable{FileCabinetApp.RecordModel.FileCabinetRecord}})">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.Handlers.FindCommandHandler"/> class.
+            </summary>
+            <param name="fileCabinetService">A reference to service class is needed because
+            find command handler calls service methods.</param>
+            <param name="print">Delegate which contains a method for printing records.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.Handlers.FindCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <summary>
+            Handles the command or calls next command handler.
+            </summary>
+            <param name="request">A command with parameters.</param>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.Handlers.HelpCommandHandler">
+            <summary>
+            Provides handler for help command.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.Handlers.HelpCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <summary>
+            Handles the command or calls next command handler.
+            </summary>
+            <param name="request">A command with parameters.</param>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.Handlers.ImportCommandHandler">
+            <summary>
+            Provides handler for import command.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.Handlers.ImportCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.Handlers.ImportCommandHandler"/> class.
+            </summary>
+            <param name="fileCabinetService">A reference to service class is needed because
+            import command handler calls service methods.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.Handlers.ImportCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <summary>
+            Handles the command or calls next command handler.
+            </summary>
+            <param name="request">A command with parameters.</param>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.Handlers.ListCommandHandler">
+            <summary>
+            Provides handler for list command.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.Handlers.ListCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService,System.Action{System.Collections.Generic.IEnumerable{FileCabinetApp.RecordModel.FileCabinetRecord}})">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.Handlers.ListCommandHandler"/> class.
+            </summary>
+            <param name="fileCabinetService">A reference to service class is needed because
+            list command handler calls service methods.</param>
+            <param name="print">Delegate which contains a method for printing records.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.Handlers.ListCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <summary>
+            Handles the command or calls next command handler.
+            </summary>
+            <param name="request">A command with parameters.</param>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.Handlers.PurgeCommandHandler">
+            <summary>
+            Provides handler for purge command.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.Handlers.PurgeCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.Handlers.PurgeCommandHandler"/> class.
+            </summary>
+            <param name="fileCabinetService">A reference to service class is needed because
+            purge command handler calls service methods.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.Handlers.PurgeCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <summary>
+            Handles the command or calls next command handler.
+            </summary>
+            <param name="request">A command with parameters.</param>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.Handlers.RemoveCommandHandler">
+            <summary>
+            Provides handler for remove command.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.Handlers.RemoveCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.Handlers.RemoveCommandHandler"/> class.
+            </summary>
+            <param name="fileCabinetService">A reference to service class is needed because
+            remove command handler calls service methods.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.Handlers.RemoveCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <summary>
+            Handles the command or calls next command handler.
+            </summary>
+            <param name="request">A command with parameters.</param>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.Handlers.ServiceCommandHandlerBase">
+            <summary>
+            A base class for command handlers classes.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.Handlers.ServiceCommandHandlerBase.#ctor(FileCabinetApp.Service.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.Handlers.ServiceCommandHandlerBase"/> class.
+            </summary>
+            <param name="fileCabinetService">A reference to service class is needed because
+            command handlers may need to call service methods.</param>
+        </member>
+        <member name="P:FileCabinetApp.CommandHandlers.Handlers.ServiceCommandHandlerBase.FileCabinetService">
+            <summary>
+            Gets reference to service.
+            </summary>
+            <value>Reference to service.</value>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.Handlers.StatCommandHandler">
+            <summary>
+            Provides handler for stat command.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.Handlers.StatCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.Handlers.StatCommandHandler"/> class.
+            </summary>
+            <param name="fileCabinetService">A reference to service class is needed because
+            stat command handler calls service methods.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.Handlers.StatCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <summary>
+            Handles the command or calls next command handler.
+            </summary>
+            <param name="request">A command with parameters.</param>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.ICommandHandler">
+            <summary>
+            Provides methods for introducing of Chain of Responsibility pattern for
+            command handlers.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.ICommandHandler.SetNext(FileCabinetApp.CommandHandlers.ICommandHandler)">
+            <summary>
+            Sets next command handler in the chain of handlers.
+            </summary>
+            <param name="commandHandler">Next handler in the chain.</param>
+            <returns>Next command handler.</returns>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.ICommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <summary>
+            Calls next command handler in the chain of handlers.
+            </summary>
+            <param name="request">A command with parameters.</param>
+        </member>
+        <member name="T:FileCabinetApp.InputHandlers.InputConverter">
+            <summary>
+            Performs converting input data.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.InputHandlers.InputConverter.IntConverter(System.String)">
+            <summary>
+            Converts input string into <see cref="T:System.Int32"/> value.
+            </summary>
+            <param name="stringToConvert">String to convert.</param>
+            <returns><see cref="T:System.Tuple`3"/>Where the first value indicates was conversion successful or not.
+            The second value contains an error message if conversion failed.
+            The third value contains result of conversion if it was successful.</returns>
+        </member>
+        <member name="M:FileCabinetApp.InputHandlers.InputConverter.StringConverter(System.String)">
+            <summary>
+            Checks if input string is null or whitespace.
+            </summary>
+            <param name="stringToConvert">String to convert.</param>
+            <returns><see cref="T:System.Tuple`3"/>Where the first value indicates was conversion successful or not.
+            The second value contains an error message if conversion failed.
+            The third value contains result of conversion if it was successful.</returns>
+        </member>
+        <member name="M:FileCabinetApp.InputHandlers.InputConverter.DateTimeConverter(System.String)">
+            <summary>
+            Converts input string into <see cref="T:System.DateTime"/> value.
+            </summary>
+            <param name="stringToConvert">String to convert.</param>
+            <returns><see cref="T:System.Tuple`3"/>Where the first value indicates was conversion successful or not.
+            The second value contains an error message if conversion failed.
+            The third value contains result of conversion if it was successful.</returns>
+        </member>
+        <member name="M:FileCabinetApp.InputHandlers.InputConverter.CharConverter(System.String)">
+            <summary>
+            Converts input string into <see cref="T:System.Char"/> value.
+            </summary>
+            <param name="stringToConvert">String to convert.</param>
+            <returns><see cref="T:System.Tuple`3"/>Where the first value indicates was conversion successful or not.
+            The second value contains an error message if conversion failed.
+            The third value contains result of conversion if it was successful.</returns>
+        </member>
+        <member name="M:FileCabinetApp.InputHandlers.InputConverter.ShortConverter(System.String)">
+            <summary>
+            Converts input string into <see cref="T:System.Int16"/> value.
+            </summary>
+            <param name="stringToConvert">String to convert.</param>
+            <returns><see cref="T:System.Tuple`3"/>Where the first value indicates was conversion successful or not.
+            The second value contains an error message if conversion failed.
+            The third value contains result of conversion if it was successful.</returns>
+        </member>
+        <member name="M:FileCabinetApp.InputHandlers.InputConverter.DecimalConverter(System.String)">
+            <summary>
+            Converts input string into <see cref="T:System.Decimal"/> value.
+            </summary>
+            <param name="stringToConvert">String to convert.</param>
+            <returns><see cref="T:System.Tuple`3"/>Where the first value indicates was conversion successful or not.
+            The second value contains an error message if conversion failed.
+            The third value contains result of conversion if it was successful.</returns>
+        </member>
+        <member name="T:FileCabinetApp.InputHandlers.InputHandler">
+            <summary>
+            Provides methods for reading command line input.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.InputHandlers.InputHandler.ReadCommandLineParameters(System.String[])">
+            <summary>
+            Reads command line arguments.
+            </summary>
+            <param name="args">Command line arguments.</param>
+            <returns><see cref="T:System.Collections.Generic.Dictionary`2"/> which contains pairs: parameter - value.</returns>
+        </member>
+        <member name="M:FileCabinetApp.InputHandlers.InputHandler.ReadRecordParameters(FileCabinetApp.Validators.IInputValidator,FileCabinetApp.InputHandlers.InputConverter)">
+            <summary>
+            Creates a parameter object for <see cref="T:FileCabinetApp.RecordModel.FileCabinetRecord"/> class.
+            </summary>
+            <param name="inputValidator">A validator which will be used to validate input.</param>
+            <param name="converter">A converter which will be used to convert input values.</param>
+            <returns>A parameter object for <see cref="T:FileCabinetApp.RecordModel.FileCabinetRecord"/> class.</returns>
+        </member>
         <member name="T:FileCabinetApp.Program">
             <summary>
             This class contains information about available commands and processes console commands.
@@ -14,6 +366,12 @@
             This method runs an instance of FileCabinetMemoryService and processes console commands.
             </summary>
             <param name="args">Console command parameters.</param>
+        </member>
+        <member name="M:FileCabinetApp.Program.DefaultRecordPrint(System.Collections.Generic.IEnumerable{FileCabinetApp.RecordModel.FileCabinetRecord})">
+            <summary>
+            Prints collection of records.
+            </summary>
+            <param name="records">Records to print.</param>
         </member>
         <member name="T:FileCabinetApp.Readers.FileCabinetRecordCsvReader">
             <summary>
@@ -217,6 +575,7 @@
             Initializes a new instance of the <see cref="T:FileCabinetApp.Service.FileCabinetFilesystemService"/> class.
             </summary>
             <param name="fileStream">The stream to file with records.</param>
+            <param name="validator">The validator which will be used for parameters validation.</param>
         </member>
         <member name="M:FileCabinetApp.Service.FileCabinetFilesystemService.Purge">
             <summary>
@@ -499,6 +858,272 @@
             </summary>
             <returns>Number of purged records.</returns>
         </member>
+        <member name="T:FileCabinetApp.Validators.BuilderExtensions">
+            <summary>
+            This class provides extension methods for <see cref="T:FileCabinetApp.Validators.ValidatorBuilder"></see> class.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.BuilderExtensions.CreateDefault(FileCabinetApp.Validators.ValidatorBuilder)">
+            <summary>
+            Creates validator with default parameters.
+            </summary>
+            <param name="validator">Validator to build.</param>
+            <returns>The validator with default parameters.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.BuilderExtensions.CreateCustom(FileCabinetApp.Validators.ValidatorBuilder)">
+            <summary>
+            Creates validator with custom parameters.
+            </summary>
+            <param name="validator">Validator to build.</param>
+            <returns>The validator with custom parameters.</returns>
+        </member>
+        <member name="T:FileCabinetApp.Validators.CompositeValidator">
+            <summary>
+            This class performs validation with collection of validators.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.CompositeValidator.#ctor(System.Collections.Generic.IEnumerable{FileCabinetApp.Validators.IRecordValidator})">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.CompositeValidator"/> class.
+            </summary>
+            <param name="validators">Collection of validators.</param>
+        </member>
+        <member name="M:FileCabinetApp.Validators.CompositeValidator.ValidateParameters(FileCabinetApp.RecordModel.RecordParameters)">
+            <summary>
+            Validates record parameters using collection of validators.
+            </summary>
+            <param name="recordParameters">A parameter object for <see cref="T:FileCabinetApp.RecordModel.FileCabinetRecord"/> class.</param>
+        </member>
+        <member name="T:FileCabinetApp.Validators.CustomInputValidator">
+            <summary>
+            Performs input validation with custom parameters.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.CustomInputValidator.DateOfBirthValidator(System.DateTime)">
+            <summary>
+            Validate value of <see cref="P:FileCabinetApp.RecordModel.FileCabinetRecord.DateOfBirth"/> property.
+            </summary>
+            <param name="dateOfBirth">Date of birth.</param>
+            <returns><see cref="T:System.Tuple`2"/> where the first bool value indicates was validation successfull or not.
+            The second string value contains an error message if validation ended with error.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.CustomInputValidator.ExperienceValidator(System.Int16)">
+            <summary>
+            Validate value of <see cref="P:FileCabinetApp.RecordModel.FileCabinetRecord.Experience"/> property.
+            </summary>
+            <param name="experience">Years of experience.</param>
+            <returns><see cref="T:System.Tuple`2"/> where the first bool value indicates was validation successfull or not.
+            The second string value contains an error message if validation ended with error.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.CustomInputValidator.FirstNameValidator(System.String)">
+            <summary>
+            Validate value of <see cref="P:FileCabinetApp.RecordModel.FileCabinetRecord.FirstName"/> property.
+            </summary>
+            <param name="firstName">First name.</param>
+            <returns><see cref="T:System.Tuple`2"/> where the first bool value indicates was validation successfull or not.
+            The second string value contains an error message if validation ended with error.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.CustomInputValidator.GenderValidator(System.Char)">
+            <summary>
+            Validate value of <see cref="P:FileCabinetApp.RecordModel.FileCabinetRecord.Gender"/> property.
+            </summary>
+            <param name="gender">Gender.</param>
+            <returns><see cref="T:System.Tuple`2"/> where the first bool value indicates was validation successfull or not.
+            The second string value contains an error message if validation ended with error.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.CustomInputValidator.LastNameValidator(System.String)">
+            <summary>
+            Validate value of <see cref="P:FileCabinetApp.RecordModel.FileCabinetRecord.LastName"/> property.
+            </summary>
+            <param name="lastName">Last name.</param>
+            <returns><see cref="T:System.Tuple`2"/> where the first bool value indicates was validation successfull or not.
+            The second string value contains an error message if validation ended with error.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.CustomInputValidator.SalaryValidator(System.Decimal)">
+            <summary>
+            Validate value of <see cref="P:FileCabinetApp.RecordModel.FileCabinetRecord.Salary"/> property.
+            </summary>
+            <param name="salary">Salary.</param>
+            <returns><see cref="T:System.Tuple`2"/> where the first bool value indicates was validation successfull or not.
+            The second string value contains an error message if validation ended with error.</returns>
+        </member>
+        <member name="T:FileCabinetApp.Validators.DateOfBirthValidator">
+            <summary>
+            This class performs validating of <see cref="P:FileCabinetApp.RecordModel.FileCabinetRecord.DateOfBirth"/> field.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.DateOfBirthValidator.#ctor(System.DateTime,System.DateTime)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.DateOfBirthValidator"/> class.
+            </summary>
+            <param name="from">Minimum date.</param>
+            <param name="to">Maximum date.</param>
+        </member>
+        <member name="M:FileCabinetApp.Validators.DateOfBirthValidator.ValidateParameters(FileCabinetApp.RecordModel.RecordParameters)">
+            <summary>
+            Validate value of <see cref="P:FileCabinetApp.RecordModel.FileCabinetRecord.DateOfBirth"/> field.
+            </summary>
+            <param name="recordParameters">Parameter object of <see cref="T:FileCabinetApp.RecordModel.FileCabinetRecord"/> class.</param>
+        </member>
+        <member name="T:FileCabinetApp.Validators.DefaultInputValidator">
+            <summary>
+            Performs input validation with default parameters.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.DefaultInputValidator.DateOfBirthValidator(System.DateTime)">
+            <summary>
+            Validate value of <see cref="P:FileCabinetApp.RecordModel.FileCabinetRecord.DateOfBirth"/> property.
+            </summary>
+            <param name="dateOfBirth">Date of birth.</param>
+            <returns><see cref="T:System.Tuple`2"/> where the first bool value indicates was validation successfull or not.
+            The second string value contains an error message if validation ended with error.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.DefaultInputValidator.ExperienceValidator(System.Int16)">
+            <summary>
+            Validate value of <see cref="P:FileCabinetApp.RecordModel.FileCabinetRecord.Experience"/> property.
+            </summary>
+            <param name="experience">Years of experience.</param>
+            <returns><see cref="T:System.Tuple`2"/> where the first bool value indicates was validation successfull or not.
+            The second string value contains an error message if validation ended with error.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.DefaultInputValidator.FirstNameValidator(System.String)">
+            <summary>
+            Validate value of <see cref="P:FileCabinetApp.RecordModel.FileCabinetRecord.FirstName"/> property.
+            </summary>
+            <param name="firstName">First name.</param>
+            <returns><see cref="T:System.Tuple`2"/> where the first bool value indicates was validation successfull or not.
+            The second string value contains an error message if validation ended with error.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.DefaultInputValidator.GenderValidator(System.Char)">
+            <summary>
+            Validate value of <see cref="P:FileCabinetApp.RecordModel.FileCabinetRecord.Gender"/> property.
+            </summary>
+            <param name="gender">Gender.</param>
+            <returns><see cref="T:System.Tuple`2"/> where the first bool value indicates was validation successfull or not.
+            The second string value contains an error message if validation ended with error.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.DefaultInputValidator.LastNameValidator(System.String)">
+            <summary>
+            Validate value of <see cref="P:FileCabinetApp.RecordModel.FileCabinetRecord.LastName"/> property.
+            </summary>
+            <param name="lastName">Last name.</param>
+            <returns><see cref="T:System.Tuple`2"/> where the first bool value indicates was validation successfull or not.
+            The second string value contains an error message if validation ended with error.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.DefaultInputValidator.SalaryValidator(System.Decimal)">
+            <summary>
+            Validate value of <see cref="P:FileCabinetApp.RecordModel.FileCabinetRecord.Salary"/> property.
+            </summary>
+            <param name="salary">Salary.</param>
+            <returns><see cref="T:System.Tuple`2"/> where the first bool value indicates was validation successfull or not.
+            The second string value contains an error message if validation ended with error.</returns>
+        </member>
+        <member name="T:FileCabinetApp.Validators.ExperienceValidator">
+            <summary>
+            This class performs validating of <see cref="P:FileCabinetApp.RecordModel.FileCabinetRecord.Experience"/> property.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.ExperienceValidator.#ctor(System.Int32,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.ExperienceValidator"/> class.
+            </summary>
+            <param name="minValue">Minimum input value.</param>
+            <param name="maxValue">Maximum input value.</param>
+        </member>
+        <member name="M:FileCabinetApp.Validators.ExperienceValidator.ValidateParameters(FileCabinetApp.RecordModel.RecordParameters)">
+            <summary>
+            Validate value of <see cref="P:FileCabinetApp.RecordModel.FileCabinetRecord.Experience"/> property.
+            </summary>
+            <param name="recordParameters">Parameter object of <see cref="T:FileCabinetApp.RecordModel.FileCabinetRecord"/> class.</param>
+        </member>
+        <member name="T:FileCabinetApp.Validators.FirstNameValidator">
+            <summary>
+            This class performs validating of <see cref="P:FileCabinetApp.RecordModel.FileCabinetRecord.FirstName"/> property.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.FirstNameValidator.#ctor(System.Int32,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.FirstNameValidator"/> class.
+            </summary>
+            <param name="minLength">Minimum input length.</param>
+            <param name="maxLength">Maximum input length.</param>
+        </member>
+        <member name="M:FileCabinetApp.Validators.FirstNameValidator.ValidateParameters(FileCabinetApp.RecordModel.RecordParameters)">
+            <summary>
+            Validate value of <see cref="P:FileCabinetApp.RecordModel.FileCabinetRecord.FirstName"/> property.
+            </summary>
+            <param name="recordParameters">Parameter object of <see cref="T:FileCabinetApp.RecordModel.FileCabinetRecord"/> class.</param>
+        </member>
+        <member name="T:FileCabinetApp.Validators.GenderValidator">
+            <summary>
+            This class performs validating of <see cref="P:FileCabinetApp.RecordModel.FileCabinetRecord.Gender"/> property.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.GenderValidator.#ctor(System.Char[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.GenderValidator"/> class.
+            </summary>
+            <param name="allowedChars">Allowed characters to specify he gender.</param>
+        </member>
+        <member name="M:FileCabinetApp.Validators.GenderValidator.ValidateParameters(FileCabinetApp.RecordModel.RecordParameters)">
+            <summary>
+            Validate value of <see cref="P:FileCabinetApp.RecordModel.FileCabinetRecord.Gender"/> property.
+            </summary>
+            <param name="recordParameters">Parameter object of <see cref="T:FileCabinetApp.RecordModel.FileCabinetRecord"/> class.</param>
+        </member>
+        <member name="T:FileCabinetApp.Validators.IInputValidator">
+            <summary>
+            Provides methods for validating properties of <see cref="T:FileCabinetApp.RecordModel.FileCabinetRecord"></see> class.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.IInputValidator.ExperienceValidator(System.Int16)">
+            <summary>
+            Validate value of <see cref="P:FileCabinetApp.RecordModel.FileCabinetRecord.Experience"/> property.
+            </summary>
+            <param name="experience">Years of experience.</param>
+            <returns><see cref="T:System.Tuple`2"/> where the first bool value indicates was validation successfull or not.
+            The second string value contains an error message if validation ended with error.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.IInputValidator.SalaryValidator(System.Decimal)">
+            <summary>
+            Validate value of <see cref="P:FileCabinetApp.RecordModel.FileCabinetRecord.Salary"/> property.
+            </summary>
+            <param name="salary">Salary.</param>
+            <returns><see cref="T:System.Tuple`2"/> where the first bool value indicates was validation successfull or not.
+            The second string value contains an error message if validation ended with error.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.IInputValidator.GenderValidator(System.Char)">
+            <summary>
+            Validate value of <see cref="P:FileCabinetApp.RecordModel.FileCabinetRecord.Gender"/> property.
+            </summary>
+            <param name="gender">Gender.</param>
+            <returns><see cref="T:System.Tuple`2"/> where the first bool value indicates was validation successfull or not.
+            The second string value contains an error message if validation ended with error.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.IInputValidator.DateOfBirthValidator(System.DateTime)">
+            <summary>
+            Validate value of <see cref="P:FileCabinetApp.RecordModel.FileCabinetRecord.DateOfBirth"/> property.
+            </summary>
+            <param name="dateOfBirth">Date of birth.</param>
+            <returns><see cref="T:System.Tuple`2"/> where the first bool value indicates was validation successfull or not.
+            The second string value contains an error message if validation ended with error.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.IInputValidator.FirstNameValidator(System.String)">
+            <summary>
+            Validate value of <see cref="P:FileCabinetApp.RecordModel.FileCabinetRecord.FirstName"/> property.
+            </summary>
+            <param name="firstName">First name.</param>
+            <returns><see cref="T:System.Tuple`2"/> where the first bool value indicates was validation successfull or not.
+            The second string value contains an error message if validation ended with error.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.IInputValidator.LastNameValidator(System.String)">
+            <summary>
+            Validate value of <see cref="P:FileCabinetApp.RecordModel.FileCabinetRecord.LastName"/> property.
+            </summary>
+            <param name="lastName">Last name.</param>
+            <returns><see cref="T:System.Tuple`2"/> where the first bool value indicates was validation successfull or not.
+            The second string value contains an error message if validation ended with error.</returns>
+        </member>
         <member name="T:FileCabinetApp.Validators.IRecordValidator">
             <summary>
             This interface provides a method for parameters validation.
@@ -509,6 +1134,100 @@
             This method implements parameters validation.
             </summary>
             <param name="recordParameters">The parameter object for FileCabinetRecord.</param>
+        </member>
+        <member name="T:FileCabinetApp.Validators.LastNameValidator">
+            <summary>
+            This class performs validating of <see cref="P:FileCabinetApp.RecordModel.FileCabinetRecord.LastName"/> property.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.LastNameValidator.#ctor(System.Int32,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.LastNameValidator"/> class.
+            </summary>
+            <param name="minLength">Minimum input length.</param>
+            <param name="maxLength">Maximum input length.</param>
+        </member>
+        <member name="M:FileCabinetApp.Validators.LastNameValidator.ValidateParameters(FileCabinetApp.RecordModel.RecordParameters)">
+            <summary>
+            Validate value of <see cref="P:FileCabinetApp.RecordModel.FileCabinetRecord.LastName"/> property.
+            </summary>
+            <param name="recordParameters">Parameter object of <see cref="T:FileCabinetApp.RecordModel.FileCabinetRecord"/> class.</param>
+        </member>
+        <member name="T:FileCabinetApp.Validators.SalaryValidator">
+            <summary>
+            This class performs validating of <see cref="P:FileCabinetApp.RecordModel.FileCabinetRecord.Salary"/> property.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.SalaryValidator.#ctor(System.Decimal,System.Decimal)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.SalaryValidator"/> class.
+            </summary>
+            <param name="minValue">Minimum input value.</param>
+            <param name="maxValue">Maximum input value.</param>
+        </member>
+        <member name="M:FileCabinetApp.Validators.SalaryValidator.ValidateParameters(FileCabinetApp.RecordModel.RecordParameters)">
+            <summary>
+            Validate value of <see cref="P:FileCabinetApp.RecordModel.FileCabinetRecord.Salary"/> property.
+            </summary>
+            <param name="recordParameters">Parameter object of <see cref="T:FileCabinetApp.RecordModel.FileCabinetRecord"/> class.</param>
+        </member>
+        <member name="T:FileCabinetApp.Validators.ValidatorBuilder">
+            <summary>
+            Creates a validator which implements <see cref="T:FileCabinetApp.Validators.IRecordValidator"/> interface.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.ValidatorBuilder.ValidateFirstName(System.Int32,System.Int32)">
+            <summary>
+            Sets validator with parameters parameters for <see cref="P:FileCabinetApp.RecordModel.FileCabinetRecord.FirstName"/> property.
+            </summary>
+            <param name="minLength">Minimum first name length.</param>
+            <param name="maxLength">Maximum first name length.</param>
+            <returns>Reference on current builder.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.ValidatorBuilder.ValidateLastName(System.Int32,System.Int32)">
+            <summary>
+            Sets validator with parameters parameters for <see cref="P:FileCabinetApp.RecordModel.FileCabinetRecord.LastName"/> property.
+            </summary>
+            <param name="minLength">Minimum last name length.</param>
+            <param name="maxLength">Maximum last name length.</param>
+            <returns>Reference on current builder.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.ValidatorBuilder.ValidateDateOfBirth(System.DateTime,System.DateTime)">
+            <summary>
+            Sets validator with parameters parameters for <see cref="P:FileCabinetApp.RecordModel.FileCabinetRecord.DateOfBirth"/> property.
+            </summary>
+            <param name="from">Minimum date.</param>
+            <param name="to">Maximum date.</param>
+            <returns>Reference on current builder.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.ValidatorBuilder.ValidateGender(System.Char[])">
+            <summary>
+            Sets validator with parameters parameters for <see cref="P:FileCabinetApp.RecordModel.FileCabinetRecord.Gender"/> property.
+            </summary>
+            <param name="allowedChars">Array of allowed characters to specify the gender.</param>
+            <returns>Reference on current builder.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.ValidatorBuilder.ValidateExperience(System.Int32,System.Int32)">
+            <summary>
+            Sets validator with parameters parameters for <see cref="P:FileCabinetApp.RecordModel.FileCabinetRecord.Experience"/> property.
+            </summary>
+            <param name="minValue">Minimum experience value.</param>
+            <param name="maxValue">Maximum experience value.</param>
+            <returns>Reference on current builder.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.ValidatorBuilder.ValidateSalary(System.Int32,System.Int32)">
+            <summary>
+            Sets validator with parameters parameters for <see cref="P:FileCabinetApp.RecordModel.FileCabinetRecord.Salary"/> property.
+            </summary>
+            <param name="minValue">Minimum salary value.</param>
+            <param name="maxValue">Maximum salary value.</param>
+            <returns>Reference on current builder.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.ValidatorBuilder.Create">
+            <summary>
+            Creates validator.
+            </summary>
+            <returns>The validator which implements <see cref="T:FileCabinetApp.Validators.IRecordValidator"/> interface.</returns>
         </member>
         <member name="T:FileCabinetApp.Writers.FileCabinetRecordCsvWriter">
             <summary>

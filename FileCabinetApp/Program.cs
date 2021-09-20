@@ -52,11 +52,13 @@ namespace FileCabinetApp
 
             if (isFileSystemServiceEnabled)
             {
+                validationRulesHint += $"{Environment.NewLine}Using file storage.";
                 fileStream = new FileStream("cabinet-records.db", FileMode.OpenOrCreate);
                 fileCabinetService = new FileCabinetFilesystemService(fileStream, validator);
             }
             else
             {
+                validationRulesHint += $"{Environment.NewLine}Using memory storage.";
                 fileCabinetService = new FileCabinetMemoryService(validator);
             }
 
@@ -99,35 +101,10 @@ namespace FileCabinetApp
             }
         }
 
-        public static T ReadInput<T>(Func<string, Tuple<bool, string, T>> converter, Func<T, Tuple<bool, string>> validator)
-        {
-            do
-            {
-                T value;
-
-                var input = Console.ReadLine();
-                var conversionResult = converter(input);
-
-                if (!conversionResult.Item1)
-                {
-                    Console.WriteLine($"Conversion failed: {conversionResult.Item2}. Please, correct your input.");
-                    continue;
-                }
-
-                value = conversionResult.Item3;
-
-                var validationResult = validator(value);
-                if (!validationResult.Item1)
-                {
-                    Console.WriteLine($"Validation failed: {validationResult.Item2}. Please, correct your input.");
-                    continue;
-                }
-
-                return value;
-            }
-            while (true);
-        }
-
+        /// <summary>
+        /// Prints collection of records.
+        /// </summary>
+        /// <param name="records">Records to print.</param>
         public static void DefaultRecordPrint(IEnumerable<FileCabinetRecord> records)
         {
             string recordString;

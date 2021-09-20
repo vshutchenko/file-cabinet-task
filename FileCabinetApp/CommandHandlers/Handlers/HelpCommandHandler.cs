@@ -4,6 +4,9 @@ using System.Text;
 
 namespace FileCabinetApp.CommandHandlers.Handlers
 {
+    /// <summary>
+    /// Provides handler for help command.
+    /// </summary>
     public class HelpCommandHandler : CommandHandlerBase
     {
         private const int CommandHelpIndex = 0;
@@ -26,6 +29,10 @@ namespace FileCabinetApp.CommandHandlers.Handlers
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
         };
 
+        /// <summary>
+        /// Handles the command or calls next command handler.
+        /// </summary>
+        /// <param name="request">A command with parameters.</param>
         public override void Handle(AppCommandRequest request)
         {
             if (request is null)

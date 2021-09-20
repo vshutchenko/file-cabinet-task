@@ -2,7 +2,7 @@
   "profiles": {
     "FileCabinetApp": {
       "commandName": "Project",
-      "commandLineArgs": "--storage=\"file\" -v \"cuStoM\""
+      "commandLineArgs": "--storage=\"file\" -v \"default\""
     }
   }
 }

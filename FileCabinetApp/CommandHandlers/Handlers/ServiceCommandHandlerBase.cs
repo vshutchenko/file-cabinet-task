@@ -5,15 +5,25 @@ using FileCabinetApp.Service;
 
 namespace FileCabinetApp.CommandHandlers.Handlers
 {
+    /// <summary>
+    /// A base class for command handlers classes.
+    /// </summary>
     public abstract class ServiceCommandHandlerBase : CommandHandlerBase
     {
-#pragma warning disable SA1401 // Fields should be private
-        protected IFileCabinetService fileCabinetService;
-#pragma warning restore SA1401 // Fields should be private
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ServiceCommandHandlerBase"/> class.
+        /// </summary>
+        /// <param name="fileCabinetService">A reference to service class is needed because
+        /// command handlers may need to call service methods.</param>
         internal ServiceCommandHandlerBase(IFileCabinetService fileCabinetService)
         {
-            this.fileCabinetService = fileCabinetService;
+            this.FileCabinetService = fileCabinetService;
         }
+
+        /// <summary>
+        /// Gets reference to service.
+        /// </summary>
+        /// <value>Reference to service.</value>
+        protected IFileCabinetService FileCabinetService { get; private set; }
     }
 }

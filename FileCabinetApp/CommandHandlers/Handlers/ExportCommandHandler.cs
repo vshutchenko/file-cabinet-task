@@ -6,15 +6,27 @@ using FileCabinetApp.Service;
 
 namespace FileCabinetApp.CommandHandlers.Handlers
 {
+    /// <summary>
+    /// Provides handler for export command.
+    /// </summary>
     public class ExportCommandHandler : ServiceCommandHandlerBase
     {
         private const string Command = "EXPORT";
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ExportCommandHandler"/> class.
+        /// </summary>
+        /// <param name="fileCabinetService">A reference to service class is needed because
+        /// export command handler calls service methods.</param>
         public ExportCommandHandler(IFileCabinetService fileCabinetService)
             : base(fileCabinetService)
         {
         }
 
+        /// <summary>
+        /// Handles the command or calls next command handler.
+        /// </summary>
+        /// <param name="request">A command with parameters.</param>
         public override void Handle(AppCommandRequest request)
         {
             if (request is null)
@@ -70,7 +82,7 @@ namespace FileCabinetApp.CommandHandlers.Handlers
             }
 
             StreamWriter writer = new StreamWriter(filePath);
-            FileCabinetServiceSnapshot serviceSnapshot = this.fileCabinetService.MakeSnapshot();
+            FileCabinetServiceSnapshot serviceSnapshot = this.FileCabinetService.MakeSnapshot();
 
             if (fileFormat.Equals("CSV", StringComparison.InvariantCultureIgnoreCase))
             {

@@ -24,6 +24,7 @@ namespace FileCabinetApp.Service
         /// Initializes a new instance of the <see cref="FileCabinetFilesystemService"/> class.
         /// </summary>
         /// <param name="fileStream">The stream to file with records.</param>
+        /// <param name="validator">The validator which will be used for parameters validation.</param>
         public FileCabinetFilesystemService(FileStream fileStream, IRecordValidator validator)
         {
             this.fileStream = fileStream;

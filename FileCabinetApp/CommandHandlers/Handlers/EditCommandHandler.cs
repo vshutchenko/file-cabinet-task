@@ -8,17 +8,30 @@ using FileCabinetApp.Validators;
 
 namespace FileCabinetApp.CommandHandlers.Handlers
 {
+    /// <summary>
+    /// Provides handler for stat command.
+    /// </summary>
     public class EditCommandHandler : ServiceCommandHandlerBase
     {
         private const string Command = "EDIT";
         private IInputValidator inputValidator;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EditCommandHandler"/> class.
+        /// </summary>
+        /// <param name="fileCabinetService">A reference to service class is needed because
+        /// edit command handler calls service methods.</param>
+        /// <param name="inputValidator">A validator which will be used for input validation.</param>
         public EditCommandHandler(IFileCabinetService fileCabinetService, IInputValidator inputValidator)
             : base(fileCabinetService)
         {
             this.inputValidator = inputValidator;
         }
 
+        /// <summary>
+        /// Handles the command or calls next command handler.
+        /// </summary>
+        /// <param name="request">A command with parameters.</param>
         public override void Handle(AppCommandRequest request)
         {
             if (request is null)
@@ -52,11 +65,11 @@ namespace FileCabinetApp.CommandHandlers.Handlers
                 id = parametersConversionResult.Item3;
             }
 
-            RecordParameters recordParameters = inputHandler.ReadRecordParameters(this.inputValidator);
+            RecordParameters recordParameters = inputHandler.ReadRecordParameters(this.inputValidator, converter);
 
             try
             {
-                this.fileCabinetService.EditRecord(id, recordParameters);
+                this.FileCabinetService.EditRecord(id, recordParameters);
                 Console.WriteLine($"Record #{id} is updated.");
             }
             catch (Exception ex) when (

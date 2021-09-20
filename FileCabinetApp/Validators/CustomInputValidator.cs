@@ -6,6 +6,9 @@ using FileCabinetApp.RecordModel;
 
 namespace FileCabinetApp.Validators
 {
+    /// <summary>
+    /// Performs input validation with custom parameters.
+    /// </summary>
     public class CustomInputValidator : IInputValidator
     {
         private int maxStringLength = 60;
@@ -18,6 +21,12 @@ namespace FileCabinetApp.Validators
         private int minSalaryValue = 100;
         private int maxSalaryValue = 10000;
 
+        /// <summary>
+        /// Validate value of <see cref="FileCabinetRecord.DateOfBirth"/> property.
+        /// </summary>
+        /// <param name="dateOfBirth">Date of birth.</param>
+        /// <returns><see cref="Tuple{Boolean, String}"/> where the first bool value indicates was validation successfull or not.
+        /// The second string value contains an error message if validation ended with error.</returns>
         public Tuple<bool, string> DateOfBirthValidator(DateTime dateOfBirth)
         {
             bool isValid = true;
@@ -34,6 +43,12 @@ namespace FileCabinetApp.Validators
             return new Tuple<bool, string>(isValid, validationErrorMessage);
         }
 
+        /// <summary>
+        /// Validate value of <see cref="FileCabinetRecord.Experience"/> property.
+        /// </summary>
+        /// <param name="experience">Years of experience.</param>
+        /// <returns><see cref="Tuple{Boolean, String}"/> where the first bool value indicates was validation successfull or not.
+        /// The second string value contains an error message if validation ended with error.</returns>
         public Tuple<bool, string> ExperienceValidator(short experience)
         {
             bool isValid = true;
@@ -48,6 +63,12 @@ namespace FileCabinetApp.Validators
             return new Tuple<bool, string>(isValid, validationErrorMessage);
         }
 
+        /// <summary>
+        /// Validate value of <see cref="FileCabinetRecord.FirstName"/> property.
+        /// </summary>
+        /// <param name="firstName">First name.</param>
+        /// <returns><see cref="Tuple{Boolean, String}"/> where the first bool value indicates was validation successfull or not.
+        /// The second string value contains an error message if validation ended with error.</returns>
         public Tuple<bool, string> FirstNameValidator(string firstName)
         {
             bool isValid = true;
@@ -62,6 +83,12 @@ namespace FileCabinetApp.Validators
             return new Tuple<bool, string>(isValid, validationErrorMessage);
         }
 
+        /// <summary>
+        /// Validate value of <see cref="FileCabinetRecord.Gender"/> property.
+        /// </summary>
+        /// <param name="gender">Gender.</param>
+        /// <returns><see cref="Tuple{Boolean, String}"/> where the first bool value indicates was validation successfull or not.
+        /// The second string value contains an error message if validation ended with error.</returns>
         public Tuple<bool, string> GenderValidator(char gender)
         {
             bool isValid = true;
@@ -76,6 +103,12 @@ namespace FileCabinetApp.Validators
             return new Tuple<bool, string>(isValid, validationErrorMessage);
         }
 
+        /// <summary>
+        /// Validate value of <see cref="FileCabinetRecord.LastName"/> property.
+        /// </summary>
+        /// <param name="lastName">Last name.</param>
+        /// <returns><see cref="Tuple{Boolean, String}"/> where the first bool value indicates was validation successfull or not.
+        /// The second string value contains an error message if validation ended with error.</returns>
         public Tuple<bool, string> LastNameValidator(string lastName)
         {
             bool isValid = true;
@@ -90,6 +123,12 @@ namespace FileCabinetApp.Validators
             return new Tuple<bool, string>(isValid, validationErrorMessage);
         }
 
+        /// <summary>
+        /// Validate value of <see cref="FileCabinetRecord.Salary"/> property.
+        /// </summary>
+        /// <param name="salary">Salary.</param>
+        /// <returns><see cref="Tuple{Boolean, String}"/> where the first bool value indicates was validation successfull or not.
+        /// The second string value contains an error message if validation ended with error.</returns>
         public Tuple<bool, string> SalaryValidator(decimal salary)
         {
             bool isValid = true;
