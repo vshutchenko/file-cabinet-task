@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml.Serialization;
 
-namespace FileCabinetApp
+namespace FileCabinetApp.RecordModel.XmlModel
 {
     /// <summary>
     /// This class represents xml model of name element.

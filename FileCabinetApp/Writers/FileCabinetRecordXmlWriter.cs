@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using System.Xml;
+using FileCabinetApp.RecordModel;
 
-namespace FileCabinetApp
+namespace FileCabinetApp.Writers
 {
     /// <summary>
     /// This class writes records into XML format.

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using FileCabinetApp.RecordModel;
 
 namespace FileCabinetApp.Validators
 {
@@ -15,7 +16,7 @@ namespace FileCabinetApp.Validators
 
         public void ValidateParameters(RecordParameters recordParameters)
         {
-            foreach (var validator in validators)
+            foreach (var validator in this.validators)
             {
                 validator.ValidateParameters(recordParameters);
             }

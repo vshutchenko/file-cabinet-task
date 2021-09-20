@@ -2,16 +2,21 @@
 using System.Collections.Generic;
 using System.Text;
 using FileCabinetApp.InputHandlers;
+using FileCabinetApp.RecordModel;
+using FileCabinetApp.Service;
+using FileCabinetApp.Validators;
 
 namespace FileCabinetApp.CommandHandlers.Handlers
 {
     public class EditCommandHandler : ServiceCommandHandlerBase
     {
         private const string Command = "EDIT";
+        private IInputValidator inputValidator;
 
-        public EditCommandHandler(IFileCabinetService fileCabinetService)
+        public EditCommandHandler(IFileCabinetService fileCabinetService, IInputValidator inputValidator)
             : base(fileCabinetService)
         {
+            this.inputValidator = inputValidator;
         }
 
         public override void Handle(AppCommandRequest request)
@@ -33,10 +38,9 @@ namespace FileCabinetApp.CommandHandlers.Handlers
 
         private void Edit(string parameters)
         {
-            RecordParameters recordParameters;
-            InputValidator validator = new InputValidator(fileCabinetService);
-            Tuple<bool, string, int> parametersConversionResult = InputConverter.IntConverter(parameters);
-            Tuple<bool, string> recordIdValidationResult;
+            InputHandler inputHandler = new InputHandler();
+            InputConverter converter = new InputConverter();
+            Tuple<bool, string, int> parametersConversionResult = converter.IntConverter(parameters);
             int id;
             if (!parametersConversionResult.Item1)
             {
@@ -46,28 +50,9 @@ namespace FileCabinetApp.CommandHandlers.Handlers
             else
             {
                 id = parametersConversionResult.Item3;
-                recordIdValidationResult = validator.IdValidator(id);
-                if (!recordIdValidationResult.Item1)
-                {
-                    Console.WriteLine(recordIdValidationResult.Item2);
-                    return;
-                }
             }
 
-            Console.Write("First name: ");
-            var firstName = Program.ReadInput(InputConverter.StringConverter, validator.FirstNameValidator);
-            Console.Write("Last name: ");
-            var lastName = Program.ReadInput(InputConverter.StringConverter, validator.LastNameValidator);
-            Console.Write("Date of birth: ");
-            var dateOfBirth = Program.ReadInput(InputConverter.DateTimeConverter, validator.DateOfBirthValidator);
-            Console.Write("Gender: ");
-            var gender = Program.ReadInput(InputConverter.CharConverter, validator.GenderValidator);
-            Console.Write("Experience: ");
-            var experience = Program.ReadInput(InputConverter.ShortConverter, validator.ExperienceValidator);
-            Console.Write("Salary: ");
-            var salary = Program.ReadInput(InputConverter.DecimalConverter, validator.SalaryValidator);
-
-            recordParameters = new RecordParameters(firstName, lastName, dateOfBirth, gender, experience, salary);
+            RecordParameters recordParameters = inputHandler.ReadRecordParameters(this.inputValidator);
 
             try
             {

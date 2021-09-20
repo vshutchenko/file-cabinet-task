@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using FileCabinetApp.RecordModel;
 
 namespace FileCabinetApp.Validators
 {
@@ -15,9 +16,9 @@ namespace FileCabinetApp.Validators
 
         public void ValidateParameters(RecordParameters recordParameters)
         {
-            if (Array.IndexOf(allowedChars, recordParameters.Gender) == -1)
+            if (Array.IndexOf(this.allowedChars, recordParameters.Gender) == -1)
             {
-                throw new ArgumentException($"{nameof(recordParameters.Gender)} is not equals to one of allowed values: " + string.Join(',', allowedChars));
+                throw new ArgumentException($"{nameof(recordParameters.Gender)} is not equals to one of allowed values: " + string.Join(',', this.allowedChars));
             }
         }
     }

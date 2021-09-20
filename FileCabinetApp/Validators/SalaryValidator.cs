@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using FileCabinetApp.RecordModel;
 
 namespace FileCabinetApp.Validators
 {
@@ -17,9 +18,9 @@ namespace FileCabinetApp.Validators
 
         public void ValidateParameters(RecordParameters recordParameters)
         {
-            if ((recordParameters.Salary < minValue) || (recordParameters.Salary > maxValue))
+            if ((recordParameters.Salary < this.minValue) || (recordParameters.Salary > this.maxValue))
             {
-                throw new ArgumentException($"{nameof(recordParameters.Salary)} is not between {minValue} and {maxValue}.");
+                throw new ArgumentException($"{nameof(recordParameters.Salary)} is not between {this.minValue} and {this.maxValue}.");
             }
         }
     }

@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Text;
+using FileCabinetApp.RecordModel;
+using FileCabinetApp.Validators;
 
-namespace FileCabinetApp
+namespace FileCabinetApp.Service
 {
     /// <summary>
     /// This class represents a file-cabinet. It stores records in the file and

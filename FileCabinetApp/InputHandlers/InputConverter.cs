@@ -4,9 +4,9 @@ using System.Text;
 
 namespace FileCabinetApp.InputHandlers
 {
-    public static class InputConverter
+    public class InputConverter
     {
-        public static Tuple<bool, string, int> IntConverter(string stringToConvert)
+        public Tuple<bool, string, int> IntConverter(string stringToConvert)
         {
             Tuple<bool, string, int> conversionResult;
             string conversionErrorMessage = string.Empty;
@@ -23,7 +23,7 @@ namespace FileCabinetApp.InputHandlers
             return conversionResult;
         }
 
-        public static Tuple<bool, string, string> StringConverter(string stringToConvert)
+        public Tuple<bool, string, string> StringConverter(string stringToConvert)
         {
             bool isConverted = true;
             string conversionErrorMessage = string.Empty;
@@ -37,7 +37,7 @@ namespace FileCabinetApp.InputHandlers
             return conversionResult;
         }
 
-        public static Tuple<bool, string, DateTime> DateTimeConverter(string stringToConvert)
+        public Tuple<bool, string, DateTime> DateTimeConverter(string stringToConvert)
         {
             Tuple<bool, string, DateTime> conversionResult;
             string conversionErrorMessage = string.Empty;
@@ -54,7 +54,7 @@ namespace FileCabinetApp.InputHandlers
             return conversionResult;
         }
 
-        public static Tuple<bool, string, char> CharConverter(string stringToConvert)
+        public Tuple<bool, string, char> CharConverter(string stringToConvert)
         {
             Tuple<bool, string, char> conversionResult;
             string conversionErrorMessage = string.Empty;
@@ -71,7 +71,7 @@ namespace FileCabinetApp.InputHandlers
             return conversionResult;
         }
 
-        public static Tuple<bool, string, short> ShortConverter(string stringToConvert)
+        public Tuple<bool, string, short> ShortConverter(string stringToConvert)
         {
             Tuple<bool, string, short> conversionResult;
             string conversionErrorMessage = string.Empty;
@@ -88,7 +88,7 @@ namespace FileCabinetApp.InputHandlers
             return conversionResult;
         }
 
-        public static Tuple<bool, string, decimal> DecimalConverter(string stringToConvert)
+        public Tuple<bool, string, decimal> DecimalConverter(string stringToConvert)
         {
             Tuple<bool, string, decimal> conversionResult;
             string conversionErrorMessage = string.Empty;

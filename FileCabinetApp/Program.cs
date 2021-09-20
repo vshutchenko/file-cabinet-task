@@ -5,6 +5,9 @@ using System.Globalization;
 using System.IO;
 using FileCabinetApp.CommandHandlers;
 using FileCabinetApp.CommandHandlers.Handlers;
+using FileCabinetApp.InputHandlers;
+using FileCabinetApp.RecordModel;
+using FileCabinetApp.Service;
 using FileCabinetApp.Validators;
 
 namespace FileCabinetApp
@@ -17,10 +20,9 @@ namespace FileCabinetApp
         private const string DeveloperName = "Vladislav Shutchenko";
         private const string HintMessage = "Enter your command, or enter 'help' to get help.";
         private static bool isRunning = true;
-
-        public static bool IsCustomRulesEnabled { get; private set; }
-
-        public static bool IsFileSystemServiceEnabled { get; private set; }
+        private static bool isCustomRulesEnabled;
+        private static bool isFileSystemServiceEnabled;
+        private static IInputValidator inputValidator;
 
         private static IFileCabinetService fileCabinetService;
 
@@ -30,23 +32,25 @@ namespace FileCabinetApp
         /// <param name="args">Console command parameters.</param>
         public static void Main(string[] args)
         {
-            ReadCommandLineParameters(args);
-            string validationRulesHint = IsCustomRulesEnabled ? "Using custom validation rules." : "Using default validation rules.";
+            HandleCommandLineParameters(args);
+            string validationRulesHint;
             IRecordValidator validator;
             FileStream fileStream = null;
 
-            if (IsCustomRulesEnabled)
+            if (isCustomRulesEnabled)
             {
                 validationRulesHint = "Using custom validation rules.";
+                inputValidator = new CustomInputValidator();
                 validator = new ValidatorBuilder().CreateCustom();
             }
             else
             {
                 validationRulesHint = "Using default validation rules.";
+                inputValidator = new DefaultInputValidator();
                 validator = new ValidatorBuilder().CreateDefault();
             }
 
-            if (IsFileSystemServiceEnabled)
+            if (isFileSystemServiceEnabled)
             {
                 fileStream = new FileStream("cabinet-records.db", FileMode.OpenOrCreate);
                 fileCabinetService = new FileCabinetFilesystemService(fileStream, validator);
@@ -95,30 +99,6 @@ namespace FileCabinetApp
             }
         }
 
-        private static ICommandHandler CreateCommandHandler()
-        {
-            static void Exit(bool b) => isRunning = b;
-
-            var helpCommandHandler = new HelpCommandHandler();
-            var createCommandHandler = new CreateCommandHandler(fileCabinetService);
-            var editCommandHandler = new EditCommandHandler(fileCabinetService);
-            var exitCommandHandler = new ExitCommandHandler(Exit);
-            var exportCommandHandler = new ExportCommandHandler(fileCabinetService);
-            var findCommandHandler = new FindCommandHandler(fileCabinetService, DefaultRecordPrint);
-            var importCommandHandler = new ImportCommandHandler(fileCabinetService);
-            var listCommandHandler = new ListCommandHandler(fileCabinetService, DefaultRecordPrint);
-            var purgeCommandHandler = new PurgeCommandHandler(fileCabinetService);
-            var removeCommandHandler = new RemoveCommandHandler(fileCabinetService);
-            var statCommandHandler = new StatCommandHandler(fileCabinetService);
-
-            helpCommandHandler.SetNext(createCommandHandler).SetNext(createCommandHandler).SetNext(editCommandHandler).
-                SetNext(exitCommandHandler).SetNext(exportCommandHandler).SetNext(findCommandHandler).
-                SetNext(importCommandHandler).SetNext(listCommandHandler).SetNext(purgeCommandHandler).
-                SetNext(removeCommandHandler).SetNext(statCommandHandler);
-
-            return helpCommandHandler;
-        }
-
         public static T ReadInput<T>(Func<string, Tuple<bool, string, T>> converter, Func<T, Tuple<bool, string>> validator)
         {
             do
@@ -164,57 +144,63 @@ namespace FileCabinetApp
             }
         }
 
-        private static void ReadCommandLineParameters(string[] parameters)
+        private static ICommandHandler CreateCommandHandler()
         {
-            if (parameters is null)
+            static void Exit(bool b) => isRunning = b;
+
+            var helpCommandHandler = new HelpCommandHandler();
+            var createCommandHandler = new CreateCommandHandler(fileCabinetService, inputValidator);
+            var editCommandHandler = new EditCommandHandler(fileCabinetService, inputValidator);
+            var exitCommandHandler = new ExitCommandHandler(Exit);
+            var exportCommandHandler = new ExportCommandHandler(fileCabinetService);
+            var findCommandHandler = new FindCommandHandler(fileCabinetService, DefaultRecordPrint);
+            var importCommandHandler = new ImportCommandHandler(fileCabinetService);
+            var listCommandHandler = new ListCommandHandler(fileCabinetService, DefaultRecordPrint);
+            var purgeCommandHandler = new PurgeCommandHandler(fileCabinetService);
+            var removeCommandHandler = new RemoveCommandHandler(fileCabinetService);
+            var statCommandHandler = new StatCommandHandler(fileCabinetService);
+
+            helpCommandHandler.SetNext(createCommandHandler).SetNext(createCommandHandler).SetNext(editCommandHandler).
+                SetNext(exitCommandHandler).SetNext(exportCommandHandler).SetNext(findCommandHandler).
+                SetNext(importCommandHandler).SetNext(listCommandHandler).SetNext(purgeCommandHandler).
+                SetNext(removeCommandHandler).SetNext(statCommandHandler);
+
+            return helpCommandHandler;
+        }
+
+        private static void HandleCommandLineParameters(string[] arguments)
+        {
+            if (arguments is null)
             {
                 return;
             }
 
-            for (int i = 0; i < parameters.Length; i += 2)
+            InputHandler inputHandler = new InputHandler();
+            Dictionary<string, string> parameters = inputHandler.ReadCommandLineParameters(arguments);
+            string validationRules;
+            string storage;
+
+            if (parameters.TryGetValue("-V", out validationRules) || parameters.TryGetValue("--VALIDATION-RULES", out validationRules))
             {
-                switch (parameters[i].ToUpperInvariant())
+                if (validationRules.Equals("DEFAULT", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    case "-V":
-                        if (i + 1 < parameters.Length)
-                        {
-                            if (parameters[i + 1] == "CUSTOM")
-                            {
-                                IsCustomRulesEnabled = true;
-                            }
-                            else if (parameters[i + 1] == "DEFAULT")
-                            {
-                                IsCustomRulesEnabled = false;
-                            }
-                        }
+                    isCustomRulesEnabled = false;
+                }
+                else if (validationRules.Equals("CUSTOM", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    isCustomRulesEnabled = true;
+                }
+            }
 
-                        break;
-                    case "-S":
-                        if (i + 1 < parameters.Length)
-                        {
-                            if (parameters[i + 1] == "FILE")
-                            {
-                                IsFileSystemServiceEnabled = true;
-                            }
-                            else if (parameters[i + 1] == "MEMORY")
-                            {
-                                IsCustomRulesEnabled = false;
-                            }
-                        }
-
-                        break;
-                    case "--VALIDATION-RULES=DEFAULT":
-                        IsCustomRulesEnabled = false;
-                        break;
-                    case "--VALIDATION-RULES=CUSTOM":
-                        IsCustomRulesEnabled = true;
-                        break;
-                    case "--STORAGE=MEMORY":
-                        IsFileSystemServiceEnabled = false;
-                        break;
-                    case "--STORAGE=FILE":
-                        IsFileSystemServiceEnabled = true;
-                        break;
+            if (parameters.TryGetValue("-S", out storage) || parameters.TryGetValue("--STORAGE", out storage))
+            {
+                if (storage.Equals("MEMORY", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    isFileSystemServiceEnabled = false;
+                }
+                else if (storage.Equals("FILE", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    isFileSystemServiceEnabled = true;
                 }
             }
         }

@@ -2,16 +2,21 @@
 using System.Collections.Generic;
 using System.Text;
 using FileCabinetApp.InputHandlers;
+using FileCabinetApp.RecordModel;
+using FileCabinetApp.Service;
+using FileCabinetApp.Validators;
 
 namespace FileCabinetApp.CommandHandlers.Handlers
 {
     public class CreateCommandHandler : ServiceCommandHandlerBase
     {
         private const string Command = "CREATE";
+        private readonly IInputValidator inputValidator;
 
-        public CreateCommandHandler(IFileCabinetService fileCabinetService)
+        public CreateCommandHandler(IFileCabinetService fileCabinetService, IInputValidator inputValidator)
             : base(fileCabinetService)
         {
+            this.inputValidator = inputValidator;
         }
 
         public override void Handle(AppCommandRequest request)
@@ -33,23 +38,8 @@ namespace FileCabinetApp.CommandHandlers.Handlers
 
         private void Create(string parameters)
         {
-            InputValidator validator = new InputValidator(fileCabinetService);
-            RecordParameters recordParameters;
-
-            Console.Write("First name: ");
-            var firstName = Program.ReadInput(InputConverter.StringConverter, validator.FirstNameValidator);
-            Console.Write("Last name: ");
-            var lastName = Program.ReadInput(InputConverter.StringConverter, validator.LastNameValidator);
-            Console.Write("Date of birth: ");
-            var dateOfBirth = Program.ReadInput(InputConverter.DateTimeConverter, validator.DateOfBirthValidator);
-            Console.Write("Gender: ");
-            var gender = Program.ReadInput(InputConverter.CharConverter, validator.GenderValidator);
-            Console.Write("Experience: ");
-            var experience = Program.ReadInput(InputConverter.ShortConverter, validator.ExperienceValidator);
-            Console.Write("Salary: ");
-            var salary = Program.ReadInput(InputConverter.DecimalConverter, validator.SalaryValidator);
-
-            recordParameters = new RecordParameters(firstName, lastName, dateOfBirth, gender, experience, salary);
+            InputHandler inputHandler = new InputHandler();
+            RecordParameters recordParameters = inputHandler.ReadRecordParameters(this.inputValidator);
 
             try
             {
@@ -61,7 +51,7 @@ namespace FileCabinetApp.CommandHandlers.Handlers
                     || ex is ArgumentNullException
                     || ex is ArgumentOutOfRangeException)
             {
-                Console.WriteLine("Invalid input.");
+                Console.WriteLine(ex.Message);
             }
         }
     }

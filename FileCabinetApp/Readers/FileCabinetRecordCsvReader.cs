@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text;
+using FileCabinetApp.RecordModel;
 
-namespace FileCabinetApp
+namespace FileCabinetApp.Readers
 {
     /// <summary>
     /// This class performs reading of csv files.

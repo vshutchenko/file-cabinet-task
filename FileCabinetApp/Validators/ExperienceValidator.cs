@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using FileCabinetApp.RecordModel;
 
 namespace FileCabinetApp.Validators
 {
@@ -22,9 +23,9 @@ namespace FileCabinetApp.Validators
                 throw new ArgumentException($"{nameof(recordParameters.Experience)} value is bigger than short.MaxValue: {short.MaxValue}.");
             }
 
-            if ((recordParameters.Experience < minValue) || (recordParameters.Experience > maxValue))
+            if ((recordParameters.Experience < this.minValue) || (recordParameters.Experience > this.maxValue))
             {
-                throw new ArgumentException($"{nameof(recordParameters.Experience)} is not between {minValue} and {maxValue}.");
+                throw new ArgumentException($"{nameof(recordParameters.Experience)} is not between {this.minValue} and {this.maxValue}.");
             }
         }
     }

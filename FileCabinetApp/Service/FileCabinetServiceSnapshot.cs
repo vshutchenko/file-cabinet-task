@@ -5,8 +5,11 @@ using System.IO;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
+using FileCabinetApp.Readers;
+using FileCabinetApp.RecordModel;
+using FileCabinetApp.Writers;
 
-namespace FileCabinetApp
+namespace FileCabinetApp.Service
 {
     /// <summary>
     /// This class represent a snapshot of the <see cref="IFileCabinetService"/>.

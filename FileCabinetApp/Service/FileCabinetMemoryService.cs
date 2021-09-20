@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Text;
+using FileCabinetApp.RecordModel;
+using FileCabinetApp.Validators;
 
-namespace FileCabinetApp
+namespace FileCabinetApp.Service
 {
     /// <summary>
     /// This class represents a file-cabinet. It stores records and
@@ -206,7 +208,7 @@ namespace FileCabinetApp
         {
             this.validator.ValidateParameters(recordParameters);
 
-            if ((id < 0) || (id > this.list.Count))
+            if (id < 0)
             {
                 throw new ArgumentException($"There is no record with {nameof(id)}={id}");
             }

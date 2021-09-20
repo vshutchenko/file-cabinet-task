@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using FileCabinetApp.RecordModel;
 
 namespace FileCabinetApp.Validators
 {
@@ -17,10 +18,9 @@ namespace FileCabinetApp.Validators
 
         public void ValidateParameters(RecordParameters recordParameters)
         {
-
-            if ((recordParameters.DateOfBirth < from) || (to > DateTime.Now))
+            if ((recordParameters.DateOfBirth < this.from) || (this.to > DateTime.Now))
             {
-                throw new ArgumentOutOfRangeException(nameof(recordParameters.DateOfBirth), $"{nameof(recordParameters.DateOfBirth)} is not in range between {from} and {to}.");
+                throw new ArgumentOutOfRangeException(nameof(recordParameters.DateOfBirth), $"{nameof(recordParameters.DateOfBirth)} is not in range between {this.from} and {this.to}.");
             }
         }
     }

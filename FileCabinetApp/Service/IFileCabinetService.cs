@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
+using FileCabinetApp.RecordModel;
 
-namespace FileCabinetApp
+namespace FileCabinetApp.Service
 {
     /// <summary>
     /// This interface provides methods to work with records.

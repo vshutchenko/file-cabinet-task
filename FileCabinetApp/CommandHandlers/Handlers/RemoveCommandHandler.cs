@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using FileCabinetApp.Service;
 
 namespace FileCabinetApp.CommandHandlers.Handlers
 {
@@ -37,8 +38,7 @@ namespace FileCabinetApp.CommandHandlers.Handlers
                 Console.WriteLine("Wrong parameters. Please, specify id of record to remove.");
             }
 
-            int id;
-            if (int.TryParse(parameters, out id))
+            if (int.TryParse(parameters, out int id))
             {
                 bool isDeleted = this.fileCabinetService.Remove(id);
                 if (isDeleted)
