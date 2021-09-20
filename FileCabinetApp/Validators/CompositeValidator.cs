@@ -4,11 +4,11 @@ using System.Text;
 
 namespace FileCabinetApp.Validators
 {
-    public abstract class CompositeValidator : IRecordValidator
+    public class CompositeValidator : IRecordValidator
     {
         private List<IRecordValidator> validators;
 
-        protected CompositeValidator(IEnumerable<IRecordValidator> validators)
+        public CompositeValidator(IEnumerable<IRecordValidator> validators)
         {
             this.validators = new List<IRecordValidator>(validators);
         }

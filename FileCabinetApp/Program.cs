@@ -22,7 +22,7 @@ namespace FileCabinetApp
 
         public static bool IsFileSystemServiceEnabled { get; private set; }
 
-        private static IFileCabinetService fileCabinetService = new FileCabinetMemoryService(new DefaultValidator());
+        private static IFileCabinetService fileCabinetService;
 
         /// <summary>
         /// This method runs an instance of FileCabinetMemoryService and processes console commands.
@@ -38,12 +38,26 @@ namespace FileCabinetApp
             if (IsCustomRulesEnabled)
             {
                 validationRulesHint = "Using custom validation rules.";
-                validator = new CustomValidator();
+                validator = new ValidatorBuilder().
+                    ValidateFirstName(2, 60).
+                    ValidateLastName(2, 60).
+                    ValidateDateOfBirth(new DateTime(1950, 1, 1), DateTime.Now).
+                    ValidateGender(new char[] { 'F', 'M' }).
+                    ValidateExperience(0, 50).
+                    ValidateSalary(1000, 10000).
+                    Create();
             }
             else
             {
                 validationRulesHint = "Using default validation rules.";
-                validator = new DefaultValidator();
+                validator = new ValidatorBuilder().
+                    ValidateFirstName(2, 60).
+                    ValidateLastName(2, 60).
+                    ValidateDateOfBirth(new DateTime(1900, 1, 1), DateTime.Now).
+                    ValidateGender(new char[] { 'F', 'M', 'f', 'm' }).
+                    ValidateExperience(5, 40).
+                    ValidateSalary(300, 1000).
+                    Create();
             }
 
             if (IsFileSystemServiceEnabled)
