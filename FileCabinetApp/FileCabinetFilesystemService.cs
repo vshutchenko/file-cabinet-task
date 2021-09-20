@@ -16,14 +16,16 @@ namespace FileCabinetApp
         private const int RecordSize = (sizeof(short) * 2) + (sizeof(int) * 4) + (MaxStringLength * 2) + sizeof(char) + sizeof(decimal);
         private const short DeletedBitFlag = 0b_0000_0100;
         private FileStream fileStream;
+        private IRecordValidator validator;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetFilesystemService"/> class.
         /// </summary>
         /// <param name="fileStream">The stream to file with records.</param>
-        public FileCabinetFilesystemService(FileStream fileStream)
+        public FileCabinetFilesystemService(FileStream fileStream, IRecordValidator validator)
         {
             this.fileStream = fileStream;
+            this.validator = validator;
         }
 
         /// <summary>
@@ -99,10 +101,7 @@ namespace FileCabinetApp
         /// <returns>Id of new record.</returns>
         public int CreateRecord(RecordParameters recordParameters)
         {
-            if (recordParameters is null)
-            {
-                throw new ArgumentNullException(nameof(recordParameters), $"{nameof(recordParameters)} is null.");
-            }
+            this.validator.ValidateParameters(recordParameters);
 
             int id = (int)(this.fileStream.Length == 0 ? 1 : (this.fileStream.Length / RecordSize) + 1);
             this.fileStream.Seek(0, SeekOrigin.End);
@@ -121,10 +120,7 @@ namespace FileCabinetApp
         /// <param name="recordParameters">Parameters object for <see cref="FileCabinetRecord"/> class.</param>
         public void EditRecord(int id, RecordParameters recordParameters)
         {
-            if (recordParameters is null)
-            {
-                throw new ArgumentNullException(nameof(recordParameters), $"{nameof(recordParameters)} is null.");
-            }
+            this.validator.ValidateParameters(recordParameters);
 
             BinaryReader reader = new BinaryReader(this.fileStream, Encoding.Unicode, true);
             BinaryWriter writer = new BinaryWriter(this.fileStream, Encoding.Unicode, true);

@@ -10,7 +10,7 @@
             allows create, edit and search records.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetFilesystemService.#ctor(System.IO.FileStream)">
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.#ctor(System.IO.FileStream,FileCabinetApp.IRecordValidator)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetFilesystemService"/> class.
             </summary>
@@ -549,22 +549,20 @@
             This class implements custom parameters validation.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.Validators.CustomValidator.ValidateParameters(FileCabinetApp.RecordParameters)">
+        <member name="M:FileCabinetApp.Validators.CustomValidator.#ctor">
             <summary>
-            This method implements custom parameters validation.
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.CustomValidator"/> class.
             </summary>
-            <param name="recordParameters">The parameter object for FileCabinetRecord.</param>
         </member>
         <member name="T:FileCabinetApp.Validators.DefaultValidator">
             <summary>
             This class implements default parameters validation.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.Validators.DefaultValidator.ValidateParameters(FileCabinetApp.RecordParameters)">
+        <member name="M:FileCabinetApp.Validators.DefaultValidator.#ctor">
             <summary>
-            This method implements default parameters validation.
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.DefaultValidator"/> class.
             </summary>
-            <param name="recordParameters">The parameter object for FileCabinetRecord.</param>
         </member>
     </members>
 </doc>

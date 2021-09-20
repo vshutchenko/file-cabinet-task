@@ -49,7 +49,7 @@ namespace FileCabinetApp
             if (IsFileSystemServiceEnabled)
             {
                 fileStream = new FileStream("cabinet-records.db", FileMode.OpenOrCreate);
-                fileCabinetService = new FileCabinetFilesystemService(fileStream);
+                fileCabinetService = new FileCabinetFilesystemService(fileStream, validator);
             }
             else
             {

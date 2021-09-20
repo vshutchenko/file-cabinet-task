@@ -7,25 +7,22 @@ namespace FileCabinetApp.Validators
     /// <summary>
     /// This class implements default parameters validation.
     /// </summary>
-    public class DefaultValidator : IRecordValidator
+    public class DefaultValidator : CompositeValidator
     {
         /// <summary>
-        /// This method implements default parameters validation.
+        /// Initializes a new instance of the <see cref="DefaultValidator"/> class.
         /// </summary>
-        /// <param name="recordParameters">The parameter object for FileCabinetRecord.</param>
-        public void ValidateParameters(RecordParameters recordParameters)
-        {
-            if (recordParameters is null)
+        public DefaultValidator()
+            : base(new IRecordValidator[]
             {
-                throw new ArgumentNullException(nameof(recordParameters), $"{nameof(recordParameters)} is null.");
-            }
-
-            new FirstNameValidator(2, 60).ValidateParameters(recordParameters);
-            new LastNameValidator(2, 60).ValidateParameters(recordParameters);
-            new DateOfBirthValidator(new DateTime(1950, 1, 1), DateTime.Now).ValidateParameters(recordParameters);
-            new GenderValidator(new[] { 'F', 'M' }).ValidateParameters(recordParameters);
-            new ExperienceValidator(0, 10).ValidateParameters(recordParameters);
-            new SalaryValidator(1000, 10000).ValidateParameters(recordParameters);
+                new FirstNameValidator(2, 60),
+                new LastNameValidator(2, 60),
+                new DateOfBirthValidator(new DateTime(1950, 1, 1), DateTime.Now),
+                new GenderValidator(new[] { 'F', 'M' }),
+                new ExperienceValidator(0, 10),
+                new SalaryValidator(1000, 10000),
+            })
+        {
         }
     }
 }
