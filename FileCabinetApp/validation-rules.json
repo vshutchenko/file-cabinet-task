@@ -1,0 +1,52 @@
+{
+  "default": {
+    "firstName": {
+      "min": 2,
+      "max": 60
+    },
+    "lastName": {
+      "min": 2,
+      "max": 60
+    },
+    "dateOfBirth": {
+      "min": "1/1/1950",
+      "max": "21/10/2021"
+    },
+    "gender": {
+      "allowedChars": "FM"
+    },
+    "experience": {
+      "min": 0,
+      "max": 50
+    },
+    "salary": {
+      "min": 1000,
+      "max": 10000
+    }
+  },
+  "custom": {
+    "firstName": {
+      "min": 5,
+      "max": 80
+    },
+    "lastName": {
+      "min": 5,
+      "max": 80
+    },
+    "dateOfBirth": {
+      "min": "1/1/1900",
+      "max": "21/10/2021"
+    },
+    "gender": {
+      "allowedChars": "FMfm"
+    },
+    "experience": {
+      "min": 5,
+      "max": 40
+    },
+    "salary": {
+      "min": 300,
+      "max": 1000
+    }
+  }
+}

@@ -30,7 +30,7 @@ namespace FileCabinetApp.Validators
         /// <param name="recordParameters">Parameter object of <see cref="FileCabinetRecord"/> class.</param>
         public void ValidateParameters(RecordParameters recordParameters)
         {
-            if ((recordParameters.DateOfBirth < this.from) || (this.to > DateTime.Now))
+            if ((recordParameters.DateOfBirth < this.from) || (recordParameters.DateOfBirth > this.to))
             {
                 throw new ArgumentOutOfRangeException(nameof(recordParameters.DateOfBirth), $"{nameof(recordParameters.DateOfBirth)} is not in range between {this.from} and {this.to}.");
             }
