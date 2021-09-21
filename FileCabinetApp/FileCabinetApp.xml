@@ -1215,7 +1215,7 @@
             <param name="maxValue">Maximum experience value.</param>
             <returns>Reference on current builder.</returns>
         </member>
-        <member name="M:FileCabinetApp.Validators.ValidatorBuilder.ValidateSalary(System.Int32,System.Int32)">
+        <member name="M:FileCabinetApp.Validators.ValidatorBuilder.ValidateSalary(System.Decimal,System.Decimal)">
             <summary>
             Sets validator with parameters parameters for <see cref="P:FileCabinetApp.RecordModel.FileCabinetRecord.Salary"/> property.
             </summary>

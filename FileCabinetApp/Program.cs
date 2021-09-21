@@ -41,13 +41,13 @@ namespace FileCabinetApp
             {
                 validationRulesHint = "Using custom validation rules.";
                 inputValidator = new CustomInputValidator();
-                validator = new ValidatorBuilder().CreateCustom();
+                validator = new ValidatorBuilder().CreateFromConfiguration("custom");
             }
             else
             {
                 validationRulesHint = "Using default validation rules.";
                 inputValidator = new DefaultInputValidator();
-                validator = new ValidatorBuilder().CreateDefault();
+                validator = new ValidatorBuilder().CreateFromConfiguration("default");
             }
 
             if (isFileSystemServiceEnabled)
