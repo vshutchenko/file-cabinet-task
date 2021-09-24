@@ -63,5 +63,19 @@ namespace FileCabinetApp.RecordModel
         /// </summary>
         /// <value>The salary of the person.</value>
         public decimal Salary { get; }
+
+        /// <summary>
+        /// Gets string representation of <see cref="RecordParameters"/> class.
+        /// </summary>
+        /// <returns>String representation of <see cref="RecordParameters"/> class.</returns>
+        public override string ToString()
+        {
+            return $"{nameof(this.FirstName)} = '{this.FirstName}', " +
+                $"{nameof(this.LastName)} = '{this.LastName}', " +
+                $"{nameof(this.DateOfBirth)} = '{this.DateOfBirth}', " +
+                $"{nameof(this.Gender)} = '{this.Gender}', " +
+                $"{nameof(this.Experience)} = '{this.Experience}', " +
+                $"{nameof(this.Salary)} = '{this.Salary}'";
+        }
     }
 }

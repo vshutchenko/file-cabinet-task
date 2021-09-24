@@ -7,17 +7,26 @@ using FileCabinetApp.RecordModel;
 
 namespace FileCabinetApp.Service
 {
+    /// <summary>
+    /// Measures execution time of service methods.
+    /// This class implemented as a Decorator for <see cref="IFileCabinetService"/>.
+    /// </summary>
     public class ServiceMeter : IFileCabinetService
     {
         private IFileCabinetService service;
         private Stopwatch stopwatch;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ServiceMeter"/> class.
+        /// </summary>
+        /// <param name="service">An exemplar of service.</param>
         public ServiceMeter(IFileCabinetService service)
         {
             this.service = service;
             this.stopwatch = new Stopwatch();
         }
 
+        /// <inheritdoc />
         public int CreateRecord(RecordParameters recordParameters)
         {
             this.stopwatch.Restart();
@@ -29,6 +38,7 @@ namespace FileCabinetApp.Service
             return id;
         }
 
+        /// <inheritdoc />
         public void EditRecord(int id, RecordParameters recordParameters)
         {
             this.stopwatch.Restart();
@@ -38,6 +48,7 @@ namespace FileCabinetApp.Service
             Print(nameof(this.EditRecord), this.stopwatch.ElapsedTicks);
         }
 
+        /// <inheritdoc />
         public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
         {
             this.stopwatch.Restart();
@@ -49,6 +60,7 @@ namespace FileCabinetApp.Service
             return records;
         }
 
+        /// <inheritdoc />
         public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
         {
             this.stopwatch.Restart();
@@ -60,6 +72,7 @@ namespace FileCabinetApp.Service
             return records;
         }
 
+        /// <inheritdoc />
         public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
         {
             this.stopwatch.Restart();
@@ -71,6 +84,7 @@ namespace FileCabinetApp.Service
             return records;
         }
 
+        /// <inheritdoc />
         public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
             this.stopwatch.Restart();
@@ -82,6 +96,7 @@ namespace FileCabinetApp.Service
             return records;
         }
 
+        /// <inheritdoc />
         public Tuple<int, int> GetStat()
         {
             this.stopwatch.Restart();
@@ -93,6 +108,7 @@ namespace FileCabinetApp.Service
             return recordsCount;
         }
 
+        /// <inheritdoc />
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
             this.stopwatch.Restart();
@@ -104,6 +120,7 @@ namespace FileCabinetApp.Service
             return snapshot;
         }
 
+        /// <inheritdoc />
         public Tuple<int, int> Purge()
         {
             this.stopwatch.Restart();
@@ -115,6 +132,7 @@ namespace FileCabinetApp.Service
             return deletedRecords;
         }
 
+        /// <inheritdoc />
         public bool Remove(int id)
         {
             this.stopwatch.Restart();
@@ -126,6 +144,7 @@ namespace FileCabinetApp.Service
             return isRecordExists;
         }
 
+        /// <inheritdoc />
         public void Restore(FileCabinetServiceSnapshot serviceSnapshot)
         {
             this.stopwatch.Restart();

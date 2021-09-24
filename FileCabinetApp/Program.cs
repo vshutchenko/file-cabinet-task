@@ -23,6 +23,7 @@ namespace FileCabinetApp
         private static bool isCustomRulesEnabled;
         private static bool isFileSystemServiceEnabled;
         private static bool isServiceMeterEnabled;
+        private static bool isLoggerEnabled;
         private static IInputValidator inputValidator;
 
         private static IFileCabinetService fileCabinetService;
@@ -66,6 +67,11 @@ namespace FileCabinetApp
             if (isServiceMeterEnabled)
             {
                 fileCabinetService = new ServiceMeter(fileCabinetService);
+            }
+
+            if (isLoggerEnabled)
+            {
+                fileCabinetService = new ServiceLogger(fileCabinetService);
             }
 
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
@@ -190,6 +196,11 @@ namespace FileCabinetApp
             if (parameters.ContainsKey("-W") || parameters.ContainsKey("--USE-STOPWATCH"))
             {
                 isServiceMeterEnabled = true;
+            }
+
+            if (parameters.ContainsKey("-L") || parameters.ContainsKey("--USE-LOGGER"))
+            {
+                isLoggerEnabled = true;
             }
         }
     }

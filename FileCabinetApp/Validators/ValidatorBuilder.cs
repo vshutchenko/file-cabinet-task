@@ -23,6 +23,11 @@ namespace FileCabinetApp.Validators
         private readonly string configurationFile = "validation-rules.json";
         private List<IRecordValidator> validators = new List<IRecordValidator>();
 
+        /// <summary>
+        /// Creates validator with rules setted in configuration file.
+        /// </summary>
+        /// <param name="validationRules">Validation rules (default or custom).</param>
+        /// <returns>Validator.</returns>
         public IRecordValidator CreateFromConfiguration(string validationRules)
         {
             IConfiguration config = new ConfigurationBuilder().
