@@ -22,6 +22,7 @@ namespace FileCabinetApp
         private static bool isRunning = true;
         private static bool isCustomRulesEnabled;
         private static bool isFileSystemServiceEnabled;
+        private static bool isServiceMeterEnabled;
         private static IInputValidator inputValidator;
 
         private static IFileCabinetService fileCabinetService;
@@ -60,6 +61,11 @@ namespace FileCabinetApp
             {
                 validationRulesHint += $"{Environment.NewLine}Using memory storage.";
                 fileCabinetService = new FileCabinetMemoryService(validator);
+            }
+
+            if (isServiceMeterEnabled)
+            {
+                fileCabinetService = new ServiceMeter(fileCabinetService);
             }
 
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
@@ -179,6 +185,11 @@ namespace FileCabinetApp
                 {
                     isFileSystemServiceEnabled = true;
                 }
+            }
+
+            if (parameters.ContainsKey("-W") || parameters.ContainsKey("--USE-STOPWATCH"))
+            {
+                isServiceMeterEnabled = true;
             }
         }
     }
