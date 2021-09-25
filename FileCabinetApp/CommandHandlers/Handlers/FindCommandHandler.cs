@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Text;
+using FileCabinetApp.Iterators;
 using FileCabinetApp.RecordModel;
 using FileCabinetApp.Service;
 
@@ -69,21 +70,30 @@ namespace FileCabinetApp.CommandHandlers.Handlers
 
             textToSearch = textToSearch[1..^1];
 
-            ReadOnlyCollection<FileCabinetRecord> records = new ReadOnlyCollection<FileCabinetRecord>(new List<FileCabinetRecord>());
+            List<FileCabinetRecord> records = new List<FileCabinetRecord>();
+            IRecordIterator iterator = null;
 
             if (string.Equals(propertyName, nameof(FileCabinetRecord.FirstName), StringComparison.InvariantCultureIgnoreCase))
             {
-                records = this.FileCabinetService.FindByFirstName(textToSearch);
+                iterator = this.FileCabinetService.FindByFirstName(textToSearch);
             }
             else if (string.Equals(propertyName, nameof(FileCabinetRecord.LastName), StringComparison.InvariantCultureIgnoreCase))
             {
-                records = this.FileCabinetService.FindByLastName(textToSearch);
+                iterator = this.FileCabinetService.FindByLastName(textToSearch);
             }
             else if (string.Equals(propertyName, nameof(FileCabinetRecord.DateOfBirth), StringComparison.InvariantCultureIgnoreCase))
             {
                 if (DateTime.TryParse(textToSearch, out DateTime dateOfBirth))
                 {
-                    records = this.FileCabinetService.FindByDateOfBirth(dateOfBirth);
+                    iterator = this.FileCabinetService.FindByDateOfBirth(dateOfBirth);
+                }
+            }
+
+            if (iterator != null)
+            {
+                while (iterator.HasMore())
+                {
+                    records.Add(iterator.GetNext());
                 }
             }
 

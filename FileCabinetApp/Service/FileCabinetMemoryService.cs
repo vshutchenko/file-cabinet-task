@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Text;
+using FileCabinetApp.Iterators;
 using FileCabinetApp.RecordModel;
 using FileCabinetApp.Validators;
 
@@ -105,7 +106,7 @@ namespace FileCabinetApp.Service
         /// </summary>
         /// <param name="firstName">The person's first name.</param>
         /// <returns>The array of records with matched first name.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
+        public IRecordIterator FindByFirstName(string firstName)
         {
             if (firstName is null)
             {
@@ -117,11 +118,11 @@ namespace FileCabinetApp.Service
 
             if (isValueExists)
             {
-                return new ReadOnlyCollection<FileCabinetRecord>(records);
+                return new MemoryIterator(records);
             }
             else
             {
-                return new ReadOnlyCollection<FileCabinetRecord>(new List<FileCabinetRecord>());
+                return new MemoryIterator(new List<FileCabinetRecord>());
             }
         }
 
@@ -130,7 +131,7 @@ namespace FileCabinetApp.Service
         /// </summary>
         /// <param name="lastName">The person's last name.</param>
         /// <returns>The array of records with matched last name.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
+        public IRecordIterator FindByLastName(string lastName)
         {
             if (lastName is null)
             {
@@ -142,11 +143,11 @@ namespace FileCabinetApp.Service
 
             if (isValueExists)
             {
-                return new ReadOnlyCollection<FileCabinetRecord>(records);
+                return new MemoryIterator(records);
             }
             else
             {
-                return new ReadOnlyCollection<FileCabinetRecord>(new List<FileCabinetRecord>());
+                return new MemoryIterator(new List<FileCabinetRecord>());
             }
         }
 
@@ -155,18 +156,18 @@ namespace FileCabinetApp.Service
         /// </summary>
         /// <param name="dateOfBirth">The person's date of birth.</param>
         /// <returns>The array of records with matched date of birth.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
+        public IRecordIterator FindByDateOfBirth(DateTime dateOfBirth)
         {
             List<FileCabinetRecord> records;
             bool isValueExists = this.dateOfBirthDictionary.TryGetValue(dateOfBirth.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture), out records);
 
             if (isValueExists)
             {
-                return new ReadOnlyCollection<FileCabinetRecord>(records);
+                return new MemoryIterator(records);
             }
             else
             {
-                return new ReadOnlyCollection<FileCabinetRecord>(new List<FileCabinetRecord>());
+                return new MemoryIterator(new List<FileCabinetRecord>());
             }
         }
 
