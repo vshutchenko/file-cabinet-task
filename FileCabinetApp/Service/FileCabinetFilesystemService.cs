@@ -219,14 +219,14 @@ namespace FileCabinetApp.Service
         /// </summary>
         /// <param name="dateOfBirth">The person's date of birth.</param>
         /// <returns>The array of records with matched date of birth.</returns>
-        public IRecordIterator FindByDateOfBirth(DateTime dateOfBirth)
+        public IEnumerable<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
         {
             //this.fileStream.Seek(0, SeekOrigin.Begin);
             //List<FileCabinetRecord> records = new List<FileCabinetRecord>();
             //BinaryReader reader = new BinaryReader(this.fileStream, Encoding.Unicode, true);
 
             var offsets = this.dateOfBirthDictionary[dateOfBirth.ToString("dd-MM-yyyy")];
-            IRecordIterator iterator = new FilesystemIterator(fileStream, offsets);
+            IEnumerable<FileCabinetRecord> iterator = new FilesystemIterator(fileStream, offsets);
             return iterator;
 
             //for (int i = 0; i < offsets.Count; i++)
@@ -247,10 +247,10 @@ namespace FileCabinetApp.Service
         /// </summary>
         /// <param name="firstName">The person's first name.</param>
         /// <returns>The array of records with matched first name.</returns>
-        public IRecordIterator FindByFirstName(string firstName)
+        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
         {
             var offsets = this.firstNameDictionary[firstName.ToUpperInvariant()];
-            IRecordIterator iterator = new FilesystemIterator(fileStream, offsets);
+            IEnumerable<FileCabinetRecord> iterator = new FilesystemIterator(fileStream, offsets);
             return iterator;
 
             //this.fileStream.Seek(0, SeekOrigin.Begin);
@@ -278,10 +278,10 @@ namespace FileCabinetApp.Service
         /// </summary>
         /// <param name="lastName">The person's last name.</param>
         /// <returns>The array of records with matched last name.</returns>
-        public IRecordIterator FindByLastName(string lastName)
+        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
         {
             var offsets = this.lastNameDictionary[lastName.ToUpperInvariant()];
-            IRecordIterator iterator = new FilesystemIterator(fileStream, offsets);
+            IEnumerable<FileCabinetRecord> iterator = new FilesystemIterator(fileStream, offsets);
             return iterator;
 
             //this.fileStream.Seek(0, SeekOrigin.Begin);

@@ -106,7 +106,7 @@ namespace FileCabinetApp.Service
         /// </summary>
         /// <param name="firstName">The person's first name.</param>
         /// <returns>The array of records with matched first name.</returns>
-        public IRecordIterator FindByFirstName(string firstName)
+        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
         {
             if (firstName is null)
             {
@@ -131,7 +131,7 @@ namespace FileCabinetApp.Service
         /// </summary>
         /// <param name="lastName">The person's last name.</param>
         /// <returns>The array of records with matched last name.</returns>
-        public IRecordIterator FindByLastName(string lastName)
+        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
         {
             if (lastName is null)
             {
@@ -156,7 +156,7 @@ namespace FileCabinetApp.Service
         /// </summary>
         /// <param name="dateOfBirth">The person's date of birth.</param>
         /// <returns>The array of records with matched date of birth.</returns>
-        public IRecordIterator FindByDateOfBirth(DateTime dateOfBirth)
+        public IEnumerable<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
         {
             List<FileCabinetRecord> records;
             bool isValueExists = this.dateOfBirthDictionary.TryGetValue(dateOfBirth.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture), out records);

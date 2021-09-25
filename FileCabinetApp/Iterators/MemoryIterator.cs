@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using FileCabinetApp.RecordModel;
 
 namespace FileCabinetApp.Iterators
 {
-    public class MemoryIterator : IRecordIterator
+    public class MemoryIterator : IEnumerator<FileCabinetRecord>, IEnumerable<FileCabinetRecord>
     {
         private IList<FileCabinetRecord> records;
         private int currentPosition;
@@ -16,22 +17,46 @@ namespace FileCabinetApp.Iterators
             this.currentPosition = -1;
         }
 
-        public FileCabinetRecord GetNext()
+        public FileCabinetRecord Current
         {
-            if (this.HasMore())
+            get
             {
-                currentPosition++;
                 return records[currentPosition];
-            }
-            else
-            {
-                return null;
             }
         }
 
-        public bool HasMore()
+        object IEnumerator.Current
         {
-            return currentPosition + 1 < records.Count;
+            get
+            {
+                return Current;
+            }
+        }
+
+        public void Dispose()
+        {
+            this.Reset();
+        }
+
+        public IEnumerator<FileCabinetRecord> GetEnumerator()
+        {
+            return this;
+        }
+
+        public bool MoveNext()
+        {
+            currentPosition++;
+            return currentPosition < records.Count;
+        }
+
+        public void Reset()
+        {
+            currentPosition = -1;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
         }
     }
 }

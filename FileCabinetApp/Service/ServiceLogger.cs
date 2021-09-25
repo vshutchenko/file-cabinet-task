@@ -56,7 +56,7 @@ namespace FileCabinetApp.Service
         }
 
         /// <inheritdoc/>
-        public IRecordIterator FindByDateOfBirth(DateTime dateOfBirth)
+        public IEnumerable<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
         {
             string parameters = $"DateOfBirth = '{dateOfBirth}'";
             this.WriteMessage(LogMessageType.MethodWithParameters, nameof(this.FindByDateOfBirth), parameters);
@@ -67,7 +67,7 @@ namespace FileCabinetApp.Service
         }
 
         /// <inheritdoc/>
-        public IRecordIterator FindByFirstName(string firstName)
+        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
         {
             string parameters = $"FirstName = '{firstName}";
             this.WriteMessage(LogMessageType.MethodWithParameters, nameof(this.FindByFirstName), parameters);
@@ -78,7 +78,7 @@ namespace FileCabinetApp.Service
         }
 
         /// <inheritdoc/>
-        public IRecordIterator FindByLastName(string lastName)
+        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
         {
             string parameters = $"LastName = '{lastName}'";
             this.WriteMessage(LogMessageType.MethodWithParameters, nameof(this.FindByLastName), parameters);

@@ -71,7 +71,7 @@ namespace FileCabinetApp.CommandHandlers.Handlers
             textToSearch = textToSearch[1..^1];
 
             List<FileCabinetRecord> records = new List<FileCabinetRecord>();
-            IRecordIterator iterator = null;
+            IEnumerable<FileCabinetRecord> iterator = null;
 
             if (string.Equals(propertyName, nameof(FileCabinetRecord.FirstName), StringComparison.InvariantCultureIgnoreCase))
             {
@@ -91,9 +91,9 @@ namespace FileCabinetApp.CommandHandlers.Handlers
 
             if (iterator != null)
             {
-                while (iterator.HasMore())
+                while (iterator.GetEnumerator().MoveNext())
                 {
-                    records.Add(iterator.GetNext());
+                    records.Add(iterator.GetEnumerator().Current);
                 }
             }
 
