@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using FileCabinetApp.RecordModel;
@@ -17,6 +18,11 @@ namespace FileCabinetApp.Service
         private const int MaxStringLength = 120;
         private const int RecordSize = (sizeof(short) * 2) + (sizeof(int) * 4) + (MaxStringLength * 2) + sizeof(char) + sizeof(decimal);
         private const short DeletedBitFlag = 0b_0000_0100;
+
+        private readonly Dictionary<string, List<int>> firstNameDictionary = new Dictionary<string, List<int>>();
+        private readonly Dictionary<string, List<int>> lastNameDictionary = new Dictionary<string, List<int>>();
+        private readonly Dictionary<string, List<int>> dateOfBirthDictionary = new Dictionary<string, List<int>>();
+
         private FileStream fileStream;
         private IRecordValidator validator;
 
@@ -29,6 +35,50 @@ namespace FileCabinetApp.Service
         {
             this.fileStream = fileStream;
             this.validator = validator;
+
+            this.fileStream.Seek(0, SeekOrigin.Begin);
+            BinaryReader reader = new BinaryReader(this.fileStream, Encoding.Unicode, true);
+            int n = 0;
+            while (this.fileStream.Position < this.fileStream.Length)
+            {
+                if (TryReadRecord(reader, out FileCabinetRecord record))
+                {
+                    AddInDictionary(this.firstNameDictionary, record.FirstName.ToUpperInvariant(), new List<int> { (n * RecordSize) + (int)Offset.FirstName });
+                    AddInDictionary(this.lastNameDictionary, record.LastName.ToUpperInvariant(), new List<int> { (n * RecordSize) + (int)Offset.LastName });
+                    AddInDictionary(this.dateOfBirthDictionary, record.DateOfBirth.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture).ToUpperInvariant(), new List<int> { (n * RecordSize) + (int)Offset.Year });
+                    n++;
+                }
+            }
+
+            reader.Close();
+        }
+
+        private enum FieldSize
+        {
+            Reserved = 2,
+            Id = 4,
+            FirstName = 120,
+            LastName = 120,
+            Year = 4,
+            Month = 4,
+            Day = 4,
+            Gender = 2,
+            Experience = 2,
+            Salary = 16,
+        }
+
+        private enum Offset
+        {
+            Reserved = 0,
+            Id = 2,
+            FirstName = 6,
+            LastName = 126,
+            Year = 246,
+            Month = 250,
+            Day = 254,
+            Gender = 258,
+            Experience = 260,
+            Salary = 262,
         }
 
         /// <summary>
@@ -91,7 +141,12 @@ namespace FileCabinetApp.Service
                 {
                     BinaryWriter writer = new BinaryWriter(this.fileStream, Encoding.Unicode, true);
                     writer.Seek(0, SeekOrigin.End);
+
+                    AddInDictionary(this.firstNameDictionary, recordParameters.FirstName.ToUpperInvariant(), new List<int> { (int)this.fileStream.Position + (int)Offset.FirstName });
+                    AddInDictionary(this.lastNameDictionary, recordParameters.LastName.ToUpperInvariant(), new List<int> { (int)this.fileStream.Position + (int)Offset.LastName });
+                    AddInDictionary(this.dateOfBirthDictionary, recordParameters.DateOfBirth.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture), new List<int> { (int)this.fileStream.Position + (int)Offset.Year });
                     WriteRecord(record.Id, recordParameters, writer);
+
                     writer.Close();
                 }
             }
@@ -110,7 +165,12 @@ namespace FileCabinetApp.Service
             this.fileStream.Seek(0, SeekOrigin.End);
             BinaryWriter writer = new BinaryWriter(this.fileStream, Encoding.Unicode, true);
 
+            AddInDictionary(this.firstNameDictionary, recordParameters.FirstName.ToUpperInvariant(), new List<int> { (int)this.fileStream.Position + (int)Offset.FirstName });
+            AddInDictionary(this.lastNameDictionary, recordParameters.LastName.ToUpperInvariant(), new List<int> { (int)this.fileStream.Position + (int)Offset.LastName });
+            AddInDictionary(this.dateOfBirthDictionary, recordParameters.DateOfBirth.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture), new List<int> { (int)this.fileStream.Position + (int)Offset.Year });
+
             WriteRecord(id, recordParameters, writer);
+
             writer.Close();
 
             return id;
@@ -134,7 +194,17 @@ namespace FileCabinetApp.Service
                 if (TryReadRecord(reader, out FileCabinetRecord record) && (record.Id == id))
                 {
                     this.fileStream.Seek(-RecordSize, SeekOrigin.Current);
+
+                    this.firstNameDictionary[record.FirstName.ToUpperInvariant()].Remove((int)this.fileStream.Position + (int)Offset.FirstName);
+                    this.lastNameDictionary[record.LastName.ToUpperInvariant()].Remove((int)this.fileStream.Position + (int)Offset.LastName);
+                    this.dateOfBirthDictionary[record.DateOfBirth.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture)].Remove((int)this.fileStream.Position + (int)Offset.Year);
+
+                    AddInDictionary(this.firstNameDictionary, recordParameters.FirstName.ToUpperInvariant(), new List<int> { (int)this.fileStream.Position + (int)Offset.FirstName });
+                    AddInDictionary(this.lastNameDictionary, recordParameters.LastName.ToUpperInvariant(), new List<int> { (int)this.fileStream.Position + (int)Offset.LastName });
+                    AddInDictionary(this.dateOfBirthDictionary, recordParameters.DateOfBirth.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture), new List<int> { (int)this.fileStream.Position + (int)Offset.Year });
+
                     WriteRecord(id, recordParameters, writer);
+
                     break;
                 }
             }
@@ -150,39 +220,22 @@ namespace FileCabinetApp.Service
         /// <returns>The array of records with matched date of birth.</returns>
         public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
         {
-            int dateOfBirthOffset = 246;
-            int recordStartOffset = -dateOfBirthOffset - (sizeof(int) * 3);
-
-            List<FileCabinetRecord> records = new List<FileCabinetRecord>();
             this.fileStream.Seek(0, SeekOrigin.Begin);
+            List<FileCabinetRecord> records = new List<FileCabinetRecord>();
             BinaryReader reader = new BinaryReader(this.fileStream, Encoding.Unicode, true);
 
-            while (this.fileStream.Position < this.fileStream.Length)
+            var offsets = this.dateOfBirthDictionary[dateOfBirth.ToString("dd-MM-yyyy")];
+
+            for (int i = 0; i < offsets.Count; i++)
             {
-                this.fileStream.Seek(dateOfBirthOffset, SeekOrigin.Current);
-
-                int year = reader.ReadInt32();
-                int month = reader.ReadInt32();
-                int day = reader.ReadInt32();
-                DateTime currentRecordDateOfBirth = new DateTime(year, month, day);
-
-                if (currentRecordDateOfBirth == dateOfBirth)
+                this.fileStream.Seek(offsets[i] - (int)Offset.Year, SeekOrigin.Begin);
+                if (TryReadRecord(reader, out FileCabinetRecord record))
                 {
-                    this.fileStream.Seek(recordStartOffset, SeekOrigin.Current);
-
-                    if (TryReadRecord(reader, out FileCabinetRecord record))
-                    {
-                        records.Add(record);
-                    }
-                }
-                else
-                {
-                    this.fileStream.Seek(RecordSize + recordStartOffset, SeekOrigin.Current);
+                    records.Add(record);
                 }
             }
 
             reader.Close();
-
             return new ReadOnlyCollection<FileCabinetRecord>(records);
         }
 
@@ -193,29 +246,18 @@ namespace FileCabinetApp.Service
         /// <returns>The array of records with matched first name.</returns>
         public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
         {
-            int firstNameOffset = 6;
-            int recordStartOffset = -firstNameOffset - MaxStringLength;
+            this.fileStream.Seek(0, SeekOrigin.Begin);
             List<FileCabinetRecord> records = new List<FileCabinetRecord>();
             BinaryReader reader = new BinaryReader(this.fileStream, Encoding.Unicode, true);
-            this.fileStream.Seek(0, SeekOrigin.Begin);
 
-            while (this.fileStream.Position < this.fileStream.Length)
+            var offsets = this.firstNameDictionary[firstName.ToUpperInvariant()];
+
+            for (int i = 0; i < offsets.Count; i++)
             {
-                this.fileStream.Seek(firstNameOffset, SeekOrigin.Current);
-                string currentRecordFirstName = Encoding.Unicode.GetString(reader.ReadBytes(MaxStringLength)).Trim('\0');
-
-                if (currentRecordFirstName.Equals(firstName, StringComparison.InvariantCultureIgnoreCase))
+                this.fileStream.Seek(offsets[i] - (int)Offset.FirstName, SeekOrigin.Begin);
+                if (TryReadRecord(reader, out FileCabinetRecord record))
                 {
-                    this.fileStream.Seek(recordStartOffset, SeekOrigin.Current);
-
-                    if (TryReadRecord(reader, out FileCabinetRecord record))
-                    {
-                        records.Add(record);
-                    }
-                }
-                else
-                {
-                    this.fileStream.Seek(RecordSize + recordStartOffset, SeekOrigin.Current);
+                    records.Add(record);
                 }
             }
 
@@ -231,28 +273,18 @@ namespace FileCabinetApp.Service
         /// <returns>The array of records with matched last name.</returns>
         public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
         {
-            int lastNameOffset = 126;
-            int recordStartOffset = -lastNameOffset - MaxStringLength;
-            List<FileCabinetRecord> records = new List<FileCabinetRecord>();
             this.fileStream.Seek(0, SeekOrigin.Begin);
+            List<FileCabinetRecord> records = new List<FileCabinetRecord>();
             BinaryReader reader = new BinaryReader(this.fileStream, Encoding.Unicode, true);
 
-            while (this.fileStream.Position < this.fileStream.Length)
-            {
-                this.fileStream.Seek(lastNameOffset, SeekOrigin.Current);
-                string currentRecordLastName = Encoding.Unicode.GetString(reader.ReadBytes(MaxStringLength)).Trim('\0');
-                if (currentRecordLastName.Equals(lastName, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    this.fileStream.Seek(recordStartOffset, SeekOrigin.Current);
+            var offsets = this.lastNameDictionary[lastName.ToUpperInvariant()];
 
-                    if (TryReadRecord(reader, out FileCabinetRecord record))
-                    {
-                        records.Add(record);
-                    }
-                }
-                else
+            for (int i = 0; i < offsets.Count; i++)
+            {
+                this.fileStream.Seek(offsets[i] - (int)Offset.LastName, SeekOrigin.Begin);
+                if (TryReadRecord(reader, out FileCabinetRecord record))
                 {
-                    this.fileStream.Seek(RecordSize + recordStartOffset, SeekOrigin.Current);
+                    records.Add(record);
                 }
             }
 
@@ -267,8 +299,8 @@ namespace FileCabinetApp.Service
         /// <returns>Collection of stored records.</returns>
         public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
-            List<FileCabinetRecord> records = new List<FileCabinetRecord>();
             this.fileStream.Seek(0, SeekOrigin.Begin);
+            List<FileCabinetRecord> records = new List<FileCabinetRecord>();
             BinaryReader reader = new BinaryReader(this.fileStream, Encoding.Unicode, true);
 
             while (this.fileStream.Position < this.fileStream.Length)
@@ -357,6 +389,11 @@ namespace FileCabinetApp.Service
                 if (TryReadRecord(reader, out FileCabinetRecord record) && (record.Id == id))
                 {
                     this.fileStream.Seek(-RecordSize, SeekOrigin.Current);
+
+                    this.firstNameDictionary[record.FirstName.ToUpperInvariant()].Remove((int)this.fileStream.Position + (int)Offset.FirstName);
+                    this.lastNameDictionary[record.LastName.ToUpperInvariant()].Remove((int)this.fileStream.Position + (int)Offset.LastName);
+                    this.dateOfBirthDictionary[record.DateOfBirth.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture)].Remove((int)this.fileStream.Position + (int)Offset.Year);
+
                     writer.Write(DeletedBitFlag);
                     return true;
                 }
@@ -414,6 +451,18 @@ namespace FileCabinetApp.Service
             writer.Write(Encoding.Unicode.GetBytes(new char[] { recordParameters.Gender }));
             writer.Write(recordParameters.Experience);
             writer.Write(recordParameters.Salary);
+        }
+
+        private static void AddInDictionary(Dictionary<string, List<int>> dictionary, string key, List<int> recordsIds)
+        {
+            List<int> existingValue;
+
+            if (!dictionary.TryGetValue(key.ToUpperInvariant(), out existingValue))
+            {
+                existingValue = dictionary[key.ToUpperInvariant()] = new List<int>();
+            }
+
+            existingValue.AddRange(recordsIds);
         }
     }
 }
