@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Text;
+using FileCabinetApp.Iterators;
 using FileCabinetApp.RecordModel;
 
 namespace FileCabinetApp.Service
@@ -55,34 +56,34 @@ namespace FileCabinetApp.Service
         }
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
+        public IEnumerable<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
         {
             string parameters = $"DateOfBirth = '{dateOfBirth}'";
             this.WriteMessage(LogMessageType.MethodWithParameters, nameof(this.FindByDateOfBirth), parameters);
             var records = this.service.FindByDateOfBirth(dateOfBirth);
-            parameters = $"'{records.Count}' records";
+            //parameters = $"'{records.Count}' records";
             this.WriteMessage(LogMessageType.MethodReturnValue, nameof(this.FindByDateOfBirth), parameters);
             return records;
         }
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
+        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
         {
             string parameters = $"FirstName = '{firstName}";
             this.WriteMessage(LogMessageType.MethodWithParameters, nameof(this.FindByFirstName), parameters);
             var records = this.service.FindByFirstName(firstName);
-            parameters = $"'{records.Count}' records";
+            //parameters = $"'{records.Count}' records";
             this.WriteMessage(LogMessageType.MethodReturnValue, nameof(this.FindByFirstName), parameters);
             return records;
         }
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
+        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
         {
             string parameters = $"LastName = '{lastName}'";
             this.WriteMessage(LogMessageType.MethodWithParameters, nameof(this.FindByLastName), parameters);
             var records = this.service.FindByLastName(lastName);
-            parameters = $"'{records.Count}' records";
+            //parameters = $"'{records.Count}' records";
             this.WriteMessage(LogMessageType.MethodReturnValue, nameof(this.FindByLastName), parameters);
             return records;
         }

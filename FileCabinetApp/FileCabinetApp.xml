@@ -356,6 +356,121 @@
             <param name="converter">A converter which will be used to convert input values.</param>
             <returns>A parameter object for <see cref="T:FileCabinetApp.RecordModel.FileCabinetRecord"/> class.</returns>
         </member>
+        <member name="T:FileCabinetApp.Iterators.FilesystemIterator">
+            <summary>
+            Supports iteration over a file with records.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.FilesystemIterator.#ctor(System.IO.FileStream,System.Collections.Generic.IList{System.Int32})">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Iterators.FilesystemIterator"/> class.
+            </summary>
+            <param name="fileStream">A stream to file with records.</param>
+            <param name="offsets">Pinters to start positions of records.</param>
+        </member>
+        <member name="P:FileCabinetApp.Iterators.FilesystemIterator.Current">
+            <summary>
+            Gets current record.
+            </summary>
+            <value>Current record.</value>
+        </member>
+        <member name="P:FileCabinetApp.Iterators.FilesystemIterator.System#Collections#IEnumerator#Current">
+            <summary>
+            Gets current object.
+            </summary>
+            <value>Current object.</value>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.FilesystemIterator.MoveNext">
+            <summary>
+            Moves pointer to next record.
+            </summary>
+            <returns>True if one more record exists, false if there is no more records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.FilesystemIterator.Reset">
+            <summary>
+            Sets pointer to a start position.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.FilesystemIterator.Dispose">
+            <summary>
+            Free managed resources.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.FilesystemIterator.GetEnumerator">
+            <summary>
+            Gets enumerator.
+            </summary>
+            <returns>Enumerator over the file with records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.FilesystemIterator.System#Collections#IEnumerable#GetEnumerator">
+            <summary>
+            Gets enumerator.
+            </summary>
+            <returns>Enumerator over the file with records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.FilesystemIterator.Dispose(System.Boolean)">
+            <summary>
+            Free managed resources.
+            </summary>
+            <param name="disposing">Indicates whether the method call comes from a Dispose method (its value is true) or from a finalizer (its value is false).</param>
+        </member>
+        <member name="T:FileCabinetApp.Iterators.MemoryIterator">
+            <summary>
+            Supports iteration over a collection with records.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.MemoryIterator.#ctor(System.Collections.Generic.IList{FileCabinetApp.RecordModel.FileCabinetRecord})">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Iterators.MemoryIterator"/> class.
+            </summary>
+            <param name="records">Collection of records.</param>
+        </member>
+        <member name="P:FileCabinetApp.Iterators.MemoryIterator.Current">
+            <summary>
+            Gets current record.
+            </summary>
+            <value>Current record.</value>
+        </member>
+        <member name="P:FileCabinetApp.Iterators.MemoryIterator.System#Collections#IEnumerator#Current">
+            <summary>
+            Gets current object.
+            </summary>
+            <value>Current object.</value>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.MemoryIterator.Dispose">
+            <summary>
+            Free managed resources.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.MemoryIterator.GetEnumerator">
+            <summary>
+            Gets enumerator.
+            </summary>
+            <returns>Enumerator over the collection of records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.MemoryIterator.MoveNext">
+            <summary>
+            Moves pointer to next record.
+            </summary>
+            <returns>True if one more record exists, false if there is no more records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.MemoryIterator.Reset">
+            <summary>
+            Sets pointer to a start position.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.MemoryIterator.System#Collections#IEnumerable#GetEnumerator">
+            <summary>
+            Gets enumerator.
+            </summary>
+            <returns>Enumerator over the collection of records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.MemoryIterator.Dispose(System.Boolean)">
+            <summary>
+            Free managed resources.
+            </summary>
+            <param name="disposing">Indicates whether the method call comes from a Dispose method (its value is true) or from a finalizer (its value is false).</param>
+        </member>
         <member name="T:FileCabinetApp.Program">
             <summary>
             This class contains information about available commands and processes console commands.
@@ -505,6 +620,12 @@
             Gets the salary of the person.
             </summary>
             <value>The salary of the person.</value>
+        </member>
+        <member name="M:FileCabinetApp.RecordModel.RecordParameters.ToString">
+            <summary>
+            Gets string representation of <see cref="T:FileCabinetApp.RecordModel.RecordParameters"/> class.
+            </summary>
+            <returns>String representation of <see cref="T:FileCabinetApp.RecordModel.RecordParameters"/> class.</returns>
         </member>
         <member name="T:FileCabinetApp.RecordModel.XmlModel.FileCabinetRecordSerializable">
             <summary>
@@ -858,6 +979,107 @@
             </summary>
             <returns>Number of purged records.</returns>
         </member>
+        <member name="T:FileCabinetApp.Service.ServiceLogger">
+            <summary>
+            This class creates log file.
+            This class implemented as a Decorator for <see cref="T:FileCabinetApp.Service.IFileCabinetService"/>.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceLogger.#ctor(FileCabinetApp.Service.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Service.ServiceLogger"/> class.
+            </summary>
+            <param name="service">An exemplar of service.</param>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceLogger.CreateRecord(FileCabinetApp.RecordModel.RecordParameters)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceLogger.EditRecord(System.Int32,FileCabinetApp.RecordModel.RecordParameters)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceLogger.FindByDateOfBirth(System.DateTime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceLogger.FindByFirstName(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceLogger.FindByLastName(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceLogger.GetRecords">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceLogger.GetStat">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceLogger.MakeSnapshot">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceLogger.Purge">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceLogger.Remove(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceLogger.Restore(FileCabinetApp.Service.FileCabinetServiceSnapshot)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceLogger.Dispose">
+            <summary>
+            Free used resources. Calls Dispose(true) method.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceLogger.Dispose(System.Boolean)">
+            <summary>
+            Free used resources.
+            </summary>
+            <param name="disposing">Displays if resources disposing.</param>
+        </member>
+        <member name="T:FileCabinetApp.Service.ServiceMeter">
+            <summary>
+            Measures execution time of service methods.
+            This class implemented as a Decorator for <see cref="T:FileCabinetApp.Service.IFileCabinetService"/>.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceMeter.#ctor(FileCabinetApp.Service.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Service.ServiceMeter"/> class.
+            </summary>
+            <param name="service">An exemplar of service.</param>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceMeter.CreateRecord(FileCabinetApp.RecordModel.RecordParameters)">
+            <inheritdoc />
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceMeter.EditRecord(System.Int32,FileCabinetApp.RecordModel.RecordParameters)">
+            <inheritdoc />
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceMeter.FindByDateOfBirth(System.DateTime)">
+            <inheritdoc />
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceMeter.FindByFirstName(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceMeter.FindByLastName(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceMeter.GetRecords">
+            <inheritdoc />
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceMeter.GetStat">
+            <inheritdoc />
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceMeter.MakeSnapshot">
+            <inheritdoc />
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceMeter.Purge">
+            <inheritdoc />
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceMeter.Remove(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceMeter.Restore(FileCabinetApp.Service.FileCabinetServiceSnapshot)">
+            <inheritdoc />
+        </member>
         <member name="T:FileCabinetApp.Validators.BuilderExtensions">
             <summary>
             This class provides extension methods for <see cref="T:FileCabinetApp.Validators.ValidatorBuilder"></see> class.
@@ -1175,6 +1397,13 @@
             <summary>
             Creates a validator which implements <see cref="T:FileCabinetApp.Validators.IRecordValidator"/> interface.
             </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.ValidatorBuilder.CreateFromConfiguration(System.String)">
+            <summary>
+            Creates validator with rules setted in configuration file.
+            </summary>
+            <param name="validationRules">Validation rules (default or custom).</param>
+            <returns>Validator.</returns>
         </member>
         <member name="M:FileCabinetApp.Validators.ValidatorBuilder.ValidateFirstName(System.Int32,System.Int32)">
             <summary>

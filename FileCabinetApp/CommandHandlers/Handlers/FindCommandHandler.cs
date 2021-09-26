@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Text;
+using FileCabinetApp.Iterators;
 using FileCabinetApp.RecordModel;
 using FileCabinetApp.Service;
 
@@ -69,7 +70,7 @@ namespace FileCabinetApp.CommandHandlers.Handlers
 
             textToSearch = textToSearch[1..^1];
 
-            ReadOnlyCollection<FileCabinetRecord> records = new ReadOnlyCollection<FileCabinetRecord>(new List<FileCabinetRecord>());
+            IEnumerable<FileCabinetRecord> records = new List<FileCabinetRecord>();
 
             if (string.Equals(propertyName, nameof(FileCabinetRecord.FirstName), StringComparison.InvariantCultureIgnoreCase))
             {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
 using FileCabinetApp.RecordModel;
+using FileCabinetApp.Iterators;
 
 namespace FileCabinetApp.Service
 {
@@ -34,21 +35,21 @@ namespace FileCabinetApp.Service
         /// </summary>
         /// <param name="firstName">The person's first name.</param>
         /// <returns>The array of records with matched first name.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName);
+        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName);
 
         /// <summary>
         /// This method performs searching records by last name.
         /// </summary>
         /// <param name="lastName">The person's last name.</param>
         /// <returns>The array of records with matched last name.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName);
+        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName);
 
         /// <summary>
         /// This method performs searching in records by date of birth.
         /// </summary>
         /// <param name="dateOfBirth">The person's date of birth.</param>
         /// <returns>The array of records with matched date of birth.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth);
+        public IEnumerable<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth);
 
         /// <summary>
         /// This method creates a new record.
