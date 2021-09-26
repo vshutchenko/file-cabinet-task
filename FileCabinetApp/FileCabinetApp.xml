@@ -1298,6 +1298,14 @@
             Provides methods for validating properties of <see cref="T:FileCabinetApp.RecordModel.FileCabinetRecord"></see> class.
             </summary>
         </member>
+        <member name="M:FileCabinetApp.Validators.IInputValidator.IdValidator(System.Int32)">
+            <summary>
+            Validate value of <see cref="P:FileCabinetApp.RecordModel.FileCabinetRecord.Id"/> property.
+            </summary>
+            <param name="id">Id of record.</param>
+            <returns><see cref="T:System.Tuple`2"/> where the first bool value indicates was validation successfull or not.
+            The second string value contains an error message if validation ended with error.</returns>
+        </member>
         <member name="M:FileCabinetApp.Validators.IInputValidator.ExperienceValidator(System.Int16)">
             <summary>
             Validate value of <see cref="P:FileCabinetApp.RecordModel.FileCabinetRecord.Experience"/> property.

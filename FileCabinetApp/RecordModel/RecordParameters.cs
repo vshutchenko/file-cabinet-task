@@ -28,6 +28,16 @@ namespace FileCabinetApp.RecordModel
             this.Salary = salary;
         }
 
+        public RecordParameters(FileCabinetRecord record)
+        {
+            this.FirstName = record.FirstName;
+            this.LastName = record.LastName;
+            this.DateOfBirth = record.DateOfBirth;
+            this.Gender = record.Gender;
+            this.Experience = record.Experience;
+            this.Salary = record.Salary;
+        }
+
         /// <summary>
         /// Gets the first name of person.
         /// </summary>

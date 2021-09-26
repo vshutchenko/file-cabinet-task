@@ -83,5 +83,7 @@ namespace FileCabinetApp.Service
         /// </summary>
         /// <returns>Number of purged records.</returns>
         public Tuple<int, int> Purge();
+
+        public int Insert(FileCabinetRecord record);
     }
 }

@@ -159,5 +159,16 @@ namespace FileCabinetApp.Service
         {
             Console.WriteLine($"{methodName} method execution duration is {elapsedTicks} ticks.");
         }
+
+        public int Insert(FileCabinetRecord record)
+        {
+            this.stopwatch.Restart();
+            this.service.Insert(record);
+            this.stopwatch.Stop();
+
+            Print(nameof(this.Insert), this.stopwatch.ElapsedTicks);
+
+            return record.Id;
+        }
     }
 }

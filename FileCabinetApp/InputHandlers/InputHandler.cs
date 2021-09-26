@@ -14,6 +14,20 @@ namespace FileCabinetApp.InputHandlers
         private static readonly string Dash = "-";
         private static readonly string DoubleDash = "--";
         private static readonly string Equivalent = "=";
+        private static readonly char Comma = ',';
+        private static readonly char Space = ' ';
+        private static readonly char SingleQuote = '\'';
+        private static readonly string Values = "values";
+        private const char OpenBrace = '(';
+        private const char CloseBrace = ')';
+
+        private const string Id = "ID";
+        private const string FirstName = "FIRSTNAME";
+        private const string LastName = "LASTNAME";
+        private const string DateOfBirth = "DATEOFBIRTH";
+        private const string Gender = "GENDER";
+        private const string Experience = "EXPERIENCE";
+        private const string Salary = "SALARY";
 
         /// <summary>
         /// Reads command line arguments.
@@ -65,6 +79,29 @@ namespace FileCabinetApp.InputHandlers
             return new RecordParameters(firstName, lastName, dateOfBirth, gender, experience, salary);
         }
 
+        public Tuple<string[], string[]> ReadInsertCommandParameters(string parameters)
+        {
+            var str = parameters.Split(Values, 2);
+            string[] fields = GetParams(str[0]);
+            string[] values = GetParams(str[1]);
+
+            return new Tuple<string[], string[]>(fields, values);
+
+            string[] GetParams(string str)
+            {
+                int openBraceindex = str.IndexOf(OpenBrace);
+                int closeBraceindex = str.IndexOf(CloseBrace);
+                str = str.Substring(openBraceindex + 1, closeBraceindex - openBraceindex - 1);
+                var arrray = str.Split(Comma);
+                for (int i = 0; i < arrray.Length; i++)
+                {
+                    arrray[i] = arrray[i].Trim(Space, SingleQuote);
+                }
+
+                return arrray;
+            }
+        }
+
         private static T ReadInput<T>(Func<string, Tuple<bool, string, T>> converter, Func<T, Tuple<bool, string>> validator)
         {
             do
@@ -92,6 +129,70 @@ namespace FileCabinetApp.InputHandlers
                 return value;
             }
             while (true);
+        }
+
+        public FileCabinetRecord ReadRecordParameters(string[] values, string[] fields, IInputValidator inputValidator, InputConverter converter)
+        {
+            FileCabinetRecord record = new FileCabinetRecord();
+            for (int i = 0; i < fields.Length; i++)
+            {
+                if (fields[i].Equals(FirstName, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    record.FirstName = ReadInput(values[i], converter.StringConverter, inputValidator.FirstNameValidator);
+                }
+                else if (fields[i].Equals(LastName, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    record.LastName = ReadInput(values[i], converter.StringConverter, inputValidator.LastNameValidator);
+                }
+                else if (fields[i].Equals(DateOfBirth, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    record.DateOfBirth = ReadInput(values[i], converter.DateTimeConverter, inputValidator.DateOfBirthValidator);
+                }
+                else if (fields[i].Equals(Gender, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    record.Gender = ReadInput(values[i], converter.CharConverter, inputValidator.GenderValidator);
+                }
+                else if (fields[i].Equals(Experience, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    record.Experience = ReadInput(values[i], converter.ShortConverter, inputValidator.ExperienceValidator);
+                }
+                else if (fields[i].Equals(Salary, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    record.Salary = ReadInput(values[i], converter.DecimalConverter, inputValidator.SalaryValidator);
+                }
+                else if (fields[i].Equals(Id, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    record.Id = ReadInput(values[i], converter.IntConverter, inputValidator.IdValidator);
+                }
+                else
+                {
+                    Console.WriteLine($"There is no '{fields[i]}' property");
+                }
+            }
+
+            return record;
+        }
+
+        private T ReadInput<T>(string input, Func<string, Tuple<bool, string, T>> converter, Func<T, Tuple<bool, string>> validator)
+        {
+            T value;
+
+            var conversionResult = converter(input);
+
+            if (!conversionResult.Item1)
+            {
+                Console.WriteLine($"Conversion failed: {conversionResult.Item2}. Please, correct your input.");
+            }
+
+            value = conversionResult.Item3;
+
+            var validationResult = validator(value);
+            if (!validationResult.Item1)
+            {
+                Console.WriteLine($"Validation failed: {validationResult.Item2}. Please, correct your input.");
+            }
+
+            return value;
         }
     }
 }

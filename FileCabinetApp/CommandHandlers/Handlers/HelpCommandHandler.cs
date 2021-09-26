@@ -22,6 +22,7 @@ namespace FileCabinetApp.CommandHandlers.Handlers
             new string[] { "create", "creates a new record", "The 'create' command creates a new record." },
             new string[] { "find", "finds records, recieves name of property and text to search", "The 'find' command finds records, recieves name of property and text to search." },
             new string[] { "import", "imports stored records in the CSV or XML file", "The 'import' command imports stored records in the CSV or XML file." },
+            new string[] { "insert", "creates a new record with specified parameters", "The 'insert' command creates a new record with specified parameters." },
             new string[] { "list", "prints the list of records", "The 'list' command prints the list of records." },
             new string[] { "purge", "defragments the file", "The 'purge' command defragments the file." },
             new string[] { "remove", "removes the record with specified id", "The 'remove' command removes the record with specified id." },

@@ -191,5 +191,14 @@ namespace FileCabinetApp.Service
 
             this.writer.WriteLine(message);
         }
+
+        public int Insert(FileCabinetRecord record)
+        {
+            string parameters = $"record.Id = '{record.Id}'";
+            this.WriteMessage(LogMessageType.MethodWithParameters, nameof(this.Insert), parameters);
+            int id = this.service.Insert(record);
+            this.WriteMessage(LogMessageType.MethodReturnValue, nameof(this.Insert), $"'{id}'");
+            return id;
+        }
     }
 }

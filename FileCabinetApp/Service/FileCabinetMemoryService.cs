@@ -269,5 +269,18 @@ namespace FileCabinetApp.Service
 
             existingValue.AddRange(records);
         }
+
+        public int Insert(FileCabinetRecord record)
+        {
+            RecordParameters recordParameters = new RecordParameters(record);
+            this.validator.ValidateParameters(recordParameters);
+            this.list.Add(record);
+
+            AddInDictionary(this.firstNameDictionary, recordParameters.FirstName.ToUpperInvariant(), new List<FileCabinetRecord> { record });
+            AddInDictionary(this.lastNameDictionary, recordParameters.LastName.ToUpperInvariant(), new List<FileCabinetRecord> { record });
+            AddInDictionary(this.dateOfBirthDictionary, recordParameters.DateOfBirth.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture), new List<FileCabinetRecord> { record });
+
+            return record.Id;
+        }
     }
 }

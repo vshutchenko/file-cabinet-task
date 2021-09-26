@@ -448,5 +448,24 @@ namespace FileCabinetApp.Service
 
             existingValue.AddRange(recordsIds);
         }
+
+        public int Insert(FileCabinetRecord record)
+        {
+            RecordParameters recordParameters = new RecordParameters(record);
+            this.validator.ValidateParameters(recordParameters);
+
+            this.fileStream.Seek(0, SeekOrigin.End);
+            BinaryWriter writer = new BinaryWriter(this.fileStream, Encoding.Unicode, true);
+
+            AddInDictionary(this.firstNameDictionary, recordParameters.FirstName.ToUpperInvariant(), new List<int> { (int)this.fileStream.Position });
+            AddInDictionary(this.lastNameDictionary, recordParameters.LastName.ToUpperInvariant(), new List<int> { (int)this.fileStream.Position });
+            AddInDictionary(this.dateOfBirthDictionary, recordParameters.DateOfBirth.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture), new List<int> { (int)this.fileStream.Position });
+
+            WriteRecord(record.Id, recordParameters, writer);
+
+            writer.Close();
+
+            return record.Id;
+        }
     }
 }
