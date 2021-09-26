@@ -356,6 +356,121 @@
             <param name="converter">A converter which will be used to convert input values.</param>
             <returns>A parameter object for <see cref="T:FileCabinetApp.RecordModel.FileCabinetRecord"/> class.</returns>
         </member>
+        <member name="T:FileCabinetApp.Iterators.FilesystemIterator">
+            <summary>
+            Supports iteration over a file with records.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.FilesystemIterator.#ctor(System.IO.FileStream,System.Collections.Generic.IList{System.Int32})">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Iterators.FilesystemIterator"/> class.
+            </summary>
+            <param name="fileStream">A stream to file with records.</param>
+            <param name="offsets">Pinters to start positions of records.</param>
+        </member>
+        <member name="P:FileCabinetApp.Iterators.FilesystemIterator.Current">
+            <summary>
+            Gets current record.
+            </summary>
+            <value>Current record.</value>
+        </member>
+        <member name="P:FileCabinetApp.Iterators.FilesystemIterator.System#Collections#IEnumerator#Current">
+            <summary>
+            Gets current object.
+            </summary>
+            <value>Current object.</value>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.FilesystemIterator.MoveNext">
+            <summary>
+            Moves pointer to next record.
+            </summary>
+            <returns>True if one more record exists, false if there is no more records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.FilesystemIterator.Reset">
+            <summary>
+            Sets pointer to a start position.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.FilesystemIterator.Dispose">
+            <summary>
+            Free managed resources.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.FilesystemIterator.GetEnumerator">
+            <summary>
+            Gets enumerator.
+            </summary>
+            <returns>Enumerator over the file with records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.FilesystemIterator.System#Collections#IEnumerable#GetEnumerator">
+            <summary>
+            Gets enumerator.
+            </summary>
+            <returns>Enumerator over the file with records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.FilesystemIterator.Dispose(System.Boolean)">
+            <summary>
+            Free managed resources.
+            </summary>
+            <param name="disposing">Indicates whether the method call comes from a Dispose method (its value is true) or from a finalizer (its value is false).</param>
+        </member>
+        <member name="T:FileCabinetApp.Iterators.MemoryIterator">
+            <summary>
+            Supports iteration over a collection with records.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.MemoryIterator.#ctor(System.Collections.Generic.IList{FileCabinetApp.RecordModel.FileCabinetRecord})">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Iterators.MemoryIterator"/> class.
+            </summary>
+            <param name="records">Collection of records.</param>
+        </member>
+        <member name="P:FileCabinetApp.Iterators.MemoryIterator.Current">
+            <summary>
+            Gets current record.
+            </summary>
+            <value>Current record.</value>
+        </member>
+        <member name="P:FileCabinetApp.Iterators.MemoryIterator.System#Collections#IEnumerator#Current">
+            <summary>
+            Gets current object.
+            </summary>
+            <value>Current object.</value>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.MemoryIterator.Dispose">
+            <summary>
+            Free managed resources.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.MemoryIterator.GetEnumerator">
+            <summary>
+            Gets enumerator.
+            </summary>
+            <returns>Enumerator over the collection of records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.MemoryIterator.MoveNext">
+            <summary>
+            Moves pointer to next record.
+            </summary>
+            <returns>True if one more record exists, false if there is no more records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.MemoryIterator.Reset">
+            <summary>
+            Sets pointer to a start position.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.MemoryIterator.System#Collections#IEnumerable#GetEnumerator">
+            <summary>
+            Gets enumerator.
+            </summary>
+            <returns>Enumerator over the collection of records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.MemoryIterator.Dispose(System.Boolean)">
+            <summary>
+            Free managed resources.
+            </summary>
+            <param name="disposing">Indicates whether the method call comes from a Dispose method (its value is true) or from a finalizer (its value is false).</param>
+        </member>
         <member name="T:FileCabinetApp.Program">
             <summary>
             This class contains information about available commands and processes console commands.

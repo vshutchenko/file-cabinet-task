@@ -70,30 +70,21 @@ namespace FileCabinetApp.CommandHandlers.Handlers
 
             textToSearch = textToSearch[1..^1];
 
-            List<FileCabinetRecord> records = new List<FileCabinetRecord>();
-            IEnumerable<FileCabinetRecord> iterator = null;
+            IEnumerable<FileCabinetRecord> records = new List<FileCabinetRecord>();
 
             if (string.Equals(propertyName, nameof(FileCabinetRecord.FirstName), StringComparison.InvariantCultureIgnoreCase))
             {
-                iterator = this.FileCabinetService.FindByFirstName(textToSearch);
+                records = this.FileCabinetService.FindByFirstName(textToSearch);
             }
             else if (string.Equals(propertyName, nameof(FileCabinetRecord.LastName), StringComparison.InvariantCultureIgnoreCase))
             {
-                iterator = this.FileCabinetService.FindByLastName(textToSearch);
+                records = this.FileCabinetService.FindByLastName(textToSearch);
             }
             else if (string.Equals(propertyName, nameof(FileCabinetRecord.DateOfBirth), StringComparison.InvariantCultureIgnoreCase))
             {
                 if (DateTime.TryParse(textToSearch, out DateTime dateOfBirth))
                 {
-                    iterator = this.FileCabinetService.FindByDateOfBirth(dateOfBirth);
-                }
-            }
-
-            if (iterator != null)
-            {
-                while (iterator.GetEnumerator().MoveNext())
-                {
-                    records.Add(iterator.GetEnumerator().Current);
+                    records = this.FileCabinetService.FindByDateOfBirth(dateOfBirth);
                 }
             }
 

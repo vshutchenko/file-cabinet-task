@@ -7,37 +7,118 @@ using FileCabinetApp.RecordModel;
 
 namespace FileCabinetApp.Iterators
 {
+    /// <summary>
+    /// Supports iteration over a file with records.
+    /// </summary>
     public class FilesystemIterator : IEnumerator<FileCabinetRecord>, IEnumerable<FileCabinetRecord>
     {
+        private const int MaxStringLength = 120;
         private IList<int> offsets;
         private int currentPosition = -1;
-        private const int MaxStringLength = 120;
         private FileStream fileStream;
+        private bool isDisposed;
 
-        public FileCabinetRecord Current
-        {
-            get
-            {
-                this.fileStream.Seek(offsets[currentPosition], SeekOrigin.Begin);
-                FileCabinetRecord record;
-                BinaryReader reader = new BinaryReader(this.fileStream, Encoding.Unicode, true);
-                record = ReadRecord(reader);
-                return record;
-            }
-        }
-
-        object IEnumerator.Current
-        {
-            get
-            {
-                return Current;
-            }
-        }
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FilesystemIterator"/> class.
+        /// </summary>
+        /// <param name="fileStream">A stream to file with records.</param>
+        /// <param name="offsets">Pinters to start positions of records.</param>
         public FilesystemIterator(FileStream fileStream, IList<int> offsets)
         {
             this.fileStream = fileStream;
             this.offsets = offsets;
+        }
+
+        /// <summary>
+        /// Gets current record.
+        /// </summary>
+        /// <value>Current record.</value>
+        public FileCabinetRecord Current
+        {
+            get
+            {
+                this.fileStream.Seek(this.offsets[this.currentPosition], SeekOrigin.Begin);
+                FileCabinetRecord record;
+                BinaryReader reader = new BinaryReader(this.fileStream, Encoding.Unicode, true);
+                record = this.ReadRecord(reader);
+                return record;
+            }
+        }
+
+        /// <summary>
+        /// Gets current object.
+        /// </summary>
+        /// <value>Current object.</value>
+        object IEnumerator.Current
+        {
+            get
+            {
+                return this.Current;
+            }
+        }
+
+        /// <summary>
+        /// Moves pointer to next record.
+        /// </summary>
+        /// <returns>True if one more record exists, false if there is no more records.</returns>
+        public bool MoveNext()
+        {
+            this.currentPosition++;
+            return this.currentPosition < this.offsets.Count;
+        }
+
+        /// <summary>
+        /// Sets pointer to a start position.
+        /// </summary>
+        public void Reset()
+        {
+            this.currentPosition = -1;
+        }
+
+        /// <summary>
+        /// Free managed resources.
+        /// </summary>
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Gets enumerator.
+        /// </summary>
+        /// <returns>Enumerator over the file with records.</returns>
+        public IEnumerator<FileCabinetRecord> GetEnumerator()
+        {
+            return this;
+        }
+
+        /// <summary>
+        /// Gets enumerator.
+        /// </summary>
+        /// <returns>Enumerator over the file with records.</returns>
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
+        }
+
+        /// <summary>
+        /// Free managed resources.
+        /// </summary>
+        /// <param name="disposing">Indicates whether the method call comes from a Dispose method (its value is true) or from a finalizer (its value is false).</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (this.isDisposed)
+            {
+                return;
+            }
+
+            if (disposing)
+            {
+                this.Reset();
+            }
+
+            this.isDisposed = true;
         }
 
         private FileCabinetRecord ReadRecord(BinaryReader reader)
@@ -65,32 +146,6 @@ namespace FileCabinetApp.Iterators
             };
 
             return record;
-        }
-
-        public bool MoveNext()
-        {
-            currentPosition++;
-            return currentPosition < offsets.Count;
-        }
-
-        public void Reset()
-        {
-            currentPosition = -1;
-        }
-
-        public void Dispose()
-        {
-            this.Reset();
-        }
-
-        public IEnumerator<FileCabinetRecord> GetEnumerator()
-        {
-            return this;
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.GetEnumerator();
         }
     }
 }
