@@ -149,11 +149,12 @@ namespace FileCabinetApp
             var removeCommandHandler = new RemoveCommandHandler(fileCabinetService);
             var statCommandHandler = new StatCommandHandler(fileCabinetService);
             var insertCommandHandler = new InsertCommandHandler(fileCabinetService, inputValidator);
+            var deleteCommandHandler = new DeleteCommandHandler(fileCabinetService);
 
             helpCommandHandler.SetNext(createCommandHandler).SetNext(createCommandHandler).SetNext(editCommandHandler).
                 SetNext(exitCommandHandler).SetNext(exportCommandHandler).SetNext(findCommandHandler).
                 SetNext(importCommandHandler).SetNext(listCommandHandler).SetNext(purgeCommandHandler).
-                SetNext(removeCommandHandler).SetNext(statCommandHandler).SetNext(insertCommandHandler);
+                SetNext(removeCommandHandler).SetNext(statCommandHandler).SetNext(insertCommandHandler).SetNext(deleteCommandHandler);
 
             return helpCommandHandler;
         }

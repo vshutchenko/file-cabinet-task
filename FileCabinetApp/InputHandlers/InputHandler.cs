@@ -18,6 +18,7 @@ namespace FileCabinetApp.InputHandlers
         private static readonly char Space = ' ';
         private static readonly char SingleQuote = '\'';
         private static readonly string Values = "values";
+        private static readonly string Where = "where";
         private const char OpenBrace = '(';
         private const char CloseBrace = ')';
 
@@ -100,6 +101,31 @@ namespace FileCabinetApp.InputHandlers
 
                 return arrray;
             }
+        }
+
+        public bool TryReadDeleteCommandParameters(string parameters, out Tuple<string, string> propertyValue)
+        {
+            var arguments = parameters.Split(Where, StringSplitOptions.RemoveEmptyEntries);
+
+            if (arguments.Length != 1)
+            {
+                propertyValue = new Tuple<string, string>(string.Empty, string.Empty);
+                return false;
+            }
+
+            var propertyValuePair = arguments[0].Split(Equivalent);
+
+            if (propertyValuePair.Length != 2)
+            {
+                propertyValue = new Tuple<string, string>(string.Empty, string.Empty);
+                return false;
+            }
+
+            string property = propertyValuePair[0].Trim(new[] { Space, SingleQuote });
+            string value = propertyValuePair[1].Trim(new[] { Space, SingleQuote });
+
+            propertyValue = new Tuple<string, string>(property, value);
+            return true;
         }
 
         private static T ReadInput<T>(Func<string, Tuple<bool, string, T>> converter, Func<T, Tuple<bool, string>> validator)

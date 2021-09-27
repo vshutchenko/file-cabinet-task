@@ -78,6 +78,8 @@ namespace FileCabinetApp.Service
         /// <returns>True if record was removed, false if record doesn't exist.</returns>
         public bool Remove(int id);
 
+        public IList<int> Delete(string property, string value);
+
         /// <summary>
         /// This method removes empty records with from file.
         /// </summary>

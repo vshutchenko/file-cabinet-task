@@ -170,5 +170,10 @@ namespace FileCabinetApp.Service
 
             return record.Id;
         }
+
+        public IList<int> Delete(string property, string value)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

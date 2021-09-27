@@ -200,5 +200,10 @@ namespace FileCabinetApp.Service
             this.WriteMessage(LogMessageType.MethodReturnValue, nameof(this.Insert), $"'{id}'");
             return id;
         }
+
+        public IList<int> Delete(string property, string value)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
