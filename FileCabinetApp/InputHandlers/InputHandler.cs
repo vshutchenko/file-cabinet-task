@@ -80,26 +80,48 @@ namespace FileCabinetApp.InputHandlers
             return new RecordParameters(firstName, lastName, dateOfBirth, gender, experience, salary);
         }
 
-        public Tuple<string[], string[]> ReadInsertCommandParameters(string parameters)
+        public bool TryReadInsertCommandParameters(string parameters, out Tuple<string[], string[]> propertyValue)
         {
-            var str = parameters.Split(Values, 2);
-            string[] fields = GetParams(str[0]);
-            string[] values = GetParams(str[1]);
+            var arguments = parameters.Split(Values, 2);
 
-            return new Tuple<string[], string[]>(fields, values);
-
-            string[] GetParams(string str)
+            if (arguments.Length != 2)
             {
-                int openBraceindex = str.IndexOf(OpenBrace);
-                int closeBraceindex = str.IndexOf(CloseBrace);
-                str = str.Substring(openBraceindex + 1, closeBraceindex - openBraceindex - 1);
-                var arrray = str.Split(Comma);
-                for (int i = 0; i < arrray.Length; i++)
+                propertyValue = new Tuple<string[], string[]>(Array.Empty<string>(), Array.Empty<string>());
+                return false;
+            }
+
+            if (TryGetParams(arguments[0], out string[] fields)
+                && TryGetParams(arguments[1], out string[] values)
+                && fields.Length == values.Length)
+            {
+                propertyValue = new Tuple<string[], string[]>(fields, values);
+                return true;
+            }
+            else
+            {
+                propertyValue = new Tuple<string[], string[]>(Array.Empty<string>(), Array.Empty<string>());
+                return false;
+            }
+
+            bool TryGetParams(string input, out string[] parameters)
+            {
+                input = input.Trim();
+                int openBraceindex = input.IndexOf(OpenBrace);
+                int closeBraceindex = input.IndexOf(CloseBrace);
+                if ((openBraceindex != 0) || (closeBraceindex != input.Length - 1))
                 {
-                    arrray[i] = arrray[i].Trim(Space, SingleQuote);
+                    parameters = Array.Empty<string>();
+                    return false;
                 }
 
-                return arrray;
+                input = input.Substring(openBraceindex + 1, closeBraceindex - openBraceindex - 1);
+                parameters = input.Split(Comma);
+                for (int i = 0; i < parameters.Length; i++)
+                {
+                    parameters[i] = parameters[i].Trim(Space, SingleQuote);
+                }
+
+                return true;
             }
         }
 

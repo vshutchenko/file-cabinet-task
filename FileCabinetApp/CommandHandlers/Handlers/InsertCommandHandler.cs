@@ -44,7 +44,7 @@ namespace FileCabinetApp.CommandHandlers.Handlers
             InputHandler inputHandler = new InputHandler();
             InputConverter converter = new InputConverter();
 
-            var fieldsValues = inputHandler.ReadInsertCommandParameters(parameters);
+            inputHandler.TryReadInsertCommandParameters(parameters, out var fieldsValues);
             string[] fields = fieldsValues.Item1;
             string[] values = fieldsValues.Item2;
 
