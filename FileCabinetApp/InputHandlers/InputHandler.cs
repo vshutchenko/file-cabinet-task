@@ -19,6 +19,10 @@ namespace FileCabinetApp.InputHandlers
         private static readonly char SingleQuote = '\'';
         private static readonly string Values = "values";
         private static readonly string Where = "where";
+        private static readonly string Set = "set";
+        private static readonly string And = "and";
+        private static readonly string Or = "or";
+
         private const char OpenBrace = '(';
         private const char CloseBrace = ')';
 
@@ -78,6 +82,79 @@ namespace FileCabinetApp.InputHandlers
             var salary = ReadInput(converter.DecimalConverter, inputValidator.SalaryValidator);
 
             return new RecordParameters(firstName, lastName, dateOfBirth, gender, experience, salary);
+        }
+
+        public bool TryReadUpdateCommandParameters(string parameters, out Tuple<string[], string[]> propertyValue, out Tuple<string[], string[]> propertyValueToSearch, out bool allFieldsMatch)
+        {
+            int maxFieldsToSearch = int.MaxValue;
+            propertyValue = new Tuple<string[], string[]>(Array.Empty<string>(), Array.Empty<string>());
+            propertyValueToSearch = new Tuple<string[], string[]>(Array.Empty<string>(), Array.Empty<string>());
+            allFieldsMatch = false;
+
+            if (parameters.Contains(Or) && !parameters.Contains(And))
+            {
+                allFieldsMatch = false;
+            }
+            else if (!parameters.Contains(Or) && parameters.Contains(And))
+            {
+                allFieldsMatch = true;
+            }
+            else if (parameters.Contains(Or) && parameters.Contains(And))
+            {
+                return false;
+            }
+            else
+            {
+                maxFieldsToSearch = 1;
+            }
+
+            var arguments = parameters.Split(new[] { Set, Where }, StringSplitOptions.RemoveEmptyEntries);
+
+            if (arguments.Length != 2)
+            {
+                return false;
+            }
+
+            if (TryGetParams(arguments[0], out string[] fields, out string[] newValues)
+                && TryGetParams(arguments[1], out string[] fieldsToSearch, out string[] valuesToSearch)
+                && fields.Length == newValues.Length
+                && fieldsToSearch.Length == valuesToSearch.Length
+                && fieldsToSearch.Length <= maxFieldsToSearch)
+            {
+                propertyValue = new Tuple<string[], string[]>(fields, newValues);
+                propertyValueToSearch = new Tuple<string[], string[]>(fieldsToSearch, valuesToSearch);
+
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
+            bool TryGetParams(string input, out string[] parameters, out string[] values)
+            {
+                input = input.Trim();
+                string[] separators = new string[] { Comma.ToString(), Or, And };
+                parameters = input.Split(separators, StringSplitOptions.RemoveEmptyEntries);
+
+                values = new string[parameters.Length];
+
+                for (int i = 0; i < parameters.Length; i++)
+                {
+                    var pair = parameters[i].Split(Equivalent);
+                    if (pair.Length != 2)
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        parameters[i] = pair[0].Trim(new[] { Space, SingleQuote });
+                        values[i] = pair[1].Trim(new[] { Space, SingleQuote });
+                    }
+                }
+
+                return true;
+            }
         }
 
         public bool TryReadInsertCommandParameters(string parameters, out Tuple<string[], string[]> propertyValue)

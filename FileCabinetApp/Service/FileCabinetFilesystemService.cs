@@ -484,7 +484,7 @@ namespace FileCabinetApp.Service
             return deletedRecordsIds;
         }
 
-        public IEnumerable<FileCabinetRecord> FindByTemplate(IList<string> propertiesNames, IList<string> values)
+        public IEnumerable<FileCabinetRecord> FindByTemplate(IList<string> propertiesNames, IList<string> values, bool allFieldsMatch = true)
         {
             Type recordType = typeof(FileCabinetRecord);
             List<PropertyInfo> recordProperties = recordType.GetProperties().ToList();
@@ -503,15 +503,72 @@ namespace FileCabinetApp.Service
             }
 
             var records = this.GetRecords();
-            foreach (var r in records)
+            if (allFieldsMatch)
             {
-                for (int j = 0; j < propertiesToSearch.Count; j++)
+                bool isMatch = true;
+                foreach (var r in records)
                 {
-                    if (propertiesToSearch[j].GetValue(r).ToString().Equals(propertiesToSearch[j].GetValue(template).ToString(), StringComparison.InvariantCultureIgnoreCase))
+                    for (int j = 0; j < propertiesToSearch.Count; j++)
+                    {
+                        if (!propertiesToSearch[j].GetValue(r).ToString().Equals(propertiesToSearch[j].GetValue(template).ToString(), StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            isMatch = false;
+                            break;
+                        }
+                    }
+
+                    if (isMatch)
                     {
                         yield return r;
                     }
+
+                    isMatch = true;
                 }
+            }
+            else
+            {
+                foreach (var r in records)
+                {
+                    for (int j = 0; j < propertiesToSearch.Count; j++)
+                    {
+                        if (propertiesToSearch[j].GetValue(r).ToString().Equals(propertiesToSearch[j].GetValue(template).ToString(), StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            yield return r;
+                        }
+                    }
+                }
+            }
+        }
+
+        public void Update(IList<string> propertiesToSearchNames, IList<string> propertiesToUpdateNames, IList<string> valuesToSearch, IList<string> newValues, bool allFieldsMatch = true)
+        {
+            var recordsInFile = this.GetRecords();
+            List<FileCabinetRecord> recordsToUpdate = new List<FileCabinetRecord>();
+            var records = this.FindByTemplate(propertiesToSearchNames, valuesToSearch, allFieldsMatch);
+
+            Type recordType = typeof(FileCabinetRecord);
+            List<PropertyInfo> recordProperties = recordType.GetProperties().ToList();
+
+            foreach (var r in records)
+            {
+                recordsToUpdate.Add(r);
+            }
+
+            for (int i = 0; i < recordsToUpdate.Count; i++)
+            {
+                FileCabinetRecord template = recordsToUpdate[i];
+
+                for (int j = 0; j < propertiesToUpdateNames.Count; j++)
+                {
+                    var prop = recordProperties.FirstOrDefault(p => p.Name.Equals(propertiesToUpdateNames[j], StringComparison.InvariantCultureIgnoreCase));
+                    if (prop != null)
+                    {
+                        var conv = TypeDescriptor.GetConverter(prop.PropertyType);
+                        prop.SetValue(template, conv.ConvertFromString(newValues[j]));
+                    }
+                }
+
+                this.EditRecord(template.Id, new RecordParameters(template));
             }
         }
     }

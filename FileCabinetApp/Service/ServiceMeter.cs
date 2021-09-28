@@ -175,5 +175,15 @@ namespace FileCabinetApp.Service
         {
             throw new NotImplementedException();
         }
+
+        public void Update(int id, IList<string> propertiesNames, IList<string> values)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Update(IList<string> propertiesToSearchNames, IList<string> propertiesToUpdateNames, IList<string> valuesToSearch, IList<string> newValues, bool allFieldsMatch)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

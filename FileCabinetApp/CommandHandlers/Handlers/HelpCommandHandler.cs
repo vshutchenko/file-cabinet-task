@@ -20,6 +20,7 @@ namespace FileCabinetApp.CommandHandlers.Handlers
             new string[] { "edit", "edits the record with specified id", "The 'edit' command edits the record with specified id." },
             new string[] { "export", "exports stored records in the CSV or XML file", "The 'export' command exports stored records in the CSV or XML file." },
             new string[] { "create", "creates a new record", "The 'create' command creates a new record." },
+            new string[] { "delete", "deletes a record with specified parameters", "The 'delete' command deletes a record with specified parameters." },
             new string[] { "find", "finds records, recieves name of property and text to search", "The 'find' command finds records, recieves name of property and text to search." },
             new string[] { "import", "imports stored records in the CSV or XML file", "The 'import' command imports stored records in the CSV or XML file." },
             new string[] { "insert", "creates a new record with specified parameters", "The 'insert' command creates a new record with specified parameters." },

@@ -87,5 +87,7 @@ namespace FileCabinetApp.Service
         public Tuple<int, int> Purge();
 
         public int Insert(FileCabinetRecord record);
+
+        public void Update(IList<string> propertiesToSearchNames, IList<string> propertiesToUpdateNames, IList<string> valuesToSearch, IList<string> newValues, bool allFieldsMatch = true);
     }
 }
