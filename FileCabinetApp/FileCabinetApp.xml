@@ -65,25 +65,6 @@
             </summary>
             <param name="request">A command with parameters.</param>
         </member>
-        <member name="T:FileCabinetApp.CommandHandlers.Handlers.EditCommandHandler">
-            <summary>
-            Provides handler for stat command.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.Handlers.EditCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService,FileCabinetApp.Validators.IInputValidator)">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.Handlers.EditCommandHandler"/> class.
-            </summary>
-            <param name="fileCabinetService">A reference to service class is needed because
-            edit command handler calls service methods.</param>
-            <param name="inputValidator">A validator which will be used for input validation.</param>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.Handlers.EditCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
-            <summary>
-            Handles the command or calls next command handler.
-            </summary>
-            <param name="request">A command with parameters.</param>
-        </member>
         <member name="T:FileCabinetApp.CommandHandlers.Handlers.ExitCommandHandler">
             <summary>
             Provides handler for exit command.
@@ -199,24 +180,6 @@
             purge command handler calls service methods.</param>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.Handlers.PurgeCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
-            <summary>
-            Handles the command or calls next command handler.
-            </summary>
-            <param name="request">A command with parameters.</param>
-        </member>
-        <member name="T:FileCabinetApp.CommandHandlers.Handlers.RemoveCommandHandler">
-            <summary>
-            Provides handler for remove command.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.Handlers.RemoveCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService)">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.Handlers.RemoveCommandHandler"/> class.
-            </summary>
-            <param name="fileCabinetService">A reference to service class is needed because
-            remove command handler calls service methods.</param>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.Handlers.RemoveCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <summary>
             Handles the command or calls next command handler.
             </summary>
