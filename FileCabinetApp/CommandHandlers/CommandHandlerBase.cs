@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace FileCabinetApp.CommandHandlers
@@ -9,6 +10,7 @@ namespace FileCabinetApp.CommandHandlers
     /// </summary>
     public abstract class CommandHandlerBase : ICommandHandler
     {
+        private readonly string[] commandsList = new string[] { "help", "export", "create", "delete", "find", "import", "insert", "list", "purge", "stat", "exit" };
         private ICommandHandler nextHandler;
 
         /// <summary>
@@ -29,6 +31,7 @@ namespace FileCabinetApp.CommandHandlers
             else
             {
                 this.PrintMissedCommandInfo(request.Command);
+                this.PrintSimilarCommands(request.Command);
             }
         }
 
@@ -47,6 +50,46 @@ namespace FileCabinetApp.CommandHandlers
         {
             Console.WriteLine($"There is no '{command}' command.");
             Console.WriteLine();
+        }
+
+        private void PrintSimilarCommands(string command)
+        {
+            List<string> similarCommands = new List<string>();
+
+            foreach (var cmd in this.commandsList)
+            {
+                if (cmd.StartsWith(command, StringComparison.InvariantCultureIgnoreCase)
+                    || cmd.Contains(command, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    similarCommands.Add(cmd);
+                }
+            }
+
+            if (similarCommands.Count == 0)
+            {
+                var commandChars = command.ToCharArray();
+                Array.Sort(commandChars);
+
+                foreach (var cmd in this.commandsList)
+                {
+                    var cmdChars = cmd.ToCharArray();
+                    Array.Sort(cmdChars);
+
+                    if (cmdChars.SequenceEqual(commandChars))
+                    {
+                        similarCommands.Add(cmd);
+                    }
+                }
+            }
+
+            if (similarCommands.Count != 0)
+            {
+                Console.WriteLine("The most similar commands are:");
+                foreach (var cmd in similarCommands)
+                {
+                    Console.WriteLine($"\t{cmd}");
+                }
+            }
         }
     }
 }
