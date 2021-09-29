@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Globalization;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 using FileCabinetApp.Iterators;
 using FileCabinetApp.RecordModel;
@@ -52,7 +55,7 @@ namespace FileCabinetApp.Service
 
             foreach (var record in serviceSnapshot.Records)
             {
-                if (record.Id <= this.GetStat().Item2)
+                if (record.Id <= this.list.Count)
                 {
                     RecordParameters recordParameters = new RecordParameters(
                         record.FirstName,
@@ -87,9 +90,9 @@ namespace FileCabinetApp.Service
         /// This method returns collection of stored records.
         /// </summary>
         /// <returns>Collection of stored records.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> GetRecords()
+        public IEnumerable<FileCabinetRecord> GetRecords()
         {
-            return new ReadOnlyCollection<FileCabinetRecord>(this.list);
+            return this.list;
         }
 
         /// <summary>
@@ -268,6 +271,120 @@ namespace FileCabinetApp.Service
             }
 
             existingValue.AddRange(records);
+        }
+
+        public int Insert(FileCabinetRecord record)
+        {
+            RecordParameters recordParameters = new RecordParameters(record);
+            this.validator.ValidateParameters(recordParameters);
+            this.list.Add(record);
+
+            AddInDictionary(this.firstNameDictionary, recordParameters.FirstName.ToUpperInvariant(), new List<FileCabinetRecord> { record });
+            AddInDictionary(this.lastNameDictionary, recordParameters.LastName.ToUpperInvariant(), new List<FileCabinetRecord> { record });
+            AddInDictionary(this.dateOfBirthDictionary, recordParameters.DateOfBirth.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture), new List<FileCabinetRecord> { record });
+
+            return record.Id;
+        }
+
+        public IList<int> Delete(string property, string value)
+        {
+            var recordsToDelete = this.FindByTemplate(new[] { property }, new[] { value });
+            List<int> deletedRecordsIds = new List<int>();
+            foreach (var record in recordsToDelete)
+            {
+                this.Remove(record.Id);
+                deletedRecordsIds.Add(record.Id);
+            }
+
+            return deletedRecordsIds;
+        }
+
+        public IEnumerable<FileCabinetRecord> FindByTemplate(IList<string> propertiesNames, IList<string> values, bool allFieldsMatch = true)
+        {
+            Type recordType = typeof(FileCabinetRecord);
+            List<PropertyInfo> recordProperties = recordType.GetProperties().ToList();
+            List<PropertyInfo> propertiesToSearch = new List<PropertyInfo>();
+            FileCabinetRecord template = new FileCabinetRecord();
+
+            for (int i = 0; i < propertiesNames.Count; i++)
+            {
+                var prop = recordProperties.FirstOrDefault(p => p.Name.Equals(propertiesNames[i], StringComparison.InvariantCultureIgnoreCase));
+                if (prop != null)
+                {
+                    propertiesToSearch.Add(prop);
+                    var conv = TypeDescriptor.GetConverter(prop.PropertyType);
+                    prop.SetValue(template, conv.ConvertFromString(values[i]));
+                }
+            }
+
+            var records = this.GetRecords();
+            if (allFieldsMatch)
+            {
+                foreach (var r in records)
+                {
+                    for (int j = 0; j < propertiesToSearch.Count; j++)
+                    {
+                        if (propertiesToSearch[j].GetValue(r).ToString().Equals(propertiesToSearch[j].GetValue(template).ToString(), StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            yield return r;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                bool isMatch = false;
+                foreach (var r in records)
+                {
+                    for (int j = 0; j < propertiesToSearch.Count; j++)
+                    {
+                        if (propertiesToSearch[j].GetValue(r).ToString().Equals(propertiesToSearch[j].GetValue(template).ToString(), StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            isMatch = true;
+                            break;
+                        }
+                    }
+
+                    if (isMatch)
+                    {
+                        yield return r;
+                    }
+
+                    isMatch = false;
+                }
+            }
+        }
+
+        public void Update(IList<string> propertiesToSearchNames, IList<string> propertiesToUpdateNames, IList<string> valuesToSearch, IList<string> newValues, bool allFieldsMatch = true)
+        {
+            var recordsInFile = this.GetRecords();
+            List<FileCabinetRecord> recordsToUpdate = new List<FileCabinetRecord>();
+            var records = this.FindByTemplate(propertiesToSearchNames, valuesToSearch);
+
+            Type recordType = typeof(FileCabinetRecord);
+            List<PropertyInfo> recordProperties = recordType.GetProperties().ToList();
+
+            foreach (var r in records)
+            {
+                recordsToUpdate.Add(r);
+            }
+
+            for (int i = 0; i < recordsToUpdate.Count; i++)
+            {
+                FileCabinetRecord template = recordsToUpdate[i];
+
+                for (int j = 0; j < propertiesToUpdateNames.Count; j++)
+                {
+                    var prop = recordProperties.FirstOrDefault(p => p.Name.Equals(propertiesToUpdateNames[j], StringComparison.InvariantCultureIgnoreCase));
+                    if (prop != null)
+                    {
+                        var conv = TypeDescriptor.GetConverter(prop.PropertyType);
+                        prop.SetValue(template, conv.ConvertFromString(newValues[j]));
+                    }
+                }
+
+                this.EditRecord(template.Id, new RecordParameters(template));
+            }
         }
     }
 }

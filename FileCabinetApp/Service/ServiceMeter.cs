@@ -86,7 +86,7 @@ namespace FileCabinetApp.Service
         }
 
         /// <inheritdoc />
-        public ReadOnlyCollection<FileCabinetRecord> GetRecords()
+        public IEnumerable<FileCabinetRecord> GetRecords()
         {
             this.stopwatch.Restart();
             var records = this.service.GetRecords();
@@ -158,6 +158,37 @@ namespace FileCabinetApp.Service
         private static void Print(string methodName, long elapsedTicks)
         {
             Console.WriteLine($"{methodName} method execution duration is {elapsedTicks} ticks.");
+        }
+
+        public int Insert(FileCabinetRecord record)
+        {
+            this.stopwatch.Restart();
+            this.service.Insert(record);
+            this.stopwatch.Stop();
+
+            Print(nameof(this.Insert), this.stopwatch.ElapsedTicks);
+
+            return record.Id;
+        }
+
+        public IList<int> Delete(string property, string value)
+        {
+            this.stopwatch.Restart();
+            var deletedRecordsIds = this.service.Delete(property, value);
+            this.stopwatch.Stop();
+
+            Print(nameof(this.Delete), this.stopwatch.ElapsedTicks);
+
+            return deletedRecordsIds;
+        }
+
+        public void Update(IList<string> propertiesToSearchNames, IList<string> propertiesToUpdateNames, IList<string> valuesToSearch, IList<string> newValues, bool allFieldsMatch)
+        {
+            this.stopwatch.Restart();
+            this.service.Update(propertiesToSearchNames, propertiesToUpdateNames, valuesToSearch, newValues, allFieldsMatch);
+            this.stopwatch.Stop();
+
+            Print(nameof(this.Update), this.stopwatch.ElapsedTicks);
         }
     }
 }
