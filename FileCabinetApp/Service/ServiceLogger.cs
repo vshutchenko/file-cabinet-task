@@ -61,8 +61,7 @@ namespace FileCabinetApp.Service
             string parameters = $"DateOfBirth = '{dateOfBirth}'";
             this.WriteMessage(LogMessageType.MethodWithParameters, nameof(this.FindByDateOfBirth), parameters);
             var records = this.service.FindByDateOfBirth(dateOfBirth);
-            //parameters = $"'{records.Count}' records";
-            this.WriteMessage(LogMessageType.MethodReturnValue, nameof(this.FindByDateOfBirth), parameters);
+            this.WriteMessage(LogMessageType.MethodReturnValue, nameof(this.FindByDateOfBirth));
             return records;
         }
 
@@ -72,8 +71,7 @@ namespace FileCabinetApp.Service
             string parameters = $"FirstName = '{firstName}";
             this.WriteMessage(LogMessageType.MethodWithParameters, nameof(this.FindByFirstName), parameters);
             var records = this.service.FindByFirstName(firstName);
-            //parameters = $"'{records.Count}' records";
-            this.WriteMessage(LogMessageType.MethodReturnValue, nameof(this.FindByFirstName), parameters);
+            this.WriteMessage(LogMessageType.MethodReturnValue, nameof(this.FindByFirstName));
             return records;
         }
 
@@ -83,18 +81,16 @@ namespace FileCabinetApp.Service
             string parameters = $"LastName = '{lastName}'";
             this.WriteMessage(LogMessageType.MethodWithParameters, nameof(this.FindByLastName), parameters);
             var records = this.service.FindByLastName(lastName);
-            //parameters = $"'{records.Count}' records";
-            this.WriteMessage(LogMessageType.MethodReturnValue, nameof(this.FindByLastName), parameters);
+            this.WriteMessage(LogMessageType.MethodReturnValue, nameof(this.FindByLastName));
             return records;
         }
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> GetRecords()
+        public IEnumerable<FileCabinetRecord> GetRecords()
         {
             this.WriteMessage(LogMessageType.MethodWithoutParameters, nameof(this.GetRecords));
             var records = this.service.GetRecords();
-            string parameters = $"'{records.Count}' records";
-            this.WriteMessage(LogMessageType.MethodReturnValue, nameof(this.GetRecords), parameters);
+            this.WriteMessage(LogMessageType.MethodReturnValue, nameof(this.GetRecords));
             return records;
         }
 
@@ -190,6 +186,30 @@ namespace FileCabinetApp.Service
             }
 
             this.writer.WriteLine(message);
+        }
+
+        public int Insert(FileCabinetRecord record)
+        {
+            string parameters = $"record.Id = '{record.Id}'";
+            this.WriteMessage(LogMessageType.MethodWithParameters, nameof(this.Insert), parameters);
+            int id = this.service.Insert(record);
+            this.WriteMessage(LogMessageType.MethodReturnValue, nameof(this.Insert), $"'{id}'");
+            return id;
+        }
+
+        public IList<int> Delete(string property, string value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Update(int id, IList<string> propertiesNames, IList<string> values)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Update(IList<string> propertiesToSearchNames, IList<string> propertiesToUpdateNames, IList<string> valuesToSearch, IList<string> newValues, bool allFieldsMatch)
+        {
+            throw new NotImplementedException();
         }
     }
 }

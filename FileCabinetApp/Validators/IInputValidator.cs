@@ -11,6 +11,14 @@ namespace FileCabinetApp.Validators
     public interface IInputValidator
     {
         /// <summary>
+        /// Validate value of <see cref="FileCabinetRecord.Id"/> property.
+        /// </summary>
+        /// <param name="id">Id of record.</param>
+        /// <returns><see cref="Tuple{T1, T2}"/> where the first bool value indicates was validation successfull or not.
+        /// The second string value contains an error message if validation ended with error.</returns>
+        public Tuple<bool, string> IdValidator(int id);
+
+        /// <summary>
         /// Validate value of <see cref="FileCabinetRecord.Experience"/> property.
         /// </summary>
         /// <param name="experience">Years of experience.</param>

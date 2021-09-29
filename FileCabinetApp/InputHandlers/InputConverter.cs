@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using FileCabinetApp.RecordModel;
 
 namespace FileCabinetApp.InputHandlers
 {
@@ -9,6 +10,8 @@ namespace FileCabinetApp.InputHandlers
     /// </summary>
     public class InputConverter
     {
+        
+
         /// <summary>
         /// Converts input string into <see cref="int"/> value.
         /// </summary>

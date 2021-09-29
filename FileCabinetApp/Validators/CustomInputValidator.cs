@@ -103,6 +103,11 @@ namespace FileCabinetApp.Validators
             return new Tuple<bool, string>(isValid, validationErrorMessage);
         }
 
+        public Tuple<bool, string> IdValidator(int id)
+        {
+            return new Tuple<bool, string>(true, string.Empty);
+        }
+
         /// <summary>
         /// Validate value of <see cref="FileCabinetRecord.LastName"/> property.
         /// </summary>

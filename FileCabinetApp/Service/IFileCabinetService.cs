@@ -22,7 +22,7 @@ namespace FileCabinetApp.Service
         /// This method returns collection of stored records.
         /// </summary>
         /// <returns>Collection of stored records.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> GetRecords();
+        public IEnumerable<FileCabinetRecord> GetRecords();
 
         /// <summary>
         /// This method returns number of deleted and stored records.
@@ -78,10 +78,16 @@ namespace FileCabinetApp.Service
         /// <returns>True if record was removed, false if record doesn't exist.</returns>
         public bool Remove(int id);
 
+        public IList<int> Delete(string property, string value);
+
         /// <summary>
         /// This method removes empty records with from file.
         /// </summary>
         /// <returns>Number of purged records.</returns>
         public Tuple<int, int> Purge();
+
+        public int Insert(FileCabinetRecord record);
+
+        public void Update(IList<string> propertiesToSearchNames, IList<string> propertiesToUpdateNames, IList<string> valuesToSearch, IList<string> newValues, bool allFieldsMatch = true);
     }
 }

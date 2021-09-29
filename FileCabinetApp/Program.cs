@@ -139,20 +139,21 @@ namespace FileCabinetApp
 
             var helpCommandHandler = new HelpCommandHandler();
             var createCommandHandler = new CreateCommandHandler(fileCabinetService, inputValidator);
-            var editCommandHandler = new EditCommandHandler(fileCabinetService, inputValidator);
             var exitCommandHandler = new ExitCommandHandler(Exit);
             var exportCommandHandler = new ExportCommandHandler(fileCabinetService);
             var findCommandHandler = new FindCommandHandler(fileCabinetService, DefaultRecordPrint);
             var importCommandHandler = new ImportCommandHandler(fileCabinetService);
             var listCommandHandler = new ListCommandHandler(fileCabinetService, DefaultRecordPrint);
             var purgeCommandHandler = new PurgeCommandHandler(fileCabinetService);
-            var removeCommandHandler = new RemoveCommandHandler(fileCabinetService);
             var statCommandHandler = new StatCommandHandler(fileCabinetService);
+            var insertCommandHandler = new InsertCommandHandler(fileCabinetService, inputValidator);
+            var deleteCommandHandler = new DeleteCommandHandler(fileCabinetService);
+            var updateCommandHandler = new UpdateCommandHandler(fileCabinetService, inputValidator);
 
-            helpCommandHandler.SetNext(createCommandHandler).SetNext(createCommandHandler).SetNext(editCommandHandler).
+            helpCommandHandler.SetNext(createCommandHandler).SetNext(createCommandHandler).
                 SetNext(exitCommandHandler).SetNext(exportCommandHandler).SetNext(findCommandHandler).
                 SetNext(importCommandHandler).SetNext(listCommandHandler).SetNext(purgeCommandHandler).
-                SetNext(removeCommandHandler).SetNext(statCommandHandler);
+                SetNext(statCommandHandler).SetNext(insertCommandHandler).SetNext(deleteCommandHandler).SetNext(updateCommandHandler);
 
             return helpCommandHandler;
         }
