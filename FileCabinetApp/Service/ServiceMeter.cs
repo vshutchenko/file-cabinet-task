@@ -86,7 +86,7 @@ namespace FileCabinetApp.Service
         }
 
         /// <inheritdoc />
-        public ReadOnlyCollection<FileCabinetRecord> GetRecords()
+        public IEnumerable<FileCabinetRecord> GetRecords()
         {
             this.stopwatch.Restart();
             var records = this.service.GetRecords();

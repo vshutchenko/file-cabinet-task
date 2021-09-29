@@ -30,6 +30,14 @@ namespace FileCabinetApp.Service
         private FileStream fileStream;
         private IRecordValidator validator;
 
+        private int RecordsCount
+        {
+            get
+            {
+                return (int)(this.fileStream.Length / RecordSize);
+            }
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetFilesystemService"/> class.
         /// </summary>
@@ -57,34 +65,6 @@ namespace FileCabinetApp.Service
             reader.Close();
         }
 
-        private enum FieldSize
-        {
-            Reserved = 2,
-            Id = 4,
-            FirstName = 120,
-            LastName = 120,
-            Year = 4,
-            Month = 4,
-            Day = 4,
-            Gender = 2,
-            Experience = 2,
-            Salary = 16,
-        }
-
-        private enum Offset
-        {
-            Reserved = 0,
-            Id = 2,
-            FirstName = 6,
-            LastName = 126,
-            Year = 246,
-            Month = 250,
-            Day = 254,
-            Gender = 258,
-            Experience = 260,
-            Salary = 262,
-        }
-
         /// <summary>
         /// This method removes empty records with from file.
         /// </summary>
@@ -94,26 +74,25 @@ namespace FileCabinetApp.Service
             RecordParameters recordParameters;
             BinaryWriter writer = new BinaryWriter(this.fileStream, Encoding.Unicode, true);
             var records = this.GetRecords();
-            long deletedRecords = (this.fileStream.Length / RecordSize) - records.Count;
-            long recordsCount = this.fileStream.Length / RecordSize;
+            int recordsBeforePurge = this.RecordsCount;
             this.fileStream.SetLength(0);
             this.fileStream.Seek(0, SeekOrigin.Begin);
 
-            for (int i = 0; i < records.Count; i++)
+            foreach (var record in records)
             {
                 recordParameters = new RecordParameters(
-                    records[i].FirstName,
-                    records[i].LastName,
-                    records[i].DateOfBirth,
-                    records[i].Gender,
-                    records[i].Experience,
-                    records[i].Salary);
-                WriteRecord(records[i].Id, recordParameters, writer);
+                    record.FirstName,
+                    record.LastName,
+                    record.DateOfBirth,
+                    record.Gender,
+                    record.Experience,
+                    record.Salary);
+                WriteRecord(record.Id, recordParameters, writer);
             }
 
             writer.Close();
 
-            return new Tuple<int, int>((int)deletedRecords, (int)recordsCount);
+            return new Tuple<int, int>(recordsBeforePurge - this.RecordsCount, this.RecordsCount);
         }
 
         /// <summary>
@@ -137,7 +116,7 @@ namespace FileCabinetApp.Service
                         record.Experience,
                         record.Salary);
 
-                if (record.Id <= this.GetStat().Item2)
+                if (record.Id <= this.RecordsCount)
                 {
                     this.EditRecord(record.Id, recordParameters);
                 }
@@ -284,23 +263,20 @@ namespace FileCabinetApp.Service
         /// This method returns collection of stored records.
         /// </summary>
         /// <returns>Collection of stored records.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> GetRecords()
+        public IEnumerable<FileCabinetRecord> GetRecords()
         {
             this.fileStream.Seek(0, SeekOrigin.Begin);
-            List<FileCabinetRecord> records = new List<FileCabinetRecord>();
             BinaryReader reader = new BinaryReader(this.fileStream, Encoding.Unicode, true);
 
             while (this.fileStream.Position < this.fileStream.Length)
             {
                 if (TryReadRecord(reader, out FileCabinetRecord record))
                 {
-                    records.Add(record);
+                    yield return record;
                 }
             }
 
             reader.Close();
-
-            return new ReadOnlyCollection<FileCabinetRecord>(records);
         }
 
         /// <summary>
@@ -310,10 +286,9 @@ namespace FileCabinetApp.Service
         public Tuple<int, int> GetStat()
         {
             BinaryReader reader = new BinaryReader(this.fileStream, Encoding.Unicode, true);
-            int recordsCount = (int)(this.fileStream.Length / RecordSize);
             int deletedRecordsCount = 0;
 
-            if (recordsCount > int.MaxValue)
+            if (this.RecordsCount > int.MaxValue)
             {
                 throw new ArgumentOutOfRangeException($"Number of records is bigger than int.MaxValue.");
             }
@@ -331,9 +306,7 @@ namespace FileCabinetApp.Service
                 reader.BaseStream.Seek(RecordSize - sizeof(short), SeekOrigin.Current);
             }
 
-            recordsCount -= deletedRecordsCount;
-
-            return new Tuple<int, int>(deletedRecordsCount, recordsCount);
+            return new Tuple<int, int>(this.RecordsCount - deletedRecordsCount, this.RecordsCount);
         }
 
         /// <summary>
@@ -542,7 +515,6 @@ namespace FileCabinetApp.Service
 
         public void Update(IList<string> propertiesToSearchNames, IList<string> propertiesToUpdateNames, IList<string> valuesToSearch, IList<string> newValues, bool allFieldsMatch = true)
         {
-            var recordsInFile = this.GetRecords();
             List<FileCabinetRecord> recordsToUpdate = new List<FileCabinetRecord>();
             var records = this.FindByTemplate(propertiesToSearchNames, valuesToSearch, allFieldsMatch);
 

@@ -55,7 +55,7 @@ namespace FileCabinetApp.Service
 
             foreach (var record in serviceSnapshot.Records)
             {
-                if (record.Id <= this.GetStat().Item2)
+                if (record.Id <= this.list.Count)
                 {
                     RecordParameters recordParameters = new RecordParameters(
                         record.FirstName,
@@ -90,9 +90,9 @@ namespace FileCabinetApp.Service
         /// This method returns collection of stored records.
         /// </summary>
         /// <returns>Collection of stored records.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> GetRecords()
+        public IEnumerable<FileCabinetRecord> GetRecords()
         {
-            return new ReadOnlyCollection<FileCabinetRecord>(this.list);
+            return this.list;
         }
 
         /// <summary>
