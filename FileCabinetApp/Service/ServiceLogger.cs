@@ -56,36 +56,6 @@ namespace FileCabinetApp.Service
         }
 
         /// <inheritdoc/>
-        public IEnumerable<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
-        {
-            string parameters = $"DateOfBirth = '{dateOfBirth}'";
-            this.WriteMessage(LogMessageType.MethodWithParameters, nameof(this.FindByDateOfBirth), parameters);
-            var records = this.service.FindByDateOfBirth(dateOfBirth);
-            this.WriteMessage(LogMessageType.MethodReturnValue, nameof(this.FindByDateOfBirth));
-            return records;
-        }
-
-        /// <inheritdoc/>
-        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
-        {
-            string parameters = $"FirstName = '{firstName}";
-            this.WriteMessage(LogMessageType.MethodWithParameters, nameof(this.FindByFirstName), parameters);
-            var records = this.service.FindByFirstName(firstName);
-            this.WriteMessage(LogMessageType.MethodReturnValue, nameof(this.FindByFirstName));
-            return records;
-        }
-
-        /// <inheritdoc/>
-        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
-        {
-            string parameters = $"LastName = '{lastName}'";
-            this.WriteMessage(LogMessageType.MethodWithParameters, nameof(this.FindByLastName), parameters);
-            var records = this.service.FindByLastName(lastName);
-            this.WriteMessage(LogMessageType.MethodReturnValue, nameof(this.FindByLastName));
-            return records;
-        }
-
-        /// <inheritdoc/>
         public IEnumerable<FileCabinetRecord> GetRecords()
         {
             this.WriteMessage(LogMessageType.MethodWithoutParameters, nameof(this.GetRecords));
@@ -218,7 +188,7 @@ namespace FileCabinetApp.Service
             string parameters = $"{nameof(allFieldsMatch)} = '{allFieldsMatch}'";
             this.WriteMessage(LogMessageType.MethodWithParameters, nameof(this.Select), parameters);
             var records = this.service.Select(propertiesNames, values, allFieldsMatch);
-            this.WriteMessage(LogMessageType.MethodReturnValue, nameof(this.FindByFirstName));
+            this.WriteMessage(LogMessageType.MethodReturnValue, nameof(this.Select));
             return records;
         }
     }

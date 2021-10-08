@@ -100,25 +100,6 @@
             </summary>
             <param name="request">A command with parameters.</param>
         </member>
-        <member name="T:FileCabinetApp.CommandHandlers.Handlers.FindCommandHandler">
-            <summary>
-            Provides handler for find command.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.Handlers.FindCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService,System.Action{System.Collections.Generic.IEnumerable{FileCabinetApp.RecordModel.FileCabinetRecord}})">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.Handlers.FindCommandHandler"/> class.
-            </summary>
-            <param name="fileCabinetService">A reference to service class is needed because
-            find command handler calls service methods.</param>
-            <param name="print">Delegate which contains a method for printing records.</param>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.Handlers.FindCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
-            <summary>
-            Handles the command or calls next command handler.
-            </summary>
-            <param name="request">A command with parameters.</param>
-        </member>
         <member name="T:FileCabinetApp.CommandHandlers.Handlers.HelpCommandHandler">
             <summary>
             Provides handler for help command.
@@ -143,25 +124,6 @@
             import command handler calls service methods.</param>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.Handlers.ImportCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
-            <summary>
-            Handles the command or calls next command handler.
-            </summary>
-            <param name="request">A command with parameters.</param>
-        </member>
-        <member name="T:FileCabinetApp.CommandHandlers.Handlers.ListCommandHandler">
-            <summary>
-            Provides handler for list command.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.Handlers.ListCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService,System.Action{System.Collections.Generic.IEnumerable{FileCabinetApp.RecordModel.FileCabinetRecord}})">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.Handlers.ListCommandHandler"/> class.
-            </summary>
-            <param name="fileCabinetService">A reference to service class is needed because
-            list command handler calls service methods.</param>
-            <param name="print">Delegate which contains a method for printing records.</param>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.Handlers.ListCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <summary>
             Handles the command or calls next command handler.
             </summary>
@@ -693,27 +655,6 @@
             <param name="id">Id of edited record.</param>
             <param name="recordParameters">Parameters object for <see cref="T:FileCabinetApp.RecordModel.FileCabinetRecord"/> class.</param>
         </member>
-        <member name="M:FileCabinetApp.Service.FileCabinetFilesystemService.FindByDateOfBirth(System.DateTime)">
-            <summary>
-            This method performs searching in records by date of birth.
-            </summary>
-            <param name="dateOfBirth">The person's date of birth.</param>
-            <returns>The array of records with matched date of birth.</returns>
-        </member>
-        <member name="M:FileCabinetApp.Service.FileCabinetFilesystemService.FindByFirstName(System.String)">
-            <summary>
-            This method performs searching records by first name.
-            </summary>
-            <param name="firstName">The person's first name.</param>
-            <returns>The array of records with matched first name.</returns>
-        </member>
-        <member name="M:FileCabinetApp.Service.FileCabinetFilesystemService.FindByLastName(System.String)">
-            <summary>
-            This method performs searching records by last name.
-            </summary>
-            <param name="lastName">The person's last name.</param>
-            <returns>The array of records with matched last name.</returns>
-        </member>
         <member name="M:FileCabinetApp.Service.FileCabinetFilesystemService.GetRecords">
             <summary>
             This method returns collection of stored records.
@@ -780,27 +721,6 @@
             This method returns number of deleted and stored records.
             </summary>
             <returns>Number of deleted and stored records.</returns>
-        </member>
-        <member name="M:FileCabinetApp.Service.FileCabinetMemoryService.FindByFirstName(System.String)">
-            <summary>
-            This method performs searching records by first name.
-            </summary>
-            <param name="firstName">The person's first name.</param>
-            <returns>The array of records with matched first name.</returns>
-        </member>
-        <member name="M:FileCabinetApp.Service.FileCabinetMemoryService.FindByLastName(System.String)">
-            <summary>
-            This method performs searching records by last name.
-            </summary>
-            <param name="lastName">The person's last name.</param>
-            <returns>The array of records with matched last name.</returns>
-        </member>
-        <member name="M:FileCabinetApp.Service.FileCabinetMemoryService.FindByDateOfBirth(System.DateTime)">
-            <summary>
-            This method performs searching in records by date of birth.
-            </summary>
-            <param name="dateOfBirth">The person's date of birth.</param>
-            <returns>The array of records with matched date of birth.</returns>
         </member>
         <member name="M:FileCabinetApp.Service.FileCabinetMemoryService.CreateRecord(FileCabinetApp.RecordModel.RecordParameters)">
             <summary>
@@ -894,27 +814,6 @@
             </summary>
             <returns>Number of deleted and stored records.</returns>
         </member>
-        <member name="M:FileCabinetApp.Service.IFileCabinetService.FindByFirstName(System.String)">
-            <summary>
-            This method performs searching records by first name.
-            </summary>
-            <param name="firstName">The person's first name.</param>
-            <returns>The array of records with matched first name.</returns>
-        </member>
-        <member name="M:FileCabinetApp.Service.IFileCabinetService.FindByLastName(System.String)">
-            <summary>
-            This method performs searching records by last name.
-            </summary>
-            <param name="lastName">The person's last name.</param>
-            <returns>The array of records with matched last name.</returns>
-        </member>
-        <member name="M:FileCabinetApp.Service.IFileCabinetService.FindByDateOfBirth(System.DateTime)">
-            <summary>
-            This method performs searching in records by date of birth.
-            </summary>
-            <param name="dateOfBirth">The person's date of birth.</param>
-            <returns>The array of records with matched date of birth.</returns>
-        </member>
         <member name="M:FileCabinetApp.Service.IFileCabinetService.CreateRecord(FileCabinetApp.RecordModel.RecordParameters)">
             <summary>
             This method creates a new record.
@@ -966,15 +865,6 @@
         <member name="M:FileCabinetApp.Service.ServiceLogger.EditRecord(System.Int32,FileCabinetApp.RecordModel.RecordParameters)">
             <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.Service.ServiceLogger.FindByDateOfBirth(System.DateTime)">
-            <inheritdoc/>
-        </member>
-        <member name="M:FileCabinetApp.Service.ServiceLogger.FindByFirstName(System.String)">
-            <inheritdoc/>
-        </member>
-        <member name="M:FileCabinetApp.Service.ServiceLogger.FindByLastName(System.String)">
-            <inheritdoc/>
-        </member>
         <member name="M:FileCabinetApp.Service.ServiceLogger.GetRecords">
             <inheritdoc/>
         </member>
@@ -1020,15 +910,6 @@
             <inheritdoc />
         </member>
         <member name="M:FileCabinetApp.Service.ServiceMeter.EditRecord(System.Int32,FileCabinetApp.RecordModel.RecordParameters)">
-            <inheritdoc />
-        </member>
-        <member name="M:FileCabinetApp.Service.ServiceMeter.FindByDateOfBirth(System.DateTime)">
-            <inheritdoc />
-        </member>
-        <member name="M:FileCabinetApp.Service.ServiceMeter.FindByFirstName(System.String)">
-            <inheritdoc />
-        </member>
-        <member name="M:FileCabinetApp.Service.ServiceMeter.FindByLastName(System.String)">
             <inheritdoc />
         </member>
         <member name="M:FileCabinetApp.Service.ServiceMeter.GetRecords">

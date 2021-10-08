@@ -18,9 +18,6 @@ namespace FileCabinetApp.Service
     /// </summary>
     public class FileCabinetMemoryService : IFileCabinetService
     {
-        private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
-        private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
-        private readonly Dictionary<string, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
         private IRecordValidator validator;
 
@@ -69,9 +66,6 @@ namespace FileCabinetApp.Service
                 else
                 {
                     this.list.Add(record);
-                    AddInDictionary(this.firstNameDictionary, record.FirstName, new List<FileCabinetRecord>() { record });
-                    AddInDictionary(this.lastNameDictionary, record.LastName, new List<FileCabinetRecord>() { record });
-                    AddInDictionary(this.dateOfBirthDictionary, record.DateOfBirth.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture), new List<FileCabinetRecord>() { record });
                 }
             }
         }
@@ -105,76 +99,6 @@ namespace FileCabinetApp.Service
         }
 
         /// <summary>
-        /// This method performs searching records by first name.
-        /// </summary>
-        /// <param name="firstName">The person's first name.</param>
-        /// <returns>The array of records with matched first name.</returns>
-        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
-        {
-            if (firstName is null)
-            {
-                throw new ArgumentNullException(nameof(firstName), $"{nameof(firstName)} is null");
-            }
-
-            List<FileCabinetRecord> records;
-            bool isValueExists = this.firstNameDictionary.TryGetValue(firstName.ToUpperInvariant(), out records);
-
-            if (isValueExists)
-            {
-                return new MemoryIterator(records);
-            }
-            else
-            {
-                return new MemoryIterator(new List<FileCabinetRecord>());
-            }
-        }
-
-        /// <summary>
-        /// This method performs searching records by last name.
-        /// </summary>
-        /// <param name="lastName">The person's last name.</param>
-        /// <returns>The array of records with matched last name.</returns>
-        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
-        {
-            if (lastName is null)
-            {
-                throw new ArgumentNullException(nameof(lastName), $"{nameof(lastName)} is null");
-            }
-
-            List<FileCabinetRecord> records;
-            bool isValueExists = this.lastNameDictionary.TryGetValue(lastName.ToUpperInvariant(), out records);
-
-            if (isValueExists)
-            {
-                return new MemoryIterator(records);
-            }
-            else
-            {
-                return new MemoryIterator(new List<FileCabinetRecord>());
-            }
-        }
-
-        /// <summary>
-        /// This method performs searching in records by date of birth.
-        /// </summary>
-        /// <param name="dateOfBirth">The person's date of birth.</param>
-        /// <returns>The array of records with matched date of birth.</returns>
-        public IEnumerable<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
-        {
-            List<FileCabinetRecord> records;
-            bool isValueExists = this.dateOfBirthDictionary.TryGetValue(dateOfBirth.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture), out records);
-
-            if (isValueExists)
-            {
-                return new MemoryIterator(records);
-            }
-            else
-            {
-                return new MemoryIterator(new List<FileCabinetRecord>());
-            }
-        }
-
-        /// <summary>
         /// This method creates a new record.
         /// </summary>
         /// <param name="recordParameters">The parameter object for FileCabinetRecord.</param>
@@ -195,11 +119,6 @@ namespace FileCabinetApp.Service
             };
 
             this.list.Add(record);
-
-            AddInDictionary(this.firstNameDictionary, recordParameters.FirstName, new List<FileCabinetRecord>() { record });
-            AddInDictionary(this.lastNameDictionary, recordParameters.LastName, new List<FileCabinetRecord>() { record });
-            AddInDictionary(this.dateOfBirthDictionary, recordParameters.DateOfBirth.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture), new List<FileCabinetRecord>() { record });
-
             return record.Id;
         }
 
@@ -221,20 +140,12 @@ namespace FileCabinetApp.Service
             {
                 if (id == this.list[i].Id)
                 {
-                    this.firstNameDictionary[this.list[i].FirstName.ToUpperInvariant()].Remove(this.list[i]);
-                    this.lastNameDictionary[this.list[i].LastName.ToUpperInvariant()].Remove(this.list[i]);
-                    this.dateOfBirthDictionary[this.list[i].DateOfBirth.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture)].Remove(this.list[i]);
-
                     this.list[i].FirstName = recordParameters.FirstName;
                     this.list[i].LastName = recordParameters.LastName;
                     this.list[i].DateOfBirth = recordParameters.DateOfBirth;
                     this.list[i].Gender = recordParameters.Gender;
                     this.list[i].Experience = recordParameters.Experience;
                     this.list[i].Salary = recordParameters.Salary;
-
-                    AddInDictionary(this.firstNameDictionary, recordParameters.FirstName, new List<FileCabinetRecord>() { this.list[i] });
-                    AddInDictionary(this.lastNameDictionary, recordParameters.LastName, new List<FileCabinetRecord>() { this.list[i] });
-                    AddInDictionary(this.dateOfBirthDictionary, recordParameters.DateOfBirth.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture), new List<FileCabinetRecord>() { this.list[i] });
                 }
             }
         }
@@ -250,9 +161,6 @@ namespace FileCabinetApp.Service
             {
                 if (this.list[i].Id == id)
                 {
-                    this.firstNameDictionary[this.list[i].FirstName.ToUpperInvariant()].Remove(this.list[i]);
-                    this.lastNameDictionary[this.list[i].LastName.ToUpperInvariant()].Remove(this.list[i]);
-                    this.dateOfBirthDictionary[this.list[i].DateOfBirth.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture)].Remove(this.list[i]);
                     this.list.RemoveAt(i);
                     return true;
                 }
@@ -261,28 +169,11 @@ namespace FileCabinetApp.Service
             return false;
         }
 
-        private static void AddInDictionary(Dictionary<string, List<FileCabinetRecord>> dictionary, string key, List<FileCabinetRecord> records)
-        {
-            List<FileCabinetRecord> existingValue;
-
-            if (!dictionary.TryGetValue(key.ToUpperInvariant(), out existingValue))
-            {
-                existingValue = dictionary[key.ToUpperInvariant()] = new List<FileCabinetRecord>();
-            }
-
-            existingValue.AddRange(records);
-        }
-
         public int Insert(FileCabinetRecord record)
         {
             RecordParameters recordParameters = new RecordParameters(record);
             this.validator.ValidateParameters(recordParameters);
             this.list.Add(record);
-
-            AddInDictionary(this.firstNameDictionary, recordParameters.FirstName.ToUpperInvariant(), new List<FileCabinetRecord> { record });
-            AddInDictionary(this.lastNameDictionary, recordParameters.LastName.ToUpperInvariant(), new List<FileCabinetRecord> { record });
-            AddInDictionary(this.dateOfBirthDictionary, recordParameters.DateOfBirth.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture), new List<FileCabinetRecord> { record });
-
             return record.Id;
         }
 

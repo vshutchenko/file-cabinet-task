@@ -31,27 +31,6 @@ namespace FileCabinetApp.Service
         public Tuple<int, int> GetStat();
 
         /// <summary>
-        /// This method performs searching records by first name.
-        /// </summary>
-        /// <param name="firstName">The person's first name.</param>
-        /// <returns>The array of records with matched first name.</returns>
-        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName);
-
-        /// <summary>
-        /// This method performs searching records by last name.
-        /// </summary>
-        /// <param name="lastName">The person's last name.</param>
-        /// <returns>The array of records with matched last name.</returns>
-        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName);
-
-        /// <summary>
-        /// This method performs searching in records by date of birth.
-        /// </summary>
-        /// <param name="dateOfBirth">The person's date of birth.</param>
-        /// <returns>The array of records with matched date of birth.</returns>
-        public IEnumerable<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth);
-
-        /// <summary>
         /// This method creates a new record.
         /// </summary>
         /// <param name="recordParameters">The parameter object for FileCabinetRecord.</param>

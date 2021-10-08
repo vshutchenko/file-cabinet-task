@@ -141,9 +141,7 @@ namespace FileCabinetApp
             var createCommandHandler = new CreateCommandHandler(fileCabinetService, inputValidator);
             var exitCommandHandler = new ExitCommandHandler(Exit);
             var exportCommandHandler = new ExportCommandHandler(fileCabinetService);
-            var findCommandHandler = new FindCommandHandler(fileCabinetService, DefaultRecordPrint);
             var importCommandHandler = new ImportCommandHandler(fileCabinetService);
-            var listCommandHandler = new ListCommandHandler(fileCabinetService, DefaultRecordPrint);
             var purgeCommandHandler = new PurgeCommandHandler(fileCabinetService);
             var statCommandHandler = new StatCommandHandler(fileCabinetService);
             var insertCommandHandler = new InsertCommandHandler(fileCabinetService, inputValidator);
@@ -152,9 +150,9 @@ namespace FileCabinetApp
             var selectCommandHandler = new SelectCommandHandler(fileCabinetService);
 
             helpCommandHandler.SetNext(createCommandHandler).SetNext(createCommandHandler).
-                SetNext(exitCommandHandler).SetNext(exportCommandHandler).SetNext(findCommandHandler).
-                SetNext(importCommandHandler).SetNext(listCommandHandler).SetNext(purgeCommandHandler).
-                SetNext(statCommandHandler).SetNext(insertCommandHandler).SetNext(deleteCommandHandler).SetNext(updateCommandHandler).SetNext(selectCommandHandler);
+                SetNext(exitCommandHandler).SetNext(exportCommandHandler).SetNext(importCommandHandler).
+                SetNext(purgeCommandHandler).SetNext(statCommandHandler).SetNext(insertCommandHandler).
+                SetNext(deleteCommandHandler).SetNext(updateCommandHandler).SetNext(selectCommandHandler);
 
             return helpCommandHandler;
         }

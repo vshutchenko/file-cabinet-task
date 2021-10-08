@@ -50,42 +50,6 @@ namespace FileCabinetApp.Service
         }
 
         /// <inheritdoc />
-        public IEnumerable<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
-        {
-            this.stopwatch.Restart();
-            var records = this.service.FindByDateOfBirth(dateOfBirth);
-            this.stopwatch.Stop();
-
-            Print(nameof(this.FindByDateOfBirth), this.stopwatch.ElapsedTicks);
-
-            return records;
-        }
-
-        /// <inheritdoc />
-        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
-        {
-            this.stopwatch.Restart();
-            var records = this.service.FindByFirstName(firstName);
-            this.stopwatch.Stop();
-
-            Print(nameof(this.FindByFirstName), this.stopwatch.ElapsedTicks);
-
-            return records;
-        }
-
-        /// <inheritdoc />
-        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
-        {
-            this.stopwatch.Restart();
-            var records = this.service.FindByLastName(lastName);
-            this.stopwatch.Stop();
-
-            Print(nameof(this.FindByLastName), this.stopwatch.ElapsedTicks);
-
-            return records;
-        }
-
-        /// <inheritdoc />
         public IEnumerable<FileCabinetRecord> GetRecords()
         {
             this.stopwatch.Restart();
