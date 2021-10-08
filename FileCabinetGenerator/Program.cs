@@ -120,8 +120,8 @@ namespace FileCabinetGenerator
                 int range = (DateTime.Today - dateOfBirth).Days;
                 dateOfBirth.AddDays(random.Next(range));
 
-                short experence = (short)random.Next(0, short.MaxValue);
-                decimal salary = random.Next(0, int.MaxValue);
+                short experence = (short)random.Next(5, 40);
+                decimal salary = random.Next(1000, 10000);
 
                 FileCabinetRecord record = new FileCabinetRecord()
                 {

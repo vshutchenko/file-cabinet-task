@@ -185,6 +185,12 @@
             </summary>
             <param name="request">A command with parameters.</param>
         </member>
+        <member name="M:FileCabinetApp.CommandHandlers.Handlers.SelectCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <summary>
+            Handles the command or calls next command handler.
+            </summary>
+            <param name="request">A command with parameters.</param>
+        </member>
         <member name="T:FileCabinetApp.CommandHandlers.Handlers.ServiceCommandHandlerBase">
             <summary>
             A base class for command handlers classes.

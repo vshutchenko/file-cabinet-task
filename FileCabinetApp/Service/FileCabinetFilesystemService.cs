@@ -74,11 +74,17 @@ namespace FileCabinetApp.Service
             RecordParameters recordParameters;
             BinaryWriter writer = new BinaryWriter(this.fileStream, Encoding.Unicode, true);
             var records = this.GetRecords();
-            int recordsBeforePurge = this.RecordsCount;
+            List<FileCabinetRecord> recordsList = new List<FileCabinetRecord>();
+            foreach (var r in records)
+            {
+                recordsList.Add(r);
+            }
+
+            int recordsBeforePurge = recordsList.Count;
             this.fileStream.SetLength(0);
             this.fileStream.Seek(0, SeekOrigin.Begin);
 
-            foreach (var record in records)
+            foreach (var record in recordsList)
             {
                 recordParameters = new RecordParameters(
                     record.FirstName,
@@ -92,7 +98,7 @@ namespace FileCabinetApp.Service
 
             writer.Close();
 
-            return new Tuple<int, int>(recordsBeforePurge - this.RecordsCount, this.RecordsCount);
+            return new Tuple<int, int>(recordsBeforePurge - recordsList.Count, recordsList.Count);
         }
 
         /// <summary>
@@ -306,7 +312,7 @@ namespace FileCabinetApp.Service
                 reader.BaseStream.Seek(RecordSize - sizeof(short), SeekOrigin.Current);
             }
 
-            return new Tuple<int, int>(this.RecordsCount - deletedRecordsCount, this.RecordsCount);
+            return new Tuple<int, int>(deletedRecordsCount, this.RecordsCount - deletedRecordsCount);
         }
 
         /// <summary>
@@ -457,7 +463,7 @@ namespace FileCabinetApp.Service
             return deletedRecordsIds;
         }
 
-        public IEnumerable<FileCabinetRecord> FindByTemplate(IList<string> propertiesNames, IList<string> values, bool allFieldsMatch = true)
+        private IEnumerable<FileCabinetRecord> FindByTemplate(IList<string> propertiesNames, IList<string> values, bool allFieldsMatch = true)
         {
             Type recordType = typeof(FileCabinetRecord);
             List<PropertyInfo> recordProperties = recordType.GetProperties().ToList();
@@ -507,6 +513,7 @@ namespace FileCabinetApp.Service
                         if (propertiesToSearch[j].GetValue(r).ToString().Equals(propertiesToSearch[j].GetValue(template).ToString(), StringComparison.InvariantCultureIgnoreCase))
                         {
                             yield return r;
+                            break;
                         }
                     }
                 }
@@ -542,6 +549,12 @@ namespace FileCabinetApp.Service
 
                 this.EditRecord(template.Id, new RecordParameters(template));
             }
+        }
+
+        public IEnumerable<FileCabinetRecord> Select(IList<string> propertiesNames, IList<string> values, bool allFieldsMatch = true)
+        {
+            var records = this.FindByTemplate(propertiesNames, values, allFieldsMatch);
+            return records;
         }
     }
 }

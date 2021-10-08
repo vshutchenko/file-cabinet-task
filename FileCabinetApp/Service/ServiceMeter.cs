@@ -190,5 +190,16 @@ namespace FileCabinetApp.Service
 
             Print(nameof(this.Update), this.stopwatch.ElapsedTicks);
         }
+
+        public IEnumerable<FileCabinetRecord> Select(IList<string> propertiesNames, IList<string> values, bool allFieldsMatch = true)
+        {
+            this.stopwatch.Restart();
+            var records = this.service.Select(propertiesNames, values, allFieldsMatch);
+            this.stopwatch.Stop();
+
+            Print(nameof(this.Select), this.stopwatch.ElapsedTicks);
+
+            return records;
+        }
     }
 }

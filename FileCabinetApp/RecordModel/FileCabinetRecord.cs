@@ -50,5 +50,16 @@ namespace FileCabinetApp.RecordModel
         /// </summary>
         /// <value>The salary of the person.</value>
         public decimal Salary { get; set; }
+
+        public override string ToString()
+        {
+            return $"{nameof(this.Id)} = '{this.Id}', " +
+                $"{nameof(this.FirstName)} = '{this.FirstName}', " +
+                $"{nameof(this.LastName)} = '{this.LastName}', " +
+                $"{nameof(this.DateOfBirth)} = '{this.DateOfBirth}', " +
+                $"{nameof(this.Gender)} = '{this.Gender}', " +
+                $"{nameof(this.Experience)} = '{this.Experience}', " +
+                $"{nameof(this.Salary)} = '{this.Salary}'";
+        }
     }
 }

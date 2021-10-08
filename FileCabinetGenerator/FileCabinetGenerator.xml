@@ -6,7 +6,7 @@
     <members>
         <member name="T:FileCabinetGenerator.Program">
             <summary>
-            This class performs generating xml and cvs files.
+            This class performs generating xml and csv files.
             </summary>
         </member>
         <member name="M:FileCabinetGenerator.Program.Main(System.String[])">

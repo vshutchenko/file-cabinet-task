@@ -348,6 +348,7 @@ namespace FileCabinetApp.Service
                     if (isMatch)
                     {
                         yield return r;
+                        break;
                     }
 
                     isMatch = false;
@@ -385,6 +386,12 @@ namespace FileCabinetApp.Service
 
                 this.EditRecord(template.Id, new RecordParameters(template));
             }
+        }
+
+        public IEnumerable<FileCabinetRecord> Select(IList<string> propertiesNames, IList<string> values, bool allFieldsMatch = true)
+        {
+            var records = this.FindByTemplate(propertiesNames, values, allFieldsMatch);
+            return records;
         }
     }
 }

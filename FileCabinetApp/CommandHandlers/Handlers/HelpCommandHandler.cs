@@ -25,6 +25,7 @@ namespace FileCabinetApp.CommandHandlers.Handlers
             new string[] { "insert", "creates a new record with specified parameters", "The 'insert' command creates a new record with specified parameters." },
             new string[] { "list", "prints the list of records", "The 'list' command prints the list of records." },
             new string[] { "purge", "defragments the file", "The 'purge' command defragments the file." },
+            new string[] { "select", "prints records satisfying specified parameters", "The 'select' command prints records satisfying specified parameters." },
             new string[] { "stat", "prints number of records stored in the service", "The 'stat' command prints number of records stored in the service." },
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
         };

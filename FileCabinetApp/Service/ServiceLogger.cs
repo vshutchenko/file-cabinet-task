@@ -212,5 +212,14 @@ namespace FileCabinetApp.Service
             this.WriteMessage(LogMessageType.MethodWithParameters, nameof(this.Update), parameters);
             this.service.Update(propertiesToSearchNames, propertiesToUpdateNames, valuesToSearch, newValues, allFieldsMatch);
         }
+
+        public IEnumerable<FileCabinetRecord> Select(IList<string> propertiesNames, IList<string> values, bool allFieldsMatch = true)
+        {
+            string parameters = $"{nameof(allFieldsMatch)} = '{allFieldsMatch}'";
+            this.WriteMessage(LogMessageType.MethodWithParameters, nameof(this.Select), parameters);
+            var records = this.service.Select(propertiesNames, values, allFieldsMatch);
+            this.WriteMessage(LogMessageType.MethodReturnValue, nameof(this.FindByFirstName));
+            return records;
+        }
     }
 }
