@@ -68,7 +68,9 @@ namespace FileCabinetApp.Service
         public int Insert(FileCabinetRecord record);
 
         public void Update(IList<string> propertiesToSearchNames, IList<string> propertiesToUpdateNames, IList<string> valuesToSearch, IList<string> newValues, bool allFieldsMatch = true);
-        
+
+        public IEnumerable<FileCabinetRecord> SelectAll();
+
         public IEnumerable<FileCabinetRecord> Select(IList<string> propertiesNames, IList<string> values, bool allFieldsMatch = true);
     }
 }

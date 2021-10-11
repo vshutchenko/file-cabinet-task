@@ -165,5 +165,16 @@ namespace FileCabinetApp.Service
 
             return records;
         }
+
+        public IEnumerable<FileCabinetRecord> SelectAll()
+        {
+            this.stopwatch.Restart();
+            var records = this.service.SelectAll();
+            this.stopwatch.Stop();
+
+            Print(nameof(this.SelectAll), this.stopwatch.ElapsedTicks);
+
+            return records;
+        }
     }
 }

@@ -191,5 +191,13 @@ namespace FileCabinetApp.Service
             this.WriteMessage(LogMessageType.MethodReturnValue, nameof(this.Select));
             return records;
         }
+
+        public IEnumerable<FileCabinetRecord> SelectAll()
+        {
+            this.WriteMessage(LogMessageType.MethodWithoutParameters, nameof(this.SelectAll));
+            var records = this.service.SelectAll();
+            this.WriteMessage(LogMessageType.MethodReturnValue, nameof(this.SelectAll));
+            return records;
+        }
     }
 }

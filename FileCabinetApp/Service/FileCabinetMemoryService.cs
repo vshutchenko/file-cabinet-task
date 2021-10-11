@@ -20,6 +20,7 @@ namespace FileCabinetApp.Service
     {
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
         private IRecordValidator validator;
+        private Dictionary<string, IEnumerable<FileCabinetRecord>> searchResults = new Dictionary<string, IEnumerable<FileCabinetRecord>>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetMemoryService"/> class.
@@ -171,6 +172,7 @@ namespace FileCabinetApp.Service
 
         public int Insert(FileCabinetRecord record)
         {
+            searchResults.Clear();
             RecordParameters recordParameters = new RecordParameters(record);
             this.validator.ValidateParameters(recordParameters);
             this.list.Add(record);
@@ -179,6 +181,7 @@ namespace FileCabinetApp.Service
 
         public IList<int> Delete(string property, string value)
         {
+            searchResults.Clear();
             var recordsToDelete = this.FindByTemplate(new[] { property }, new[] { value });
             List<int> deletedRecordsIds = new List<int>();
             foreach (var record in recordsToDelete)
@@ -208,16 +211,15 @@ namespace FileCabinetApp.Service
                 }
             }
 
-            var records = this.GetRecords();
             if (allFieldsMatch)
             {
-                foreach (var r in records)
+                for (int i = 0; i < this.list.Count; i++)
                 {
                     for (int j = 0; j < propertiesToSearch.Count; j++)
                     {
-                        if (propertiesToSearch[j].GetValue(r).ToString().Equals(propertiesToSearch[j].GetValue(template).ToString(), StringComparison.InvariantCultureIgnoreCase))
+                        if (propertiesToSearch[j].GetValue(this.list[i]).ToString().Equals(propertiesToSearch[j].GetValue(template).ToString(), StringComparison.InvariantCultureIgnoreCase))
                         {
-                            yield return r;
+                            yield return this.list[i];
                         }
                     }
                 }
@@ -225,11 +227,11 @@ namespace FileCabinetApp.Service
             else
             {
                 bool isMatch = false;
-                foreach (var r in records)
+                for (int i = 0; i < this.list.Count; i++)
                 {
                     for (int j = 0; j < propertiesToSearch.Count; j++)
                     {
-                        if (propertiesToSearch[j].GetValue(r).ToString().Equals(propertiesToSearch[j].GetValue(template).ToString(), StringComparison.InvariantCultureIgnoreCase))
+                        if (propertiesToSearch[j].GetValue(this.list[i]).ToString().Equals(propertiesToSearch[j].GetValue(template).ToString(), StringComparison.InvariantCultureIgnoreCase))
                         {
                             isMatch = true;
                             break;
@@ -238,7 +240,7 @@ namespace FileCabinetApp.Service
 
                     if (isMatch)
                     {
-                        yield return r;
+                        yield return this.list[i];
                         break;
                     }
 
@@ -249,6 +251,7 @@ namespace FileCabinetApp.Service
 
         public void Update(IList<string> propertiesToSearchNames, IList<string> propertiesToUpdateNames, IList<string> valuesToSearch, IList<string> newValues, bool allFieldsMatch = true)
         {
+            searchResults.Clear();
             var recordsInFile = this.GetRecords();
             List<FileCabinetRecord> recordsToUpdate = new List<FileCabinetRecord>();
             var records = this.FindByTemplate(propertiesToSearchNames, valuesToSearch);
@@ -279,10 +282,52 @@ namespace FileCabinetApp.Service
             }
         }
 
+        public IEnumerable<FileCabinetRecord> SelectAll()
+        {
+            string key = string.Empty;
+
+            IEnumerable<FileCabinetRecord> records;
+
+            if (!searchResults.TryGetValue(key.ToUpperInvariant(), out records))
+            {
+                records = this.GetRecords();
+                searchResults.Add(key.ToUpperInvariant(), records);
+            }
+
+            return records;
+        }
+
         public IEnumerable<FileCabinetRecord> Select(IList<string> propertiesNames, IList<string> values, bool allFieldsMatch = true)
         {
-            var records = this.FindByTemplate(propertiesNames, values, allFieldsMatch);
+            string key = GetParametersKey(propertiesNames, values, allFieldsMatch);
+            IEnumerable<FileCabinetRecord> records;
+
+            if (!searchResults.TryGetValue(key, out records))
+            {
+                records = this.FindByTemplate(propertiesNames, values, allFieldsMatch);
+                searchResults.Add(key, records);
+            }
+
             return records;
+        }
+
+        private string GetParametersKey(IList<string> propertiesNames, IList<string> values, bool allFieldsMatch)
+        {
+            string key = string.Empty;
+
+            foreach (var name in propertiesNames)
+            {
+                key += name;
+            }
+
+            foreach (var value in values)
+            {
+                key += value;
+            }
+
+            key += allFieldsMatch.ToString();
+
+            return key.ToUpperInvariant();
         }
     }
 }

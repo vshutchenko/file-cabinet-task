@@ -45,7 +45,7 @@ namespace FileCabinetApp.CommandHandlers.Handlers
             InputHandler inputHandler = new InputHandler();
             if (parameters == string.Empty)
             {
-                var records = this.FileCabinetService.GetRecords();
+                var records = this.FileCabinetService.SelectAll();
                 var properties = typeof(FileCabinetRecord).GetProperties();
                 string[] propertiesToprint = new string[properties.Length];
 

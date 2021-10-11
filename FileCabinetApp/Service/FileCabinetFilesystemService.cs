@@ -252,6 +252,7 @@ namespace FileCabinetApp.Service
                 {
                     this.fileStream.Seek(-RecordSize, SeekOrigin.Current);
                     writer.Write(DeletedBitFlag);
+                    this.fileStream.Seek(-sizeof(short), SeekOrigin.Current);
                     return true;
                 }
             }
@@ -428,6 +429,11 @@ namespace FileCabinetApp.Service
         {
             var records = this.FindByTemplate(propertiesNames, values, allFieldsMatch);
             return records;
+        }
+
+        public IEnumerable<FileCabinetRecord> SelectAll()
+        {
+            return this.GetRecords();
         }
     }
 }
