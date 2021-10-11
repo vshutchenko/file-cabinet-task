@@ -11,15 +11,27 @@ using FileCabinetApp.Validators;
 
 namespace FileCabinetApp.CommandHandlers.Handlers
 {
+    /// <summary>
+    /// Handler for 'delete' command.
+    /// </summary>
     public class DeleteCommandHandler : ServiceCommandHandlerBase
     {
         private const string Command = "DELETE";
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DeleteCommandHandler"/> class.
+        /// </summary>
+        /// <param name="service">A reference to service class is needed because
+        /// import command handler calls service methods.</param>
         public DeleteCommandHandler(IFileCabinetService service)
             : base(service)
         {
         }
 
+        /// <summary>
+        /// Handles the command or calls next command handler.
+        /// </summary>
+        /// <param name="request">A command with parameters.</param>
         public override void Handle(AppCommandRequest request)
         {
             if (request is null)
@@ -72,7 +84,7 @@ namespace FileCabinetApp.CommandHandlers.Handlers
 
                 idsString += $"#{deletedRecordsIds[^1]}";
 
-                Console.WriteLine($"Records {deletedRecordsIds} are deleted.");
+                Console.WriteLine($"Records {idsString} are deleted.");
             }
         }
     }

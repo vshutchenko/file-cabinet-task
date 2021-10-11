@@ -23,16 +23,16 @@ namespace FileCabinetApp.InputHandlers
         private static readonly string And = " and ";
         private static readonly string Or = " or ";
 
-        private const char OpenBrace = '(';
-        private const char CloseBrace = ')';
+        private static readonly char OpenBrace = '(';
+        private static readonly char CloseBrace = ')';
 
-        private const string Id = "ID";
-        private const string FirstName = "FIRSTNAME";
-        private const string LastName = "LASTNAME";
-        private const string DateOfBirth = "DATEOFBIRTH";
-        private const string Gender = "GENDER";
-        private const string Experience = "EXPERIENCE";
-        private const string Salary = "SALARY";
+        private static readonly string Id = "ID" + "asd";
+        private static readonly string FirstName = "FIRSTNAME";
+        private static readonly string LastName = "LASTNAME";
+        private static readonly string DateOfBirth = "DATEOFBIRTH";
+        private static readonly string Gender = "GENDER";
+        private static readonly string Experience = "EXPERIENCE";
+        private static readonly string Salary = "SALARY";
 
         /// <summary>
         /// Reads command line arguments.
@@ -69,21 +69,30 @@ namespace FileCabinetApp.InputHandlers
         public RecordParameters ReadRecordParameters(IInputValidator inputValidator, InputConverter converter)
         {
             Console.Write("First name: ");
-            var firstName = ReadInput(converter.StringConverter, inputValidator.FirstNameValidator);
+            var firstName = this.ReadInput(converter.StringConverter, inputValidator.FirstNameValidator);
             Console.Write("Last name: ");
-            var lastName = ReadInput(converter.StringConverter, inputValidator.LastNameValidator);
+            var lastName = this.ReadInput(converter.StringConverter, inputValidator.LastNameValidator);
             Console.Write("Date of birth: ");
-            var dateOfBirth = ReadInput(converter.DateTimeConverter, inputValidator.DateOfBirthValidator);
+            var dateOfBirth = this.ReadInput(converter.DateTimeConverter, inputValidator.DateOfBirthValidator);
             Console.Write("Gender: ");
-            var gender = ReadInput(converter.CharConverter, inputValidator.GenderValidator);
+            var gender = this.ReadInput(converter.CharConverter, inputValidator.GenderValidator);
             Console.Write("Experience: ");
-            var experience = ReadInput(converter.ShortConverter, inputValidator.ExperienceValidator);
+            var experience = this.ReadInput(converter.ShortConverter, inputValidator.ExperienceValidator);
             Console.Write("Salary: ");
-            var salary = ReadInput(converter.DecimalConverter, inputValidator.SalaryValidator);
+            var salary = this.ReadInput(converter.DecimalConverter, inputValidator.SalaryValidator);
 
             return new RecordParameters(firstName, lastName, dateOfBirth, gender, experience, salary);
         }
 
+        /// <summary>
+        /// Read and parse parameters of select command.
+        /// </summary>
+        /// <param name="parameters">Parameters.</param>
+        /// <param name="propertyValueToSearch"><see cref="Tuple"/> where the first value is array of property names
+        /// and the second value is array of values to search.</param>
+        /// <param name="propertiesToPrint">Names of properties whose values will be printed.</param>
+        /// <param name="allFieldsMatch">True if record properties should match all values, false if one or more properties should match.</param>
+        /// <returns>True if parameters are valid, false if parameters is not valid.</returns>
         public bool TryReadSelectCommandParameters(string parameters, out Tuple<string[], string[]> propertyValueToSearch, out string[] propertiesToPrint, out bool allFieldsMatch)
         {
             int maxFieldsToSearch = int.MaxValue;
@@ -155,6 +164,15 @@ namespace FileCabinetApp.InputHandlers
             }
         }
 
+        /// <summary>
+        /// Read and parse parameters of update command.
+        /// </summary>
+        /// <param name="parameters">Parameters.</param>
+        /// <param name="propertyValue"><see cref="Tuple"/> with names of properties with their new values.</param>
+        /// <param name="propertyValueToSearch"><see cref="Tuple"/> where the first value is array of property names
+        /// and the second value is array of values to search.</param>
+        /// <param name="allFieldsMatch">True if record properties should match all values, false if one or more properties should match.</param>
+        /// <returns>True if parameters are valid, false if parameters is not valid.</returns>
         public bool TryReadUpdateCommandParameters(string parameters, out Tuple<string[], string[]> propertyValue, out Tuple<string[], string[]> propertyValueToSearch, out bool allFieldsMatch)
         {
             int maxFieldsToSearch = int.MaxValue;
@@ -228,6 +246,12 @@ namespace FileCabinetApp.InputHandlers
             }
         }
 
+        /// <summary>
+        /// Read and parse parameters of insert command.
+        /// </summary>
+        /// <param name="parameters">Parameters.</param>
+        /// <param name="propertyValue"><see cref="Tuple"/> with names of properties and their new values.</param>
+        /// <returns>True if parameters are valid, false if parameters is not valid.</returns>
         public bool TryReadInsertCommandParameters(string parameters, out Tuple<string[], string[]> propertyValue)
         {
             var arguments = parameters.Split(Values, 2);
@@ -273,6 +297,13 @@ namespace FileCabinetApp.InputHandlers
             }
         }
 
+        /// <summary>
+        /// Read and parse parameters of delete command.
+        /// </summary>
+        /// <param name="parameters">Parameters.</param>
+        /// <param name="propertyValue"><see cref="Tuple"/> where the first value is array of property names
+        /// and the second value is array of values to search.</param>
+        /// <returns>True if parameters are valid, false if parameters is not valid.</returns>
         public bool TryReadDeleteCommandParameters(string parameters, out Tuple<string, string> propertyValue)
         {
             var arguments = parameters.Split(Where, StringSplitOptions.RemoveEmptyEntries);
@@ -298,7 +329,57 @@ namespace FileCabinetApp.InputHandlers
             return true;
         }
 
-        private static T ReadInput<T>(Func<string, Tuple<bool, string, T>> converter, Func<T, Tuple<bool, string>> validator)
+        /// <summary>
+        /// Sets converters and validators for insert command parameters.
+        /// </summary>
+        /// <param name="values">Valus of properties.</param>
+        /// <param name="fields">Names of properties.</param>
+        /// <param name="inputValidator">Validator.</param>
+        /// <param name="converter">Converter.</param>
+        /// <returns>Record.</returns>
+        public FileCabinetRecord ReadRecordParameters(string[] values, string[] fields, IInputValidator inputValidator, InputConverter converter)
+        {
+            FileCabinetRecord record = new FileCabinetRecord();
+            for (int i = 0; i < fields.Length; i++)
+            {
+                if (fields[i].Equals(FirstName, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    record.FirstName = this.ReadInput(values[i], converter.StringConverter, inputValidator.FirstNameValidator);
+                }
+                else if (fields[i].Equals(LastName, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    record.LastName = this.ReadInput(values[i], converter.StringConverter, inputValidator.LastNameValidator);
+                }
+                else if (fields[i].Equals(DateOfBirth, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    record.DateOfBirth = this.ReadInput(values[i], converter.DateTimeConverter, inputValidator.DateOfBirthValidator);
+                }
+                else if (fields[i].Equals(Gender, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    record.Gender = this.ReadInput(values[i], converter.CharConverter, inputValidator.GenderValidator);
+                }
+                else if (fields[i].Equals(Experience, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    record.Experience = this.ReadInput(values[i], converter.ShortConverter, inputValidator.ExperienceValidator);
+                }
+                else if (fields[i].Equals(Salary, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    record.Salary = this.ReadInput(values[i], converter.DecimalConverter, inputValidator.SalaryValidator);
+                }
+                else if (fields[i].Equals(Id, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    record.Id = this.ReadInput(values[i], converter.IntConverter, inputValidator.IdValidator);
+                }
+                else
+                {
+                    Console.WriteLine($"There is no '{fields[i]}' property");
+                }
+            }
+
+            return record;
+        }
+
+        private T ReadInput<T>(Func<string, Tuple<bool, string, T>> converter, Func<T, Tuple<bool, string>> validator)
         {
             do
             {
@@ -325,48 +406,6 @@ namespace FileCabinetApp.InputHandlers
                 return value;
             }
             while (true);
-        }
-
-        public FileCabinetRecord ReadRecordParameters(string[] values, string[] fields, IInputValidator inputValidator, InputConverter converter)
-        {
-            FileCabinetRecord record = new FileCabinetRecord();
-            for (int i = 0; i < fields.Length; i++)
-            {
-                if (fields[i].Equals(FirstName, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    record.FirstName = ReadInput(values[i], converter.StringConverter, inputValidator.FirstNameValidator);
-                }
-                else if (fields[i].Equals(LastName, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    record.LastName = ReadInput(values[i], converter.StringConverter, inputValidator.LastNameValidator);
-                }
-                else if (fields[i].Equals(DateOfBirth, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    record.DateOfBirth = ReadInput(values[i], converter.DateTimeConverter, inputValidator.DateOfBirthValidator);
-                }
-                else if (fields[i].Equals(Gender, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    record.Gender = ReadInput(values[i], converter.CharConverter, inputValidator.GenderValidator);
-                }
-                else if (fields[i].Equals(Experience, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    record.Experience = ReadInput(values[i], converter.ShortConverter, inputValidator.ExperienceValidator);
-                }
-                else if (fields[i].Equals(Salary, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    record.Salary = ReadInput(values[i], converter.DecimalConverter, inputValidator.SalaryValidator);
-                }
-                else if (fields[i].Equals(Id, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    record.Id = ReadInput(values[i], converter.IntConverter, inputValidator.IdValidator);
-                }
-                else
-                {
-                    Console.WriteLine($"There is no '{fields[i]}' property");
-                }
-            }
-
-            return record;
         }
 
         private T ReadInput<T>(string input, Func<string, Tuple<bool, string, T>> converter, Func<T, Tuple<bool, string>> validator)

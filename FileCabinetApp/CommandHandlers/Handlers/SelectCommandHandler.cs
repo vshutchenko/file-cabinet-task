@@ -10,10 +10,18 @@ using FileCabinetApp.Service;
 
 namespace FileCabinetApp.CommandHandlers.Handlers
 {
+    /// <summary>
+    /// Provides handler for select command.
+    /// </summary>
     public class SelectCommandHandler : ServiceCommandHandlerBase
     {
         private const string Command = "SELECT";
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SelectCommandHandler"/> class.
+        /// </summary>
+        /// <param name="service">A reference to service class is needed because
+        /// create command handler calls service methods.</param>
         public SelectCommandHandler(IFileCabinetService service)
             : base(service)
         {

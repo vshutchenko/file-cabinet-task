@@ -11,17 +11,30 @@ using FileCabinetApp.Validators;
 
 namespace FileCabinetApp.CommandHandlers.Handlers
 {
+    /// <summary>
+    /// Provides handler for insert command.
+    /// </summary>
     public class InsertCommandHandler : ServiceCommandHandlerBase
     {
         private const string Command = "INSERT";
         private readonly IInputValidator inputValidator;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InsertCommandHandler"/> class.
+        /// </summary>
+        /// <param name="service">A reference to service class is needed because
+        /// create command handler calls service methods.</param>
+        /// <param name="inputValidator">A validator which will be used for input validation.</param>
         public InsertCommandHandler(IFileCabinetService service, IInputValidator inputValidator)
             : base(service)
         {
             this.inputValidator = inputValidator;
         }
 
+        /// <summary>
+        /// Handles the command or calls next command handler.
+        /// </summary>
+        /// <param name="request">A command with parameters.</param>
         public override void Handle(AppCommandRequest request)
         {
             if (request is null)
@@ -48,7 +61,7 @@ namespace FileCabinetApp.CommandHandlers.Handlers
             string[] fields = fieldsValues.Item1;
             string[] values = fieldsValues.Item2;
 
-            var record = inputHandler.ReadRecordParameters(values, fields, inputValidator, converter);
+            var record = inputHandler.ReadRecordParameters(values, fields, this.inputValidator, converter);
 
             try
             {

@@ -28,6 +28,10 @@ namespace FileCabinetApp.RecordModel
             this.Salary = salary;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RecordParameters"/> class.
+        /// </summary>
+        /// <param name="record">Record with parameter values.</param>
         public RecordParameters(FileCabinetRecord record)
         {
             this.FirstName = record.FirstName;

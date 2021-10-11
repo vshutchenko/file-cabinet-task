@@ -103,6 +103,12 @@ namespace FileCabinetApp.Validators
             return new Tuple<bool, string>(isValid, validationErrorMessage);
         }
 
+        /// <summary>
+        /// Validates id of record.
+        /// </summary>
+        /// <param name="id">Id.</param>
+        /// <returns><see cref="Tuple"/> where the first bool value indicates was validation successfull or not.
+        /// The second string value contains an error message if validation ended with error.</returns>
         public Tuple<bool, string> IdValidator(int id)
         {
             return new Tuple<bool, string>(true, string.Empty);

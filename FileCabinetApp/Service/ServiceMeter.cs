@@ -119,11 +119,7 @@ namespace FileCabinetApp.Service
             Print(nameof(this.Restore), this.stopwatch.ElapsedTicks);
         }
 
-        private static void Print(string methodName, long elapsedTicks)
-        {
-            Console.WriteLine($"{methodName} method execution duration is {elapsedTicks} ticks.");
-        }
-
+        /// <inheritdoc/>
         public int Insert(FileCabinetRecord record)
         {
             this.stopwatch.Restart();
@@ -135,6 +131,7 @@ namespace FileCabinetApp.Service
             return record.Id;
         }
 
+        /// <inheritdoc/>
         public IList<int> Delete(string property, string value)
         {
             this.stopwatch.Restart();
@@ -146,6 +143,7 @@ namespace FileCabinetApp.Service
             return deletedRecordsIds;
         }
 
+        /// <inheritdoc/>
         public void Update(IList<string> propertiesToSearchNames, IList<string> propertiesToUpdateNames, IList<string> valuesToSearch, IList<string> newValues, bool allFieldsMatch)
         {
             this.stopwatch.Restart();
@@ -155,6 +153,7 @@ namespace FileCabinetApp.Service
             Print(nameof(this.Update), this.stopwatch.ElapsedTicks);
         }
 
+        /// <inheritdoc/>
         public IEnumerable<FileCabinetRecord> Select(IList<string> propertiesNames, IList<string> values, bool allFieldsMatch = true)
         {
             this.stopwatch.Restart();
@@ -166,6 +165,7 @@ namespace FileCabinetApp.Service
             return records;
         }
 
+        /// <inheritdoc/>
         public IEnumerable<FileCabinetRecord> SelectAll()
         {
             this.stopwatch.Restart();
@@ -175,6 +175,11 @@ namespace FileCabinetApp.Service
             Print(nameof(this.SelectAll), this.stopwatch.ElapsedTicks);
 
             return records;
+        }
+
+        private static void Print(string methodName, long elapsedTicks)
+        {
+            Console.WriteLine($"{methodName} method execution duration is {elapsedTicks} ticks.");
         }
     }
 }

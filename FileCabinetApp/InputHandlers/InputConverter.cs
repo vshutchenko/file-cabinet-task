@@ -10,8 +10,6 @@ namespace FileCabinetApp.InputHandlers
     /// </summary>
     public class InputConverter
     {
-        
-
         /// <summary>
         /// Converts input string into <see cref="int"/> value.
         /// </summary>

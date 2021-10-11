@@ -119,6 +119,53 @@ namespace FileCabinetApp.Service
             GC.SuppressFinalize(this);
         }
 
+        /// <inheritdoc/>
+        public int Insert(FileCabinetRecord record)
+        {
+            string parameters = $"record.Id = '{record.Id}'";
+            this.WriteMessage(LogMessageType.MethodWithParameters, nameof(this.Insert), parameters);
+            int id = this.service.Insert(record);
+            this.WriteMessage(LogMessageType.MethodReturnValue, nameof(this.Insert), $"'{id}'");
+            return id;
+        }
+
+        /// <inheritdoc/>
+        public IList<int> Delete(string property, string value)
+        {
+            string parameters = $"{nameof(property)} = '{value}'";
+            this.WriteMessage(LogMessageType.MethodWithParameters, nameof(this.Delete), parameters);
+            var deletedRecordsIds = this.service.Delete(property, value);
+            this.WriteMessage(LogMessageType.MethodReturnValue, nameof(this.Insert));
+            return deletedRecordsIds;
+        }
+
+        /// <inheritdoc/>
+        public void Update(IList<string> propertiesToSearchNames, IList<string> propertiesToUpdateNames, IList<string> valuesToSearch, IList<string> newValues, bool allFieldsMatch)
+        {
+            string parameters = $"{nameof(allFieldsMatch)} = '{allFieldsMatch}'";
+            this.WriteMessage(LogMessageType.MethodWithParameters, nameof(this.Update), parameters);
+            this.service.Update(propertiesToSearchNames, propertiesToUpdateNames, valuesToSearch, newValues, allFieldsMatch);
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<FileCabinetRecord> Select(IList<string> propertiesNames, IList<string> values, bool allFieldsMatch = true)
+        {
+            string parameters = $"{nameof(allFieldsMatch)} = '{allFieldsMatch}'";
+            this.WriteMessage(LogMessageType.MethodWithParameters, nameof(this.Select), parameters);
+            var records = this.service.Select(propertiesNames, values, allFieldsMatch);
+            this.WriteMessage(LogMessageType.MethodReturnValue, nameof(this.Select));
+            return records;
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<FileCabinetRecord> SelectAll()
+        {
+            this.WriteMessage(LogMessageType.MethodWithoutParameters, nameof(this.SelectAll));
+            var records = this.service.SelectAll();
+            this.WriteMessage(LogMessageType.MethodReturnValue, nameof(this.SelectAll));
+            return records;
+        }
+
         /// <summary>
         /// Free used resources.
         /// </summary>
@@ -156,48 +203,6 @@ namespace FileCabinetApp.Service
             }
 
             this.writer.WriteLine(message);
-        }
-
-        public int Insert(FileCabinetRecord record)
-        {
-            string parameters = $"record.Id = '{record.Id}'";
-            this.WriteMessage(LogMessageType.MethodWithParameters, nameof(this.Insert), parameters);
-            int id = this.service.Insert(record);
-            this.WriteMessage(LogMessageType.MethodReturnValue, nameof(this.Insert), $"'{id}'");
-            return id;
-        }
-
-        public IList<int> Delete(string property, string value)
-        {
-            string parameters = $"{nameof(property)} = '{value}'";
-            this.WriteMessage(LogMessageType.MethodWithParameters, nameof(this.Delete), parameters);
-            var deletedRecordsIds = this.service.Delete(property, value);
-            this.WriteMessage(LogMessageType.MethodReturnValue, nameof(this.Insert));
-            return deletedRecordsIds;
-        }
-
-        public void Update(IList<string> propertiesToSearchNames, IList<string> propertiesToUpdateNames, IList<string> valuesToSearch, IList<string> newValues, bool allFieldsMatch)
-        {
-            string parameters = $"{nameof(allFieldsMatch)} = '{allFieldsMatch}'";
-            this.WriteMessage(LogMessageType.MethodWithParameters, nameof(this.Update), parameters);
-            this.service.Update(propertiesToSearchNames, propertiesToUpdateNames, valuesToSearch, newValues, allFieldsMatch);
-        }
-
-        public IEnumerable<FileCabinetRecord> Select(IList<string> propertiesNames, IList<string> values, bool allFieldsMatch = true)
-        {
-            string parameters = $"{nameof(allFieldsMatch)} = '{allFieldsMatch}'";
-            this.WriteMessage(LogMessageType.MethodWithParameters, nameof(this.Select), parameters);
-            var records = this.service.Select(propertiesNames, values, allFieldsMatch);
-            this.WriteMessage(LogMessageType.MethodReturnValue, nameof(this.Select));
-            return records;
-        }
-
-        public IEnumerable<FileCabinetRecord> SelectAll()
-        {
-            this.WriteMessage(LogMessageType.MethodWithoutParameters, nameof(this.SelectAll));
-            var records = this.service.SelectAll();
-            this.WriteMessage(LogMessageType.MethodReturnValue, nameof(this.SelectAll));
-            return records;
         }
     }
 }

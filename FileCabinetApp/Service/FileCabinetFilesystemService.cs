@@ -26,14 +26,6 @@ namespace FileCabinetApp.Service
         private FileStream fileStream;
         private IRecordValidator validator;
 
-        private int RecordsCount
-        {
-            get
-            {
-                return (int)(this.fileStream.Length / RecordSize);
-            }
-        }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetFilesystemService"/> class.
         /// </summary>
@@ -43,6 +35,14 @@ namespace FileCabinetApp.Service
         {
             this.fileStream = fileStream;
             this.validator = validator;
+        }
+
+        private int RecordsCount
+        {
+            get
+            {
+                return (int)(this.fileStream.Length / RecordSize);
+            }
         }
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace FileCabinetApp.Service
                 recordsList.Add(r);
             }
 
-            int recordsBeforePurge = recordsList.Count;
+            int recordsBeforePurge = this.RecordsCount;
             this.fileStream.SetLength(0);
             this.fileStream.Seek(0, SeekOrigin.Begin);
 
@@ -73,12 +73,12 @@ namespace FileCabinetApp.Service
                     record.Gender,
                     record.Experience,
                     record.Salary);
-                WriteRecord(record.Id, recordParameters, writer);
+                this.WriteRecord(record.Id, recordParameters, writer);
             }
 
             writer.Close();
 
-            return new Tuple<int, int>(recordsBeforePurge - recordsList.Count, recordsList.Count);
+            return new Tuple<int, int>(recordsBeforePurge - this.RecordsCount, recordsBeforePurge);
         }
 
         /// <summary>
@@ -110,7 +110,7 @@ namespace FileCabinetApp.Service
                 {
                     BinaryWriter writer = new BinaryWriter(this.fileStream, Encoding.Unicode, true);
                     writer.Seek(0, SeekOrigin.End);
-                    WriteRecord(record.Id, recordParameters, writer);
+                    this.WriteRecord(record.Id, recordParameters, writer);
                     writer.Close();
                 }
             }
@@ -128,7 +128,7 @@ namespace FileCabinetApp.Service
             int id = (int)(this.fileStream.Length == 0 ? 1 : (this.fileStream.Length / RecordSize) + 1);
             this.fileStream.Seek(0, SeekOrigin.End);
             BinaryWriter writer = new BinaryWriter(this.fileStream, Encoding.Unicode, true);
-            WriteRecord(id, recordParameters, writer);
+            this.WriteRecord(id, recordParameters, writer);
             writer.Close();
 
             return id;
@@ -149,10 +149,10 @@ namespace FileCabinetApp.Service
 
             while (this.fileStream.Position < this.fileStream.Length)
             {
-                if (TryReadRecord(reader, out FileCabinetRecord record) && (record.Id == id))
+                if (this.TryReadRecord(reader, out FileCabinetRecord record) && (record.Id == id))
                 {
                     this.fileStream.Seek(-RecordSize, SeekOrigin.Current);
-                    WriteRecord(id, recordParameters, writer);
+                    this.WriteRecord(id, recordParameters, writer);
                     break;
                 }
             }
@@ -172,7 +172,7 @@ namespace FileCabinetApp.Service
 
             while (this.fileStream.Position < this.fileStream.Length)
             {
-                if (TryReadRecord(reader, out FileCabinetRecord record))
+                if (this.TryReadRecord(reader, out FileCabinetRecord record))
                 {
                     yield return record;
                 }
@@ -223,7 +223,7 @@ namespace FileCabinetApp.Service
 
             while (this.fileStream.Position < this.fileStream.Length)
             {
-                if (TryReadRecord(reader, out FileCabinetRecord record))
+                if (this.TryReadRecord(reader, out FileCabinetRecord record))
                 {
                     records.Add(record);
                 }
@@ -248,7 +248,7 @@ namespace FileCabinetApp.Service
 
             while (this.fileStream.Position < this.fileStream.Length)
             {
-                if (TryReadRecord(reader, out FileCabinetRecord record) && (record.Id == id))
+                if (this.TryReadRecord(reader, out FileCabinetRecord record) && (record.Id == id))
                 {
                     this.fileStream.Seek(-RecordSize, SeekOrigin.Current);
                     writer.Write(DeletedBitFlag);
@@ -263,54 +263,7 @@ namespace FileCabinetApp.Service
             return false;
         }
 
-        private static bool TryReadRecord(BinaryReader reader, out FileCabinetRecord record)
-        {
-            short reservedBytes = reader.ReadInt16();
-
-            if ((reservedBytes & DeletedBitFlag) == DeletedBitFlag)
-            {
-                reader.BaseStream.Seek(RecordSize - sizeof(short), SeekOrigin.Current);
-                record = null;
-                return false;
-            }
-
-            int id = reader.ReadInt32();
-            string firstName = Encoding.Unicode.GetString(reader.ReadBytes(MaxStringLength)).Trim('\0');
-            string lastName = Encoding.Unicode.GetString(reader.ReadBytes(MaxStringLength)).Trim('\0');
-            int year = reader.ReadInt32();
-            int month = reader.ReadInt32();
-            int day = reader.ReadInt32();
-            char gender = Encoding.Unicode.GetChars(reader.ReadBytes(2))[0];
-            short experience = reader.ReadInt16();
-            decimal salary = reader.ReadDecimal();
-
-            record = new FileCabinetRecord() { Id = id, FirstName = firstName, LastName = lastName, DateOfBirth = new DateTime(year, month, day), Gender = gender, Experience = experience, Salary = salary };
-
-            return true;
-        }
-
-        private static void WriteRecord(int id, RecordParameters recordParameters, BinaryWriter writer)
-        {
-            writer.Write(new byte[2]);
-            writer.Write(id);
-
-            char[] firstNameChars = new char[MaxStringLength];
-            char[] lastNameChars = new char[MaxStringLength];
-
-            Array.Copy(recordParameters.FirstName.ToCharArray(), firstNameChars, recordParameters.FirstName.Length);
-            Array.Copy(recordParameters.LastName.ToCharArray(), lastNameChars, recordParameters.LastName.Length);
-
-            writer.Write(Encoding.Unicode.GetBytes(firstNameChars), 0, MaxStringLength);
-            writer.Write(Encoding.Unicode.GetBytes(lastNameChars), 0, MaxStringLength);
-
-            writer.Write(recordParameters.DateOfBirth.Year);
-            writer.Write(recordParameters.DateOfBirth.Month);
-            writer.Write(recordParameters.DateOfBirth.Day);
-            writer.Write(Encoding.Unicode.GetBytes(new char[] { recordParameters.Gender }));
-            writer.Write(recordParameters.Experience);
-            writer.Write(recordParameters.Salary);
-        }
-
+        /// <inheritdoc/>
         public int Insert(FileCabinetRecord record)
         {
             RecordParameters recordParameters = new RecordParameters(record);
@@ -318,12 +271,13 @@ namespace FileCabinetApp.Service
 
             this.fileStream.Seek(0, SeekOrigin.End);
             BinaryWriter writer = new BinaryWriter(this.fileStream, Encoding.Unicode, true);
-            WriteRecord(record.Id, recordParameters, writer);
+            this.WriteRecord(record.Id, recordParameters, writer);
             writer.Close();
 
             return record.Id;
         }
 
+        /// <inheritdoc/>
         public IList<int> Delete(string property, string value)
         {
             var recordsToDelete = this.FindByTemplate(new[] { property }, new[] { value });
@@ -337,6 +291,58 @@ namespace FileCabinetApp.Service
             return deletedRecordsIds;
         }
 
+        /// <inheritdoc/>
+        public void Update(IList<string> propertiesToSearchNames, IList<string> propertiesToUpdateNames, IList<string> valuesToSearch, IList<string> newValues, bool allFieldsMatch = true)
+        {
+            List<FileCabinetRecord> recordsToUpdate = new List<FileCabinetRecord>();
+            var records = this.FindByTemplate(propertiesToSearchNames, valuesToSearch, allFieldsMatch);
+
+            Type recordType = typeof(FileCabinetRecord);
+            List<PropertyInfo> recordProperties = recordType.GetProperties().ToList();
+
+            foreach (var r in records)
+            {
+                recordsToUpdate.Add(r);
+            }
+
+            for (int i = 0; i < recordsToUpdate.Count; i++)
+            {
+                FileCabinetRecord template = recordsToUpdate[i];
+
+                for (int j = 0; j < propertiesToUpdateNames.Count; j++)
+                {
+                    var prop = recordProperties.FirstOrDefault(p => p.Name.Equals(propertiesToUpdateNames[j], StringComparison.InvariantCultureIgnoreCase));
+                    if (prop != null)
+                    {
+                        var conv = TypeDescriptor.GetConverter(prop.PropertyType);
+                        prop.SetValue(template, conv.ConvertFromString(newValues[j]));
+                    }
+                }
+
+                this.EditRecord(template.Id, new RecordParameters(template));
+            }
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<FileCabinetRecord> Select(IList<string> propertiesNames, IList<string> values, bool allFieldsMatch = true)
+        {
+            var records = this.FindByTemplate(propertiesNames, values, allFieldsMatch);
+            return records;
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<FileCabinetRecord> SelectAll()
+        {
+            return this.GetRecords();
+        }
+
+        /// <summary>
+        /// Search records.
+        /// </summary>
+        /// <param name="propertiesNames">Names of properties to search.</param>
+        /// <param name="values">Values of properties to search.</param>
+        /// <param name="allFieldsMatch">True if record properties should match all values, false if one or more properties should match.</param>
+        /// <returns>Collection of records.</returns>
         private IEnumerable<FileCabinetRecord> FindByTemplate(IList<string> propertiesNames, IList<string> values, bool allFieldsMatch = true)
         {
             Type recordType = typeof(FileCabinetRecord);
@@ -394,46 +400,52 @@ namespace FileCabinetApp.Service
             }
         }
 
-        public void Update(IList<string> propertiesToSearchNames, IList<string> propertiesToUpdateNames, IList<string> valuesToSearch, IList<string> newValues, bool allFieldsMatch = true)
+        private bool TryReadRecord(BinaryReader reader, out FileCabinetRecord record)
         {
-            List<FileCabinetRecord> recordsToUpdate = new List<FileCabinetRecord>();
-            var records = this.FindByTemplate(propertiesToSearchNames, valuesToSearch, allFieldsMatch);
+            short reservedBytes = reader.ReadInt16();
 
-            Type recordType = typeof(FileCabinetRecord);
-            List<PropertyInfo> recordProperties = recordType.GetProperties().ToList();
-
-            foreach (var r in records)
+            if ((reservedBytes & DeletedBitFlag) == DeletedBitFlag)
             {
-                recordsToUpdate.Add(r);
+                reader.BaseStream.Seek(RecordSize - sizeof(short), SeekOrigin.Current);
+                record = null;
+                return false;
             }
 
-            for (int i = 0; i < recordsToUpdate.Count; i++)
-            {
-                FileCabinetRecord template = recordsToUpdate[i];
+            int id = reader.ReadInt32();
+            string firstName = Encoding.Unicode.GetString(reader.ReadBytes(MaxStringLength)).Trim('\0');
+            string lastName = Encoding.Unicode.GetString(reader.ReadBytes(MaxStringLength)).Trim('\0');
+            int year = reader.ReadInt32();
+            int month = reader.ReadInt32();
+            int day = reader.ReadInt32();
+            char gender = Encoding.Unicode.GetChars(reader.ReadBytes(2))[0];
+            short experience = reader.ReadInt16();
+            decimal salary = reader.ReadDecimal();
 
-                for (int j = 0; j < propertiesToUpdateNames.Count; j++)
-                {
-                    var prop = recordProperties.FirstOrDefault(p => p.Name.Equals(propertiesToUpdateNames[j], StringComparison.InvariantCultureIgnoreCase));
-                    if (prop != null)
-                    {
-                        var conv = TypeDescriptor.GetConverter(prop.PropertyType);
-                        prop.SetValue(template, conv.ConvertFromString(newValues[j]));
-                    }
-                }
+            record = new FileCabinetRecord() { Id = id, FirstName = firstName, LastName = lastName, DateOfBirth = new DateTime(year, month, day), Gender = gender, Experience = experience, Salary = salary };
 
-                this.EditRecord(template.Id, new RecordParameters(template));
-            }
+            return true;
         }
 
-        public IEnumerable<FileCabinetRecord> Select(IList<string> propertiesNames, IList<string> values, bool allFieldsMatch = true)
+        private void WriteRecord(int id, RecordParameters recordParameters, BinaryWriter writer)
         {
-            var records = this.FindByTemplate(propertiesNames, values, allFieldsMatch);
-            return records;
-        }
+            writer.Write(new byte[2]);
+            writer.Write(id);
 
-        public IEnumerable<FileCabinetRecord> SelectAll()
-        {
-            return this.GetRecords();
+            char[] firstNameChars = new char[MaxStringLength];
+            char[] lastNameChars = new char[MaxStringLength];
+
+            Array.Copy(recordParameters.FirstName.ToCharArray(), firstNameChars, recordParameters.FirstName.Length);
+            Array.Copy(recordParameters.LastName.ToCharArray(), lastNameChars, recordParameters.LastName.Length);
+
+            writer.Write(Encoding.Unicode.GetBytes(firstNameChars), 0, MaxStringLength);
+            writer.Write(Encoding.Unicode.GetBytes(lastNameChars), 0, MaxStringLength);
+
+            writer.Write(recordParameters.DateOfBirth.Year);
+            writer.Write(recordParameters.DateOfBirth.Month);
+            writer.Write(recordParameters.DateOfBirth.Day);
+            writer.Write(Encoding.Unicode.GetBytes(new char[] { recordParameters.Gender }));
+            writer.Write(recordParameters.Experience);
+            writer.Write(recordParameters.Salary);
         }
     }
 }

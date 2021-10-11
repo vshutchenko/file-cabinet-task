@@ -170,18 +170,20 @@ namespace FileCabinetApp.Service
             return false;
         }
 
+        /// <inheritdoc/>
         public int Insert(FileCabinetRecord record)
         {
-            searchResults.Clear();
+            this.searchResults.Clear();
             RecordParameters recordParameters = new RecordParameters(record);
             this.validator.ValidateParameters(recordParameters);
             this.list.Add(record);
             return record.Id;
         }
 
+        /// <inheritdoc/>
         public IList<int> Delete(string property, string value)
         {
-            searchResults.Clear();
+            this.searchResults.Clear();
             var recordsToDelete = this.FindByTemplate(new[] { property }, new[] { value });
             List<int> deletedRecordsIds = new List<int>();
             foreach (var record in recordsToDelete)
@@ -193,7 +195,79 @@ namespace FileCabinetApp.Service
             return deletedRecordsIds;
         }
 
-        public IEnumerable<FileCabinetRecord> FindByTemplate(IList<string> propertiesNames, IList<string> values, bool allFieldsMatch = true)
+        /// <inheritdoc/>
+        public void Update(IList<string> propertiesToSearchNames, IList<string> propertiesToUpdateNames, IList<string> valuesToSearch, IList<string> newValues, bool allFieldsMatch = true)
+        {
+            this.searchResults.Clear();
+            var recordsInFile = this.GetRecords();
+            List<FileCabinetRecord> recordsToUpdate = new List<FileCabinetRecord>();
+            var records = this.FindByTemplate(propertiesToSearchNames, valuesToSearch);
+
+            Type recordType = typeof(FileCabinetRecord);
+            List<PropertyInfo> recordProperties = recordType.GetProperties().ToList();
+
+            foreach (var r in records)
+            {
+                recordsToUpdate.Add(r);
+            }
+
+            for (int i = 0; i < recordsToUpdate.Count; i++)
+            {
+                FileCabinetRecord template = recordsToUpdate[i];
+
+                for (int j = 0; j < propertiesToUpdateNames.Count; j++)
+                {
+                    var prop = recordProperties.FirstOrDefault(p => p.Name.Equals(propertiesToUpdateNames[j], StringComparison.InvariantCultureIgnoreCase));
+                    if (prop != null)
+                    {
+                        var conv = TypeDescriptor.GetConverter(prop.PropertyType);
+                        prop.SetValue(template, conv.ConvertFromString(newValues[j]));
+                    }
+                }
+
+                this.EditRecord(template.Id, new RecordParameters(template));
+            }
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<FileCabinetRecord> SelectAll()
+        {
+            string key = string.Empty;
+
+            IEnumerable<FileCabinetRecord> records;
+
+            if (!this.searchResults.TryGetValue(key.ToUpperInvariant(), out records))
+            {
+                records = this.GetRecords();
+                this.searchResults.Add(key.ToUpperInvariant(), records);
+            }
+
+            return records;
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<FileCabinetRecord> Select(IList<string> propertiesNames, IList<string> values, bool allFieldsMatch = true)
+        {
+            string key = this.GetParametersKey(propertiesNames, values, allFieldsMatch);
+            IEnumerable<FileCabinetRecord> records;
+
+            if (!this.searchResults.TryGetValue(key, out records))
+            {
+                records = this.FindByTemplate(propertiesNames, values, allFieldsMatch);
+                this.searchResults.Add(key, records);
+            }
+
+            return records;
+        }
+
+        /// <summary>
+        /// Search records.
+        /// </summary>
+        /// <param name="propertiesNames">Names of properties to search.</param>
+        /// <param name="values">Values of properties to search.</param>
+        /// <param name="allFieldsMatch">True if record properties should match all values, false if one or more properties should match.</param>
+        /// <returns>Collection of records.</returns>
+        private IEnumerable<FileCabinetRecord> FindByTemplate(IList<string> propertiesNames, IList<string> values, bool allFieldsMatch = true)
         {
             Type recordType = typeof(FileCabinetRecord);
             List<PropertyInfo> recordProperties = recordType.GetProperties().ToList();
@@ -247,68 +321,6 @@ namespace FileCabinetApp.Service
                     isMatch = false;
                 }
             }
-        }
-
-        public void Update(IList<string> propertiesToSearchNames, IList<string> propertiesToUpdateNames, IList<string> valuesToSearch, IList<string> newValues, bool allFieldsMatch = true)
-        {
-            searchResults.Clear();
-            var recordsInFile = this.GetRecords();
-            List<FileCabinetRecord> recordsToUpdate = new List<FileCabinetRecord>();
-            var records = this.FindByTemplate(propertiesToSearchNames, valuesToSearch);
-
-            Type recordType = typeof(FileCabinetRecord);
-            List<PropertyInfo> recordProperties = recordType.GetProperties().ToList();
-
-            foreach (var r in records)
-            {
-                recordsToUpdate.Add(r);
-            }
-
-            for (int i = 0; i < recordsToUpdate.Count; i++)
-            {
-                FileCabinetRecord template = recordsToUpdate[i];
-
-                for (int j = 0; j < propertiesToUpdateNames.Count; j++)
-                {
-                    var prop = recordProperties.FirstOrDefault(p => p.Name.Equals(propertiesToUpdateNames[j], StringComparison.InvariantCultureIgnoreCase));
-                    if (prop != null)
-                    {
-                        var conv = TypeDescriptor.GetConverter(prop.PropertyType);
-                        prop.SetValue(template, conv.ConvertFromString(newValues[j]));
-                    }
-                }
-
-                this.EditRecord(template.Id, new RecordParameters(template));
-            }
-        }
-
-        public IEnumerable<FileCabinetRecord> SelectAll()
-        {
-            string key = string.Empty;
-
-            IEnumerable<FileCabinetRecord> records;
-
-            if (!searchResults.TryGetValue(key.ToUpperInvariant(), out records))
-            {
-                records = this.GetRecords();
-                searchResults.Add(key.ToUpperInvariant(), records);
-            }
-
-            return records;
-        }
-
-        public IEnumerable<FileCabinetRecord> Select(IList<string> propertiesNames, IList<string> values, bool allFieldsMatch = true)
-        {
-            string key = GetParametersKey(propertiesNames, values, allFieldsMatch);
-            IEnumerable<FileCabinetRecord> records;
-
-            if (!searchResults.TryGetValue(key, out records))
-            {
-                records = this.FindByTemplate(propertiesNames, values, allFieldsMatch);
-                searchResults.Add(key, records);
-            }
-
-            return records;
         }
 
         private string GetParametersKey(IList<string> propertiesNames, IList<string> values, bool allFieldsMatch)

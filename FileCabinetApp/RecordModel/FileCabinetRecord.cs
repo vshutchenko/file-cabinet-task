@@ -51,6 +51,10 @@ namespace FileCabinetApp.RecordModel
         /// <value>The salary of the person.</value>
         public decimal Salary { get; set; }
 
+        /// <summary>
+        /// Ovveride of ToString method.
+        /// </summary>
+        /// <returns>String with properties names and their values.</returns>
         public override string ToString()
         {
             return $"{nameof(this.Id)} = '{this.Id}', " +

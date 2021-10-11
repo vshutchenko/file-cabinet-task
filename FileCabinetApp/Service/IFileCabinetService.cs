@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
-using FileCabinetApp.RecordModel;
 using FileCabinetApp.Iterators;
+using FileCabinetApp.RecordModel;
 
 namespace FileCabinetApp.Service
 {
@@ -57,6 +57,12 @@ namespace FileCabinetApp.Service
         /// <returns>True if record was removed, false if record doesn't exist.</returns>
         public bool Remove(int id);
 
+        /// <summary>
+        /// Deletes record which has property with specified value.
+        /// </summary>
+        /// <param name="property">Name of property.</param>
+        /// <param name="value">Value of property.</param>
+        /// <returns>Ids of deleted records.</returns>
         public IList<int> Delete(string property, string value);
 
         /// <summary>
@@ -65,12 +71,36 @@ namespace FileCabinetApp.Service
         /// <returns>Number of purged records.</returns>
         public Tuple<int, int> Purge();
 
+        /// <summary>
+        /// Add record to storage.
+        /// </summary>
+        /// <param name="record">Record to add.</param>
+        /// <returns>Id of inserted record.</returns>
         public int Insert(FileCabinetRecord record);
 
+        /// <summary>
+        /// Updates record in storage.
+        /// </summary>
+        /// <param name="propertiesToSearchNames">Names of properties to search.</param>
+        /// <param name="propertiesToUpdateNames">Names of properties to update.</param>
+        /// <param name="valuesToSearch">Values to search.</param>
+        /// <param name="newValues">New value of properties to update.</param>
+        /// <param name="allFieldsMatch">True if record properties should match all values, false if one or more properties should match.</param>
         public void Update(IList<string> propertiesToSearchNames, IList<string> propertiesToUpdateNames, IList<string> valuesToSearch, IList<string> newValues, bool allFieldsMatch = true);
 
+        /// <summary>
+        /// Selects all records from storage.
+        /// </summary>
+        /// <returns>Collection of records.</returns>
         public IEnumerable<FileCabinetRecord> SelectAll();
 
+        /// <summary>
+        /// Selects records matching search parameters.
+        /// </summary>
+        /// <param name="propertiesNames">Names of properties to search.</param>
+        /// <param name="values">Values to search.</param>
+        /// <param name="allFieldsMatch">True if record properties should match all values, false if one or more properties should match.</param>
+        /// <returns>Collection of records.</returns>
         public IEnumerable<FileCabinetRecord> Select(IList<string> propertiesNames, IList<string> values, bool allFieldsMatch = true);
     }
 }
